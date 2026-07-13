@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>LTAP: 45 Years of Transactional/Analytical Split, Solved? | Jhanvi Soni</title>
+<meta name="description" content="Databricks says it cracked 45 years of separation between transactional and analytical systems by announcing LTAP. Here's what it actually is, explained in plain terms.">
+<link rel="canonical" href="https://jhanvisoni0.github.io/blog-ltap.html">
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://jhanvisoni0.github.io/blog-ltap.html">
+<meta property="og:title" content="LTAP: 45 Years of Transactional/Analytical Split, Solved?">
+<meta property="og:description" content="Databricks says it cracked 45 years of separation between transactional and analytical systems by announcing LTAP.">
+<meta property="og:image" content="https://jhanvisoni0.github.io/assets/blog-ltap-diagram.png">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="LTAP: 45 Years of Transactional/Analytical Split, Solved?">
+<meta name="twitter:description" content="Databricks says it cracked 45 years of separation between transactional and analytical systems by announcing LTAP.">
+<meta name="twitter:image" content="https://jhanvisoni0.github.io/assets/blog-ltap-diagram.png">
+
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/favicon-512.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="index.html#top" class="nav-logo">JS<span class="cursor-blink">_</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html#gold"><span class="line-no">01</span> projects</a>
+      <a href="index.html#architecture"><span class="line-no">02</span> architecture</a>
+      <a href="index.html#bronze"><span class="line-no">03</span> experience</a>
+      <a href="index.html#silver"><span class="line-no">04</span> skills</a>
+      <a href="index.html#cdc"><span class="line-no">05</span> writing</a>
+      <a href="index.html#contact"><span class="line-no">06</span> contact</a>
+    </nav>
+  </div>
+</header>
+
+<header class="article-header">
+  <div class="container">
+    <a href="index.html#cdc" class="back-link">← Back to writing</a>
+    <span class="article-tag">DATABRICKS · LTAP</span>
+    <h1 class="article-title">LTAP: 45 Years of Transactional/Analytical Split, Solved?</h1>
+    <p class="article-meta">June 2026 · Jhanvi Soni</p>
+  </div>
+</header>
+
+<article class="article-body">
+  <p>Engineers have been trying to solve this for 45 years.</p>
+
+  <p><a href="https://www.linkedin.com/company/databricks/" target="_blank" rel="noopener">Databricks</a> just said they cracked it, by announcing LTAP. Let me explain what it is and how it works.</p>
+
+  <h2>The problem</h2>
+
+  <p>Imagine a busy restaurant. One team takes orders and processes payments. A completely separate team sits in a back office analyzing what sold, what to restock, what's trending.</p>
+
+  <p>To share information between them? A courier runs back and forth all day passing notes. That courier is your ETL, ELT, or CDC pipeline. And in data engineering, that courier is expensive, slow, and constantly needs monitoring, fixing, and maintenance.</p>
+
+  <p>For decades, companies have separated transactional systems from analytical systems. One database running your business. Another analyzing it. Keeping them in sync meant building pipelines that break, drift, and demand constant attention.</p>
+
+  <p>Now imagine this instead.</p>
+
+  <p>Both teams, the order takers and the analysts, share one single whiteboard in the middle of the kitchen. The moment an order is placed, it's on the whiteboard. The analysts can query the latest data without waiting for another copy to be built. No courier. No duplicate whiteboards going out of sync.</p>
+
+  <p class="pull-quote">That's LTAP.</p>
+
+  <p>Instead of maintaining separate transactional and analytical databases, both engines operate on the same underlying Delta/Iceberg tables. A transactional engine handles writes. Spark handles large-scale analytics. Both reading from one shared source of truth, no pipelines required in between.</p>
+
+  <div class="article-image-block">
+    <img src="assets/blog-ltap-diagram.png" alt="Before and after diagram: separate transactional and analytical databases synced by a manual courier, versus a single shared copy of data serving both." class="article-image">
+    <p class="article-caption">One copy of data, serving both workloads — instead of two databases and a courier between them.</p>
+  </div>
+
+  <p>The clever part is that Databricks didn't try to build one engine that does everything. Previous attempts tried that and compromised performance for both workloads. Instead, they unified at the storage layer. Each engine still does what it's best at, they just share the same data underneath.</p>
+
+  <p>For data engineers, the exciting part isn't just faster analytics, it's the possibility of eliminating an entire class of data movement pipelines that have traditionally been required to keep transactional and analytical systems in sync.</p>
+
+  <p>Early days, but genuinely worth watching.</p>
+</article>
+
+<div class="article-footer">
+  <p class="post-signoff">— Jhanvi Soni</p>
+  <p class="article-meta">
+    <a href="mailto:jhanvisoni0@gmail.com">Email</a> ·
+    <a href="https://linkedin.com/in/jhanvisonii/" target="_blank" rel="noopener">LinkedIn</a> ·
+    <a href="https://github.com/Jhanvisoni0" target="_blank" rel="noopener">GitHub</a>
+  </p>
+</div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <span>© 2026 Jhanvi Soni</span>
+    <span class="footer-dim">Built with HTML / CSS / JS · Deployed on GitHub Pages</span>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

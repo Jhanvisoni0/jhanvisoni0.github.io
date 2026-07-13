@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Lakehouse//RT: When "Real-Time Lakehouse" Stopped Being Marketing Speak | Jhanvi Soni</title>
+<meta name="description" content="10ms latency, 16x faster, zero reconfiguration — no copies, no separate serving layer. Here's how Databricks' Lakehouse//RT actually works.">
+<link rel="canonical" href="https://jhanvisoni0.github.io/blog-lakehouse-rt.html">
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://jhanvisoni0.github.io/blog-lakehouse-rt.html">
+<meta property="og:title" content="Lakehouse//RT: When &quot;Real-Time Lakehouse&quot; Stopped Being Marketing Speak">
+<meta property="og:description" content="10ms latency, 16x faster, zero reconfiguration. Here's how Databricks' Lakehouse//RT actually works.">
+<meta property="og:image" content="https://jhanvisoni0.github.io/assets/blog-lakehouse-rt-diagram.png">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lakehouse//RT: When &quot;Real-Time Lakehouse&quot; Stopped Being Marketing Speak">
+<meta name="twitter:description" content="10ms latency, 16x faster, zero reconfiguration. Here's how Databricks' Lakehouse//RT actually works.">
+<meta name="twitter:image" content="https://jhanvisoni0.github.io/assets/blog-lakehouse-rt-diagram.png">
+
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/favicon-512.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="index.html#top" class="nav-logo">JS<span class="cursor-blink">_</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html#gold"><span class="line-no">01</span> projects</a>
+      <a href="index.html#architecture"><span class="line-no">02</span> architecture</a>
+      <a href="index.html#bronze"><span class="line-no">03</span> experience</a>
+      <a href="index.html#silver"><span class="line-no">04</span> skills</a>
+      <a href="index.html#cdc"><span class="line-no">05</span> writing</a>
+      <a href="index.html#contact"><span class="line-no">06</span> contact</a>
+    </nav>
+  </div>
+</header>
+
+<header class="article-header">
+  <div class="container">
+    <a href="index.html#cdc" class="back-link">← Back to writing</a>
+    <span class="article-tag">DATABRICKS · LAKEHOUSE//RT</span>
+    <h1 class="article-title">Lakehouse//RT: When "Real-Time Lakehouse" Stopped Being Marketing Speak</h1>
+    <p class="article-meta">July 2026 · Jhanvi Soni</p>
+  </div>
+</header>
+
+<article class="article-body">
+  <p>"Real-time lakehouse" always sounded like marketing speak to me. You either had fast data or governed data. Rarely both.</p>
+
+  <p>Then <a href="https://www.linkedin.com/company/databricks/" target="_blank" rel="noopener">Databricks</a> announced Lakehouse//RT, and it actually made sense.</p>
+
+  <h2>The old problem</h2>
+
+  <p>Needing sub-second query responses meant copying data into a separate real-time serving layer. That copy also meant more pipelines to maintain, stale data, governance gaps, and another "source of truth" slowly drifting from the real one.</p>
+
+  <p class="pull-quote">Sound familiar?</p>
+
+  <h2>What Lakehouse//RT does differently</h2>
+
+  <p>It queries your existing Delta and Iceberg tables directly. No copies. No separate serving layer. No extra pipelines.</p>
+
+  <p class="pull-quote">If LTAP was about eliminating the pipeline between transactions and analytics, Lakehouse//RT is about eliminating the pipeline between analytics and real-time serving. Two announcements, one vision.</p>
+
+  <p>The engine powering it is called Reyden (short for Reynold's Dream Engine), named after Databricks co-founder <a href="https://www.linkedin.com/in/rxin/" target="_blank" rel="noopener">Reynold Xin</a>. Databricks says it delivers response times as low as 10ms and up to 16x better performance compared to traditional real-time serving layers, all under Unity Catalog governance.</p>
+
+  <div class="article-image-block">
+    <img src="assets/blog-lakehouse-rt-diagram.png" alt="Before and after diagram: a lakehouse with a slow, separate real-time serving layer, versus Lakehouse//RT querying the lakehouse directly with low latency and full governance." class="article-image">
+    <p class="article-caption">No copy, no separate serving layer — the lakehouse itself now serves real-time queries directly.</p>
+  </div>
+
+  <div class="stat-callout-row">
+    <div class="stat-callout">
+      <span class="stat-callout-number">10ms</span>
+      <span class="stat-callout-label">latency</span>
+    </div>
+    <div class="stat-callout">
+      <span class="stat-callout-number">16x</span>
+      <span class="stat-callout-label">faster than traditional real-time serving</span>
+    </div>
+  </div>
+
+  <p>The part that actually impressed me? Zero reconfiguration. Point it at a table you already have and start querying.</p>
+
+  <p>If this performs as advertised, it could simplify architectures that have traditionally required separate serving databases and synchronization pipelines, removing an entire layer most data teams have just accepted as necessary.</p>
+
+  <p>Still in Beta but worth watching closely.</p>
+</article>
+
+<div class="article-footer">
+  <p class="post-signoff">— Jhanvi Soni</p>
+  <p class="article-meta">
+    <a href="mailto:jhanvisoni0@gmail.com">Email</a> ·
+    <a href="https://linkedin.com/in/jhanvisonii/" target="_blank" rel="noopener">LinkedIn</a> ·
+    <a href="https://github.com/Jhanvisoni0" target="_blank" rel="noopener">GitHub</a>
+  </p>
+</div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <span>© 2026 Jhanvi Soni</span>
+    <span class="footer-dim">Built with HTML / CSS / JS · Deployed on GitHub Pages</span>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-# jhanvisoni.com — Portfolio
+# jhanvisoni0.github.io — Portfolio
 
 A terminal/technical-themed portfolio site, structured around Medallion Architecture
 (Bronze → Silver → Gold) to mirror the way I actually organize data in production.
@@ -7,40 +7,55 @@ A terminal/technical-themed portfolio site, structured around Medallion Architec
 
 ## Structure
 
-- `index.html` — all page content and section markup
+- `index.html` — main page: hero, projects, architecture, experience, skills, writing, contact
 - `style.css` — theme, layout, and responsive rules (all colors via CSS variables at the top)
 - `script.js` — scroll-reveal animation, mobile nav toggle
+- `blog-databricks-realization.html`, `blog-ltap.html`, `blog-lakehouse-rt.html` — standalone blog posts
 - `assets/profile.jpg` — headshot used in the hero
+- `assets/blog-*.png` — diagrams used in the blog posts
+- `assets/favicon-*.png`, `assets/apple-touch-icon.png` — site icon
+- `JhanviSoni_Resume.pdf` — linked from the hero and contact section
 - No build step, no dependencies. Open `index.html` directly in a browser to preview locally.
 
-## Sections
+## Sections (index.html)
 
 | Section | Metaphor | Content |
 |---|---|---|
-| Hero | — | photo, badge, name, title, bio, quick actions |
-| Gold Layer | production-ready | featured projects (case-study style) |
+| Hero | — | photo, badge, name, bold tagline, bio, quick stats, vitals card, CTAs |
+| Gold Layer | production-ready | featured projects (case-study style) + live embedded Streamlit demo |
 | Architecture | system design | Medallion Architecture pipeline diagram + core principles |
 | Bronze Layer | raw ingestion | work experience, education, certifications |
 | Silver Layer | validated & structured | capabilities overview + skills grouped by category |
-| Change Data Capture | streaming updates | blog posts |
+| Change Data Capture | streaming updates | real blog posts, linking to the standalone pages |
 | Contact | — | email, LinkedIn, GitHub, résumé download |
+
+## SEO / search appearance
+
+`index.html`'s `<head>` includes a title/description tuned for how it should appear in
+search results, Open Graph + Twitter card tags for link previews, and a JSON-LD `Person`
+schema to help Google recognize this as a person page. If you ever move to a custom domain,
+update the hardcoded `https://jhanvisoni0.github.io/` URLs in the canonical link, Open Graph
+tags, and JSON-LD block to match. New sites can take days to weeks to get indexed by
+Google — submitting the URL in Google Search Console speeds this up.
 
 ## To customize
 
-- **Blog posts:** replace the three placeholder cards in the `#cdc` section of
-  `index.html` with real titles, dates, one-line summaries, and links.
-- **Project links:** two of the three project cards link to your GitHub profile
-  as a placeholder (marked `<!-- TODO -->` in `index.html`) — swap in the direct
-  repo links once you have them.
-- **Résumé download:** the "Download Résumé" button in the hero links to
-  `JhanviSoni_Resume.pdf`. Add that file to this same folder (root of the repo)
-  for the link to work, or remove the button if you'd rather not offer a direct download.
-- **Colors:** all theme colors are CSS variables at the top of `style.css` under `:root`.
+- **Add a new blog post:** copy one of the existing `blog-*.html` files as a template
+  (they share the same header/footer and `article-*` CSS classes), update its title/meta/body,
+  then add a card linking to it in `index.html`'s `#cdc` section.
+- **Project links:** two project cards link to your GitHub profile as a placeholder
+  (marked `<!-- TODO -->` in `index.html`) — swap in the direct repo links once you have them.
+- **Live demo embed:** the Financial RAG project card embeds the live Streamlit app via
+  `?embed=true`. It requires visitors to bring their own OpenAI API key, and free-tier
+  Streamlit apps sleep after inactivity (shows a ~20-30s wake-up delay on first load).
+- **Colors/fonts:** all theme colors and font variables are at the top of `style.css` under `:root`.
 
 ## Deploy on GitHub Pages
 
 1. Create a repo named exactly `<your-github-username>.github.io`.
-2. Upload these files (`index.html`, `style.css`, `script.js`, and optionally your resume PDF) to the repo root.
+2. Upload **all** files/folders listed above to the repo root (replacing the whole set is
+   safer than adding files one at a time — avoids stray duplicates).
 3. In the repo's **Settings → Pages**, set the source to the `main` branch (root).
 4. Your site goes live at `https://<your-github-username>.github.io` within a minute or two.
-5. Optional: connect a custom domain (e.g. `jhanvisoni.com`) in the same Pages settings screen, then add the DNS records your domain registrar asks for.
+5. Optional: connect a custom domain (e.g. `jhanvisoni.com`) in the same Pages settings screen,
+   then add the DNS records your domain registrar asks for — and update the SEO URLs mentioned above.
