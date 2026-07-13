@@ -143,6 +143,20 @@
           <li>Built a citation-grounded generation system with LLM-as-judge evaluation, improving citation precision and validating hallucination resistance on deliberately unanswerable test cases.</li>
           <li>Resolved a memory-constrained deployment failure by re-architecting the embedding layer from local inference to an API-based approach, cutting deployment memory footprint with zero ongoing infra cost.</li>
         </ul>
+
+        <div class="demo-embed">
+          <div class="demo-embed-bar">
+            <span class="demo-embed-label">$ streamlit run app.py <span class="dot-sep">·</span> live embed</span>
+            <a href="https://financial-news-intelligence-rag-spfkf8yfjgbvxuzqiozyth.streamlit.app/" target="_blank" rel="noopener" class="demo-embed-open">Open full screen ↗</a>
+          </div>
+          <iframe
+            src="https://financial-news-intelligence-rag-spfkf8yfjgbvxuzqiozyth.streamlit.app/?embed=true"
+            loading="lazy"
+            title="Financial News Intelligence RAG Platform — live demo"
+            class="demo-embed-frame">
+          </iframe>
+          <p class="demo-embed-note">// First load can take ~20-30s if the app has been idle — Streamlit's free tier sleeps after inactivity.</p>
+        </div>
       </article>
 
       <article class="project-card">
