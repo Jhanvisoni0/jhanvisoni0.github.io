@@ -15,7 +15,6 @@ A terminal/technical-themed portfolio site, structured around Medallion Architec
 - `assets/profile.jpg` — headshot used in the hero
 - `assets/blog-*.png` — diagrams used in the blog posts
 - `assets/favicon-*.png`, `assets/apple-touch-icon.png` — site icon
-- `JhanviSoni_Resume.pdf` — linked from the hero and contact section
 - No build step, no dependencies. Open `index.html` directly in a browser to preview locally.
 
 ## Sections (index.html)
@@ -28,7 +27,7 @@ A terminal/technical-themed portfolio site, structured around Medallion Architec
 | Bronze Layer | raw ingestion | work experience, education, certifications |
 | Silver Layer | validated & structured | capabilities overview + skills grouped by category |
 | Change Data Capture | streaming updates | real blog posts, linking to the standalone pages |
-| Contact | — | email, LinkedIn, GitHub, résumé download |
+| Contact | — | email, LinkedIn, GitHub |
 
 ## SEO / search appearance
 
