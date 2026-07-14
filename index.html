@@ -178,7 +178,7 @@
 
     <div class="projects-grid">
 
-      <article class="project-card">
+      <article class="project-card project-card-flagship">
         <div class="project-head">
           <h3>Financial News Intelligence RAG Platform <span class="flagship-tag">Flagship</span></h3>
           <div class="project-links">
@@ -187,14 +187,27 @@
           </div>
         </div>
         <p class="project-teaser">End-to-end RAG platform grounding LLM answers in SEC filings &amp; financial news, reaching 100% retrieval accuracy on evaluation.</p>
+
+        <div class="answer-preview">
+          <div class="answer-preview-bar">
+            <span class="answer-preview-label">$ ask --grounded</span>
+            <span class="answer-preview-status"><span class="status-dot"></span> cited</span>
+          </div>
+          <div class="answer-preview-body">
+            <p class="answer-preview-q">"What are the key risk factors in Apple's latest 10-K?"</p>
+            <p class="answer-preview-a">Apple discloses risk across IP protection<span class="cite">[1]</span>, third-party developer dependence<span class="cite">[2]</span>, product liability<span class="cite">[3]</span>, and macroeconomic/tariff exposure<span class="cite">[4]</span>.</p>
+            <div class="answer-preview-sources">
+              <span class="source-tag">[1] 10-K · Item 1A</span><span class="source-tag">[2] 10-K · Item 1A</span><span class="source-tag">[3] 10-K · Item 1A</span><span class="source-tag">[4] 10-K · Item 1A</span>
+            </div>
+          </div>
+        </div>
+
         <div class="chip-row chip-row-tight">
           <span class="chip chip-sm">Python</span><span class="chip chip-sm">Azure Databricks</span><span class="chip chip-sm">Delta Lake</span><span class="chip chip-sm">RAG</span><span class="chip chip-sm">OpenAI</span><span class="chip chip-sm">ChromaDB</span><span class="chip chip-sm">MLflow</span><span class="chip chip-sm">Terraform</span><span class="chip chip-sm">GitHub Actions</span>
         </div>
-        <ul class="project-bullets">
-          <li>Architected an end-to-end RAG pipeline on Azure Databricks (Medallion architecture) ingesting SEC filings and financial news for 5 public companies, reaching 100% retrieval accuracy on a 15-question evaluation set.</li>
-          <li>Diagnosed a data-quality defect where inline XBRL markup silently corrupted filing text, restoring feature-engineering accuracy from 0% to expected levels via root-cause analysis.</li>
-          <li>Built a citation-grounded generation system with LLM-as-judge evaluation, improving citation precision and validating hallucination resistance on deliberately unanswerable test cases.</li>
-          <li>Resolved a memory-constrained deployment failure by re-architecting the embedding layer from local inference to an API-based approach, cutting deployment memory footprint with zero ongoing infra cost.</li>
+        <ul class="project-highlights project-highlights-cyan">
+          <li>100% retrieval accuracy on a 15-question evaluation set — every answer traceable to its source.</li>
+          <li>Explicitly declines to answer rather than hallucinate, verified with a deliberate refusal test case.</li>
         </ul>
 
         <a href="project-financial-rag.html" class="case-study-cta">
@@ -212,13 +225,29 @@
           </div>
         </div>
         <p class="project-teaser">Customer-360 analytics platform cutting a 4-day reporting cycle down to 15 minutes.</p>
+
+        <div class="project-diagram">
+          <svg viewBox="0 0 480 100" class="project-diagram-svg" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pipeline: three source systems, through Bronze Silver Gold, into risk scoring, to a Power BI dashboard">
+            <defs>
+              <marker id="arrow-rb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="var(--bronze)"></path>
+              </marker>
+            </defs>
+            <line x1="110" y1="50" x2="128" y2="50" stroke="var(--bronze)" stroke-width="1.5" marker-end="url(#arrow-rb)"></line>
+            <line x1="230" y1="50" x2="248" y2="50" stroke="var(--bronze)" stroke-width="1.5" marker-end="url(#arrow-rb)"></line>
+            <line x1="350" y1="50" x2="368" y2="50" stroke="var(--bronze)" stroke-width="1.5" marker-end="url(#arrow-rb)"></line>
+            <g><rect x="10" y="26" width="100" height="48" rx="6" fill="var(--bg-card)" stroke="var(--border)"></rect><text x="60" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text-dim)">3 Systems</text></g>
+            <g><rect x="130" y="26" width="100" height="48" rx="6" fill="var(--bg-card)" stroke="var(--border)"></rect><text x="180" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text-dim)">B → S → G</text></g>
+            <g><rect x="250" y="26" width="100" height="48" rx="6" fill="var(--bg-card)" stroke="var(--border)"></rect><text x="300" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text-dim)">Risk Score</text></g>
+            <g><rect x="370" y="26" width="100" height="48" rx="6" fill="var(--bronze-dim)" stroke="var(--bronze)"></rect><text x="420" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text)">Power BI</text></g>
+          </svg>
+        </div>
+
         <div class="chip-row chip-row-tight">
           <span class="chip chip-sm">Azure</span><span class="chip chip-sm">Databricks</span><span class="chip chip-sm">PySpark</span><span class="chip chip-sm">Delta Lake</span><span class="chip chip-sm">ADF</span><span class="chip chip-sm">Kafka</span><span class="chip chip-sm">Power BI</span><span class="chip chip-sm">Terraform</span>
         </div>
-        <ul class="project-bullets">
-          <li>Cut reporting cycle from 4 days to 15 minutes with a Gold-layer customer-360 view (loan-to-deposit ratio, transaction velocity), automated via Databricks Workflows on Terraform-provisioned infra with CI/CD.</li>
-          <li>Ingested 50K transaction records and 5K customer profiles from 3 source systems into ADLS Gen2 via ADF and Auto Loader; simulated real-time streaming with Kafka feeding the Bronze layer.</li>
-          <li>Secured credentials via Key Vault, enforced table-level RBAC via Unity Catalog, and flagged anomalous accounts using a batch-scored Isolation Forest model tracked in MLflow.</li>
+        <ul class="project-highlights project-highlights-bronze">
+          <li>Cut the reporting cycle from 4 days to 15 minutes with an automated pipeline serving a live Power BI dashboard.</li>
         </ul>
 
         <a href="project-retail-banking.html" class="case-study-cta">
@@ -236,13 +265,29 @@
           </div>
         </div>
         <p class="project-teaser">Investment analytics platform tracking a simulated $10K portfolio to an 86% return across REITs, infrastructure, and commodities.</p>
+
+        <div class="project-diagram">
+          <svg viewBox="0 0 480 100" class="project-diagram-svg" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pipeline: Yahoo Finance and FRED APIs, through Bronze Silver Gold, into ML models, to an executive dashboard">
+            <defs>
+              <marker id="arrow-ra" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="var(--gold)"></path>
+              </marker>
+            </defs>
+            <line x1="110" y1="50" x2="128" y2="50" stroke="var(--gold)" stroke-width="1.5" marker-end="url(#arrow-ra)"></line>
+            <line x1="230" y1="50" x2="248" y2="50" stroke="var(--gold)" stroke-width="1.5" marker-end="url(#arrow-ra)"></line>
+            <line x1="350" y1="50" x2="368" y2="50" stroke="var(--gold)" stroke-width="1.5" marker-end="url(#arrow-ra)"></line>
+            <g><rect x="10" y="26" width="100" height="48" rx="6" fill="var(--bg-card)" stroke="var(--border)"></rect><text x="60" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text-dim)">Yahoo+FRED</text></g>
+            <g><rect x="130" y="26" width="100" height="48" rx="6" fill="var(--bg-card)" stroke="var(--border)"></rect><text x="180" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text-dim)">B → S → G</text></g>
+            <g><rect x="250" y="26" width="100" height="48" rx="6" fill="var(--bg-card)" stroke="var(--border)"></rect><text x="300" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text-dim)">ML Models</text></g>
+            <g><rect x="370" y="26" width="100" height="48" rx="6" fill="var(--gold-dim)" stroke="var(--gold)"></rect><text x="420" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text)">Dashboard</text></g>
+          </svg>
+        </div>
+
         <div class="chip-row chip-row-tight">
           <span class="chip chip-sm">Databricks</span><span class="chip chip-sm">PySpark</span><span class="chip chip-sm">Delta Lake</span><span class="chip chip-sm">yfinance / FRED APIs</span><span class="chip chip-sm">MLflow</span><span class="chip chip-sm">Unity Catalog</span>
         </div>
-        <ul class="project-bullets">
-          <li>Engineered an end-to-end investment analytics platform using Medallion Architecture, ingesting 22,635 rows of live market data for 15 assets via yfinance &amp; FRED APIs into Delta Lake on Unity Catalog.</li>
-          <li>Built PySpark pipelines computing daily returns, rolling volatility, Sharpe ratio, and max drawdown — tracking a simulated $10K portfolio to $18,645 (86% return) over 6 years.</li>
-          <li>Joined Fed Funds Rate data with portfolio returns to reveal REITs returned 23.26% annually in low-rate periods vs. -8.17% in rate-transition periods; surfaced via a live executive dashboard with 90-day forecasts.</li>
+        <ul class="project-highlights project-highlights-gold">
+          <li>Tracked a simulated $10K portfolio to an 86% return while auto-flagging 1,131 market anomalies via Isolation Forest.</li>
         </ul>
 
         <a href="project-real-assets.html" class="case-study-cta">
