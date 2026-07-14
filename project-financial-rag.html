@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Financial News Intelligence RAG Platform — Case Study | Jhanvi Soni</title>
+<meta name="description" content="A RAG-powered research assistant that reads SEC filings and financial news so you don't have to — with every answer traceable back to its source. Full architecture, design decisions, and live demo.">
+<link rel="canonical" href="https://jhanvisoni0.github.io/project-financial-rag.html">
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://jhanvisoni0.github.io/project-financial-rag.html">
+<meta property="og:title" content="Financial News Intelligence RAG Platform — Case Study">
+<meta property="og:description" content="A RAG-powered research assistant that reads SEC filings and financial news so you don't have to — with every answer traceable back to its source.">
+<meta property="og:image" content="https://jhanvisoni0.github.io/assets/profile.jpg">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Financial News Intelligence RAG Platform — Case Study">
+<meta name="twitter:description" content="A RAG-powered research assistant that reads SEC filings and financial news so you don't have to — with every answer traceable back to its source.">
+<meta name="twitter:image" content="https://jhanvisoni0.github.io/assets/profile.jpg">
+
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/favicon-512.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="index.html#top" class="nav-logo">JS<span class="cursor-blink">_</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html#gold"><span class="line-no">01</span> projects</a>
+      <a href="index.html#architecture"><span class="line-no">02</span> architecture</a>
+      <a href="index.html#bronze"><span class="line-no">03</span> experience</a>
+      <a href="index.html#silver"><span class="line-no">04</span> skills</a>
+      <a href="index.html#cdc"><span class="line-no">05</span> writing</a>
+      <a href="index.html#contact"><span class="line-no">06</span> contact</a>
+    </nav>
+  </div>
+</header>
+
+<header class="article-header">
+  <div class="container">
+    <a href="index.html#gold" class="back-link">← Back to projects</a>
+    <span class="article-tag">CASE STUDY · FLAGSHIP</span>
+    <h1 class="article-title">Financial News Intelligence RAG Platform</h1>
+    <p class="article-meta">
+      <a href="https://financial-news-intelligence-rag-spfkf8yfjgbvxuzqiozyth.streamlit.app/" target="_blank" rel="noopener">Live Demo ↗</a> ·
+      <a href="https://github.com/Jhanvisoni0/financial-news-intelligence-rag" target="_blank" rel="noopener">Source Code ↗</a>
+    </p>
+  </div>
+</header>
+
+<article class="article-body">
+
+  <p class="pull-quote">A RAG-powered research assistant that reads SEC filings and financial news so you don't have to — with every answer traceable back to its source.</p>
+
+  <div class="chip-row" style="margin-bottom:40px;">
+    <span class="chip chip-sm">Generative AI</span><span class="chip chip-sm">RAG</span><span class="chip chip-sm">LLM</span><span class="chip chip-sm">Python</span><span class="chip chip-sm">Azure Databricks</span><span class="chip chip-sm">Delta Lake</span><span class="chip chip-sm">Data Engineering</span><span class="chip chip-sm">MLOps</span><span class="chip chip-sm">Terraform</span><span class="chip chip-sm">CI/CD</span><span class="chip chip-sm">OpenAI API</span><span class="chip chip-sm">Vector Search</span><span class="chip chip-sm">Financial NLP</span><span class="chip chip-sm">Cloud Architecture</span>
+  </div>
+
+  <h2>What This Project Is</h2>
+  <p>A production-style Retrieval-Augmented Generation (RAG) platform that answers natural-language questions about public companies — Apple, Microsoft, Amazon, NVIDIA, and Realty Income (a REIT) — using their actual SEC filings and recent financial news. Instead of returning a list of links like a search engine, it reads the underlying documents and generates a direct, cited answer, with every claim traceable back to the specific filing or article it came from.</p>
+  <p>It's built as a full-lifecycle system: real data ingestion, a Medallion-architecture data pipeline, evaluation with measured accuracy, MLOps observability, Infrastructure-as-Code, CI/CD, and a public, live-deployed application — not a notebook demo.</p>
+
+  <h2>The Problem</h2>
+  <p>Public companies are legally required to disclose detailed financial and risk information — but that information is buried in dense, jargon-heavy documents. A single 10-K annual report routinely runs over 100 pages. Finding the answer to a specific question — "What tariff risks does this company disclose?" — means manually reading or keyword-searching through the entire filing.</p>
+  <p>This isn't a data <em>scarcity</em> problem — the information is public and abundant. It's a data <em>accessibility</em> problem. Institutional tools like Bloomberg Terminal have solved this for large firms willing to pay tens of thousands of dollars a year. For individual investors, students, or smaller firms, that gap has largely remained open — until foundation models made a lighter-weight version of the same capability newly practical.</p>
+
+  <h2>The Solution</h2>
+  <p>A RAG system that treats the LLM as one component in a larger, engineered pipeline — not the whole application. Raw filings and news are ingested, cleaned, chunked, and embedded into a searchable vector space. When a user asks a question, the system retrieves the most relevant pieces of real text and generates an answer using <em>only</em> that retrieved content — explicitly instructed to cite its source for every claim, and to say so plainly when the data doesn't support an answer, rather than guessing.</p>
+
+  <h2>How It Works — Pipeline &amp; Flow</h2>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-marker"></div>
+      <div class="timeline-content">
+        <div class="timeline-header"><h3>SEC EDGAR API + NewsAPI</h3><span class="timeline-date">SOURCE</span></div>
+        <p class="timeline-org">Public, free, real-time filings and financial news.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-marker"></div>
+      <div class="timeline-content">
+        <div class="timeline-header"><h3>Bronze — Raw Ingestion</h3><span class="timeline-date">STEP 01</span></div>
+        <p class="timeline-org">Unmodified filings and articles land as-is.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-marker"></div>
+      <div class="timeline-content">
+        <div class="timeline-header"><h3>Silver — Cleaning &amp; Chunking</h3><span class="timeline-date">STEP 02</span></div>
+        <p class="timeline-org">Relevance filtering and token-aware chunking.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-marker"></div>
+      <div class="timeline-content">
+        <div class="timeline-header"><h3>Gold — Embeddings &amp; Features</h3><span class="timeline-date">STEP 03</span></div>
+        <p class="timeline-org">Vector embeddings plus engineered features like sentiment and risk density.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-marker"></div>
+      <div class="timeline-content">
+        <div class="timeline-header"><h3>Vector Store</h3><span class="timeline-date">STEP 04</span></div>
+        <p class="timeline-org">Semantic similarity search over the embedded corpus.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-marker"></div>
+      <div class="timeline-content">
+        <div class="timeline-header"><h3>RAG Chain</h3><span class="timeline-date">STEP 05</span></div>
+        <p class="timeline-org">Retrieve relevant chunks → construct grounded prompt → generate cited answer.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-marker"></div>
+      <div class="timeline-content">
+        <div class="timeline-header"><h3>Answer</h3><span class="timeline-date">RESULT</span></div>
+        <p class="timeline-org">User receives a direct answer with source citations.</p>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top:32px;"><strong>Supporting layers:</strong> MLflow (every query logged for observability), Databricks Workflows (scheduled pipeline orchestration), Terraform (Infrastructure-as-Code for cloud resources), GitHub Actions (automated testing on every code change).</p>
+
+  <h2>Real Case Scenario</h2>
+
+  <div class="result-banner">
+    <p class="result-banner-label">// question</p>
+    <p class="result-banner-value">"What are the key risk factors in Apple's latest 10-K?"</p>
+  </div>
+  <p><strong>What happens under the hood:</strong> the system embeds the question into the same vector space as the document corpus, retrieves the 5 most semantically relevant chunks from Apple's actual filings, and passes them to the LLM with strict instructions to answer only from those sources.</p>
+  <p><strong>Result:</strong> a structured answer covering intellectual property risk, third-party developer dependence, product liability exposure, and macroeconomic/tariff risk — each sentence citing the specific source chunk it came from, so the answer can be independently verified against the real filing.</p>
+
+  <div class="result-banner">
+    <p class="result-banner-label">// question — the trust-building counter-example</p>
+    <p class="result-banner-value">"Summarize analyst sentiment on REITs this quarter"</p>
+  </div>
+  <p><strong>Why it can't answer:</strong> this is a question the underlying data genuinely doesn't answer, since the corpus contains financial disclosures, not analyst opinions.</p>
+  <p><strong>Result:</strong> the system correctly responds that it cannot answer, rather than fabricating a plausible-sounding guess. This was a deliberate test case, and it's the single most important behavior in a system meant to be trusted with financial research.</p>
+
+  <h2>Key Design Decisions</h2>
+  <div class="principles-grid-2col">
+    <div class="principle">
+      <span class="principle-no">01</span>
+      <h4>Medallion architecture over a flat pipeline</h4>
+      <p>Separating Bronze/Silver/Gold made a real, non-obvious data-quality bug isolatable to a single layer, rather than tangled across the whole system.</p>
+    </div>
+    <div class="principle">
+      <span class="principle-no">02</span>
+      <h4>Local embeddings in dev, API-based in production</h4>
+      <p>Re-architected the deployed version to use OpenAI's embedding API after diagnosing that the local model's baseline memory footprint — not dataset size — exceeded the hosting platform's resource limits.</p>
+    </div>
+    <div class="principle">
+      <span class="principle-no">03</span>
+      <h4>Strict, tested citation requirements</h4>
+      <p>Iterating from vague, blanket citation toward requiring a citation on every individual factual sentence, verified through a formal evaluation harness, meaningfully improved answer trustworthiness.</p>
+    </div>
+    <div class="principle">
+      <span class="principle-no">04</span>
+      <h4>Deliberately testing for refusal, not just correctness</h4>
+      <p>The evaluation set includes a question the data cannot answer, specifically to verify the system fails safely (declines) rather than hallucinating.</p>
+    </div>
+  </div>
+
+  <h2>The Foundation of the Pipeline</h2>
+  <ul>
+    <li><strong>Data sources:</strong> SEC EDGAR (public filings API) and NewsAPI — both free, public, real-time</li>
+    <li><strong>Storage:</strong> Delta Lake on Azure Databricks, providing ACID transactions and schema enforcement across the pipeline</li>
+    <li><strong>Retrieval:</strong> Vector similarity search over chunked, embedded text</li>
+    <li><strong>Generation:</strong> OpenAI's language models, constrained by a citation-strict prompt</li>
+    <li><strong>Observability:</strong> MLflow experiment tracking on every query — question, sources retrieved, latency, and output, all logged</li>
+    <li><strong>Infrastructure:</strong> Terraform-managed Azure resources (storage, secrets management via Key Vault), CI/CD via GitHub Actions running automated tests on every commit</li>
+  </ul>
+
+  <h2>Benefits of This Approach</h2>
+  <ul>
+    <li><strong>Speed of research —</strong> a question that would take 10-20 minutes of manual reading through a filing is answered in seconds, with the source still fully verifiable.</li>
+    <li><strong>Trustworthiness through citation —</strong> every claim is traceable to its exact source, and the system is explicitly designed to decline rather than fabricate when the answer isn't supported by the data. This directly addresses the core risk of using generative AI for factual research: unverifiable, confidently-stated errors.</li>
+    <li><strong>Accessibility —</strong> this pattern makes institutional-grade document research capability available without an institutional-grade budget, narrowing a real gap between individual investors/researchers and well-resourced firms.</li>
+  </ul>
+
+  <h2>Scaling Scenario: What Changes at 1,200 Tickers</h2>
+  <p>The current system covers 5 companies by design — enough to prove the architecture works on real, messy data without the cost and complexity of full market coverage. But the architecture itself doesn't change with scale: ticker coverage is defined by a configuration dictionary, not hardcoded logic, so expanding coverage is a data-volume change, not a re-engineering effort.</p>
+
+  <p class="pull-quote">What a 1,200-ticker version would actually enable: portfolio-wide research instead of single-company lookups.</p>
+
+  <p>An analyst covering an entire sector — or an individual investor screening across the S&amp;P 1200 — could ask comparative questions ("which companies in my portfolio disclosed new supply chain risk this quarter?") instead of checking each filing individually. At that scale, the tool shifts from "read this one document faster" to "monitor an entire universe of companies for material changes automatically" — closer to what institutional research platforms actually provide, but built on the same core pipeline demonstrated here.</p>
+
+  <p><strong>What would need to change operationally, not architecturally:</strong> ingestion would move from a manual/scheduled batch job to a properly rate-limited, incremental pipeline (SEC and NewsAPI both cap request rates); the vector store would need a managed, horizontally-scalable backend instead of a local instance; and cost monitoring would become a first-class concern rather than an afterthought, since 1,200 tickers means meaningfully more embedding and generation volume — though even at that scale, embedding costs alone remain under $10 total, based on measured per-ticker costs from the current pipeline.</p>
+
+  <hr class="post-divider">
+
+  <div class="demo-embed">
+    <div class="demo-embed-intro">
+      <p class="demo-embed-heading"><span class="demo-embed-accent"></span>Try It Live</p>
+      <p class="demo-embed-desc">Ask real questions about Apple, Microsoft, Realty Income, NVIDIA, or Amazon SEC filings and news. Every answer is grounded in indexed documents — with citations, not guesses.</p>
+      <div class="demo-embed-examples">
+        <span class="demo-example-label">Try asking:</span>
+        <span class="demo-example-chip">"What are the key risk factors in Apple's latest 10-K?"</span>
+        <span class="demo-example-chip">"How does NVIDIA describe its supply chain risk?"</span>
+      </div>
+    </div>
+    <div class="demo-embed-bar">
+      <span class="demo-embed-label">$ streamlit run app.py <span class="dot-sep">·</span> live embed</span>
+      <a href="https://financial-news-intelligence-rag-spfkf8yfjgbvxuzqiozyth.streamlit.app/" target="_blank" rel="noopener" class="demo-embed-open">Open full screen ↗</a>
+    </div>
+    <iframe
+      src="https://financial-news-intelligence-rag-spfkf8yfjgbvxuzqiozyth.streamlit.app/?embed=true"
+      loading="lazy"
+      title="Financial News Intelligence RAG Platform — live demo"
+      class="demo-embed-frame">
+    </iframe>
+    <p class="demo-embed-note">// First load can take ~20-30s if the app has been idle. Requires your own OpenAI API key (entered locally, never stored) to generate an answer.</p>
+  </div>
+
+</article>
+
+<div class="article-footer">
+  <p class="post-signoff">— Jhanvi Soni</p>
+  <p class="article-meta">
+    <a href="mailto:jhanvisoni0@gmail.com">Email</a> ·
+    <a href="https://linkedin.com/in/jhanvisonii/" target="_blank" rel="noopener">LinkedIn</a> ·
+    <a href="https://github.com/Jhanvisoni0" target="_blank" rel="noopener">GitHub</a>
+  </p>
+</div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <span>© 2026 Jhanvi Soni</span>
+    <span class="footer-dim">Built with HTML / CSS / JS · Deployed on GitHub Pages</span>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

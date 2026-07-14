@@ -320,6 +320,16 @@ a:focus-visible, button:focus-visible{ outline: 2px solid var(--cyan); outline-o
 .project-bullets li{ font-size: 14px; color: var(--text-dim); padding-left: 16px; position: relative; }
 .project-bullets li::before{ content: "›"; position: absolute; left: 0; color: var(--gold); }
 
+.case-study-cta{
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  margin-top: 22px; padding: 14px 18px;
+  border: 1px solid var(--border); border-radius: var(--radius);
+  font-family: var(--font-mono); font-size: 13px; color: var(--text);
+  transition: border-color .15s ease, color .15s ease;
+}
+.case-study-cta:hover{ border-color: var(--cyan); color: var(--cyan); text-decoration: none; }
+.case-study-cta-arrow{ color: var(--cyan); flex: 0 0 auto; }
+
 .demo-embed{
   margin-top: 24px;
   border: 1px solid var(--border);
@@ -406,6 +416,7 @@ a:focus-visible, button:focus-visible{ outline: 2px solid var(--cyan); outline-o
 
 .principles-title{ font-family: var(--font-serif); font-style: italic; font-size: 19px; color: var(--text); margin-bottom: 24px; }
 .principles-grid{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.principles-grid-2col{ display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
 .principle{ background: var(--bg-card); border: 1px solid var(--border-soft); border-radius: var(--radius); padding: 24px; }
 .principle-no{ display: block; font-family: var(--font-mono); font-size: 12px; color: var(--arch); margin-bottom: 10px; letter-spacing: 0.08em; }
 .principle h4{ font-size: 14px; color: var(--text); margin-bottom: 8px; }
@@ -570,6 +581,7 @@ a:focus-visible, button:focus-visible{ outline: 2px solid var(--cyan); outline-o
   border-top: 1px solid var(--border-soft); padding-top: 32px;
 }
 .post-signoff{ font-size: 15.5px; color: var(--text); font-weight: 500; margin: 0 0 8px; }
+.post-divider{ border: none; border-top: 1px solid var(--border-soft); margin: 48px 0; }
 /* ==========================================================================
    Footer
    ========================================================================== */
@@ -593,6 +605,7 @@ a:focus-visible, button:focus-visible{ outline: 2px solid var(--cyan); outline-o
   .hero-text{ text-align: left; }
   .capabilities-grid{ grid-template-columns: repeat(2, 1fr); }
   .principles-grid{ grid-template-columns: 1fr; }
+  .principles-grid-2col{ grid-template-columns: 1fr; }
   .stats-grid{ grid-template-columns: repeat(2, 1fr); row-gap: 32px; }
   .demo-embed-frame{ height: 420px; }
 }
