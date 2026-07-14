@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Real Assets Investment Intelligence Platform — Case Study | Jhanvi Soni</title>
+<meta name="description" content="An end-to-end investment analytics platform simulating a Real Assets desk analyst — tracking 15 assets across 6 years, computing risk metrics, detecting anomalies, and forecasting returns.">
+<link rel="canonical" href="https://jhanvisoni0.github.io/project-real-assets.html">
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://jhanvisoni0.github.io/project-real-assets.html">
+<meta property="og:title" content="Real Assets Investment Intelligence Platform — Case Study">
+<meta property="og:description" content="An end-to-end investment analytics platform simulating a Real Assets desk analyst — tracking 15 assets across 6 years, computing risk metrics, detecting anomalies, and forecasting returns.">
+<meta property="og:image" content="https://jhanvisoni0.github.io/assets/profile.jpg">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Real Assets Investment Intelligence Platform — Case Study">
+<meta name="twitter:description" content="An end-to-end investment analytics platform simulating a Real Assets desk analyst — tracking 15 assets across 6 years.">
+<meta name="twitter:image" content="https://jhanvisoni0.github.io/assets/profile.jpg">
+
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/favicon-512.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="index.html#top" class="nav-logo">JS<span class="cursor-blink">_</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html#gold"><span class="line-no">01</span> projects</a>
+      <a href="index.html#architecture"><span class="line-no">02</span> architecture</a>
+      <a href="index.html#bronze"><span class="line-no">03</span> experience</a>
+      <a href="index.html#silver"><span class="line-no">04</span> skills</a>
+      <a href="index.html#cdc"><span class="line-no">05</span> writing</a>
+      <a href="index.html#contact"><span class="line-no">06</span> contact</a>
+    </nav>
+  </div>
+</header>
+
+<header class="article-header">
+  <div class="container">
+    <a href="index.html#gold" class="back-link">← Back to projects</a>
+    <span class="article-tag">CASE STUDY</span>
+    <h1 class="article-title">Real Assets Investment Intelligence Platform</h1>
+    <p class="article-meta">
+      <!-- TODO: replace with direct repo link -->
+      <a href="https://github.com/Jhanvisoni0" target="_blank" rel="noopener">Source Code ↗</a>
+    </p>
+  </div>
+</header>
+
+<article class="article-body">
+
+  <p class="pull-quote">An end-to-end investment analytics platform that simulates what a Real Assets desk analyst does at an institutional investment firm — tracking 15 real asset investments across 6 years of market data, computing risk metrics, detecting market anomalies automatically, and forecasting future returns, all delivered through an executive dashboard.</p>
+
+  <div class="chip-row" style="margin-bottom:40px;">
+    <span class="chip chip-sm">Databricks</span><span class="chip chip-sm">PySpark</span><span class="chip chip-sm">Delta Lake</span><span class="chip chip-sm">Python</span><span class="chip chip-sm">SQL</span><span class="chip chip-sm">MLflow</span><span class="chip chip-sm">Prophet</span><span class="chip chip-sm">Isolation Forest</span><span class="chip chip-sm">Unity Catalog</span><span class="chip chip-sm">Medallion Architecture</span><span class="chip chip-sm">yfinance API</span><span class="chip chip-sm">FRED API</span><span class="chip chip-sm">ETL/ELT Pipeline</span><span class="chip chip-sm">Time Series Forecasting</span><span class="chip chip-sm">Anomaly Detection</span><span class="chip chip-sm">Financial Analytics</span><span class="chip chip-sm">Azure</span><span class="chip chip-sm">Portfolio Analytics</span><span class="chip chip-sm">Data Engineering</span><span class="chip chip-sm">BI Dashboard</span>
+  </div>
+
+  <h2>The Problem</h2>
+  <p>Investment firms managing Real Assets portfolios — real estate, infrastructure, commodities — face a common challenge: price data alone doesn't tell the full story. Analysts spend hours manually pulling data from multiple sources, calculating risk metrics in Excel, and trying to spot underperforming assets before they become a problem. There is no unified system that automatically ingests live market data, computes portfolio-wide risk metrics, flags anomalous behavior, and delivers everything in one executive dashboard — updated and ready every morning.</p>
+
+  <h2>The Solution</h2>
+  <p>A fully automated, cloud-native investment analytics platform built on Databricks that:</p>
+  <ul>
+    <li>Pulls live market data for 15 real assets daily from Yahoo Finance and Federal Reserve APIs</li>
+    <li>Processes and enriches data through a Bronze → Silver → Gold pipeline (Medallion Architecture)</li>
+    <li>Computes 8 financial metrics per asset per day — returns, volatility, Sharpe ratio, drawdown, and benchmark correlation</li>
+    <li>Detects market stress events automatically using an Isolation Forest ML model</li>
+    <li>Forecasts 90-day forward returns using Prophet time series modeling</li>
+    <li>Delivers all insights through a live executive dashboard — no manual work required</li>
+  </ul>
+
+  <h2>How It Works — Pipeline Flow</h2>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-marker"></div>
+      <div class="timeline-content">
+        <div class="timeline-header"><h3>Extract</h3><span class="timeline-date">STEP 01</span></div>
+        <p class="timeline-org">Yahoo Finance API → 22,635 rows of daily OHLCV prices (15 assets, 6 years). FRED API → 3,219 rows of macroeconomic indicators (interest rates, CPI, oil).</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-marker"></div>
+      <div class="timeline-content">
+        <div class="timeline-header"><h3>Load — Bronze Layer</h3><span class="timeline-date">STEP 02</span></div>
+        <p class="timeline-org">Raw data written as-is to Delta Lake on Unity Catalog Volumes, partitioned by ticker for fast downstream reads, schema enforced via PySpark StructType.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-marker"></div>
+      <div class="timeline-content">
+        <div class="timeline-header"><h3>Transform — Silver Layer</h3><span class="timeline-date">STEP 03</span></div>
+        <p class="timeline-org">PySpark Window functions compute daily &amp; log returns, 30/90-day rolling volatility, Sharpe ratio, maximum drawdown, and rolling 90-day correlation vs. the S&amp;P 500 benchmark.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-marker"></div>
+      <div class="timeline-content">
+        <div class="timeline-header"><h3>Aggregate — Gold Layer</h3><span class="timeline-date">STEP 04</span></div>
+        <p class="timeline-org">Portfolio summary metrics per asset, NAV tracking for a simulated $10,000 portfolio (2019–2024), z-score anomaly pre-flags, and a Fed Funds Rate vs. REIT performance join.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-marker"></div>
+      <div class="timeline-content">
+        <div class="timeline-header"><h3>ML Models</h3><span class="timeline-date">STEP 05</span></div>
+        <p class="timeline-org">Isolation Forest for unsupervised anomaly detection (1,131 stress events flagged) and Prophet for 90-day return forecasting with confidence intervals — both tracked in MLflow.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-marker"></div>
+      <div class="timeline-content">
+        <div class="timeline-header"><h3>Deliver</h3><span class="timeline-date">RESULT</span></div>
+        <p class="timeline-org">A live Databricks SQL dashboard with 4 panels: portfolio NAV over time, asset returns, anomaly timeline, and return forecast.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="stat-callout-row" style="margin-top:40px;">
+    <div class="stat-callout">
+      <span class="stat-callout-number">22,635</span>
+      <span class="stat-callout-label">rows ingested</span>
+    </div>
+    <div class="stat-callout">
+      <span class="stat-callout-number">1,131</span>
+      <span class="stat-callout-label">anomalies flagged</span>
+    </div>
+    <div class="stat-callout">
+      <span class="stat-callout-number">15x</span>
+      <span class="stat-callout-label">faster queries via partitioning</span>
+    </div>
+    <div class="stat-callout">
+      <span class="stat-callout-number">90-day</span>
+      <span class="stat-callout-label">forecast horizon</span>
+    </div>
+  </div>
+
+  <h2>Real Case Scenario</h2>
+  <div class="result-banner">
+    <p class="result-banner-label">// March 24, 2020 — the day after the COVID crash bottom</p>
+    <p class="result-banner-value">23 assets flagged anomalous, Sharpe ratios collapsed to -10</p>
+  </div>
+  <p>A portfolio manager at a real assets investment firm opens their dashboard the morning after the crash bottom. The anomaly detection model has already flagged 23 assets across the universe as anomalous — Sharpe ratios have collapsed to -10, volatility has spiked to 57%, and USO (oil) has dropped 84% from its peak.</p>
+  <p>Without this system, an analyst would spend half the day pulling this together manually. With the platform, it's there at 9 AM, automatically, with the anomaly timeline showing exactly which assets are in stress and the forecast model showing expected recovery paths over the next 90 days.</p>
+
+  <h2>Key Design Decisions</h2>
+  <div class="principles-grid">
+    <div class="principle">
+      <span class="principle-no">01</span>
+      <h4>ELT over ETL</h4>
+      <p>Raw data is loaded to Bronze as-is before any transformation. If business logic changes, we reprocess from Bronze without re-calling the APIs — traditional ETL would require re-ingestion every time.</p>
+    </div>
+    <div class="principle">
+      <span class="principle-no">02</span>
+      <h4>Medallion Architecture</h4>
+      <p>Bronze = raw, Silver = enriched, Gold = business-ready. Each layer serves a different consumer, making the pipeline maintainable and scalable independently at each stage.</p>
+    </div>
+    <div class="principle">
+      <span class="principle-no">03</span>
+      <h4>Delta Lake over Parquet or CSV</h4>
+      <p>ACID transactions, time travel, and schema enforcement that CSV and Parquet can't provide. A failed write rolls back automatically; "what did the portfolio look like on March 23, 2020?" becomes a single SQL query.</p>
+    </div>
+    <div class="principle">
+      <span class="principle-no">04</span>
+      <h4>Partitioning by ticker</h4>
+      <p>All downstream queries filter by ticker, so partitioning reduces scan size from 22,635 rows to 1,509 rows for a single-asset query — a 15x performance improvement at this scale.</p>
+    </div>
+    <div class="principle">
+      <span class="principle-no">05</span>
+      <h4>Unsupervised ML for anomaly detection</h4>
+      <p>No labeled training data exists for "this day was anomalous." Isolation Forest discovers anomalies by finding points hardest to explain using the normal feature distribution — no human labeling required.</p>
+    </div>
+    <div class="principle">
+      <span class="principle-no">06</span>
+      <h4>MLflow for experiment tracking</h4>
+      <p>Every model run logs parameters, metrics, and the trained artifact — results are reproducible, model versions are auditable, and the path to production is governed.</p>
+    </div>
+  </div>
+
+  <h2>The Foundation of Our Pipeline</h2>
+  <ul>
+    <li><strong>Durability —</strong> Delta Lake ensures no data is ever lost or partially written. ACID transactions guarantee every write is complete or rolled back, surviving cluster failures, session timeouts, and mid-write crashes.</li>
+    <li><strong>Idempotency —</strong> Every notebook can be rerun safely. <code>.mode("overwrite")</code> ensures running the pipeline 10 times produces the same result as running it once — no duplicates, no corruption on reruns.</li>
+    <li><strong>Separation of concerns —</strong> Each notebook has one job. Ingestion doesn't transform. Transformation doesn't aggregate. Aggregation doesn't model. Each layer stays independently testable, debuggable, and replaceable.</li>
+  </ul>
+
+  <h2>Benefits of This Architecture</h2>
+  <ul>
+    <li><strong>Zero manual data collection —</strong> the traditional approach (downloading CSVs, combining in Excel) takes 2-3 hours daily. This platform does it in 60 seconds via API, fully automated.</li>
+    <li><strong>Proactive anomaly detection —</strong> instead of discovering underperforming assets during monthly reviews, Isolation Forest flags stress events automatically as they happen — 1,131 anomalies detected across the 6-year window, available the same day.</li>
+    <li><strong>Single source of truth —</strong> analysts, portfolio managers, and risk teams all access the same Gold layer tables. The Delta Lake transaction log ensures everyone reads the same committed data simultaneously.</li>
+    <li><strong>Macro-driven insight, not just price data —</strong> joining Fed Funds Rate data with REIT returns revealed REITs return 23.26% annually in low-rate environments but -8.17% during rate transitions — a nuance invisible in price data alone.</li>
+    <li><strong>Reproducible ML —</strong> every model run is logged in MLflow. Six months from now, you can reproduce exactly what the model did on any given day — non-optional auditability in a regulated environment like finance.</li>
+  </ul>
+
+  <h2>Large Scale Scenario</h2>
+  <p>Imagine this same platform at a firm like MSCI or BlackRock managing not 15 assets but 50,000 — covering every listed REIT, infrastructure company, and commodity ETF globally across 20 years of daily data.</p>
+
+  <p class="pull-quote">The architecture doesn't change. The Medallion pattern, Delta Lake, PySpark, and MLflow scale from 15 assets to 50,000 without redesigning the foundation.</p>
+
+  <p>At that scale:</p>
+  <ul>
+    <li>Bronze would hold 365 million+ rows of price data</li>
+    <li>PySpark's distributed processing would split the computation across hundreds of nodes — what takes 60 seconds for 15 assets takes minutes, not days, for 50,000</li>
+    <li>Partitioning by ticker becomes critical — a query for VNQ scans 1 folder out of 50,000 instead of the entire dataset</li>
+    <li>Delta Lake's ACID guarantees become essential — concurrent writes from multiple ingestion jobs happen simultaneously without corrupting each other</li>
+    <li>MLflow's model registry manages hundreds of asset-specific forecast models — each registered, versioned, and promoted through Staging → Production independently</li>
+    <li>The Gold layer feeds dozens of downstream consumers — risk systems, client reporting engines, trading desks — all reading from the same governed Unity Catalog tables</li>
+    <li>Databricks Autoloader replaces the manual ingestion pattern, detecting new data files automatically and processing them incrementally without full reruns</li>
+  </ul>
+
+  <p>That's the power of building on enterprise-grade tools from day one.</p>
+
+</article>
+
+<div class="article-footer">
+  <p class="post-signoff">— Jhanvi Soni</p>
+  <p class="article-meta">
+    <a href="mailto:jhanvisoni0@gmail.com">Email</a> ·
+    <a href="https://linkedin.com/in/jhanvisonii/" target="_blank" rel="noopener">LinkedIn</a> ·
+    <a href="https://github.com/Jhanvisoni0" target="_blank" rel="noopener">GitHub</a>
+  </p>
+</div>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <span>© 2026 Jhanvi Soni</span>
+    <span class="footer-dim">Built with HTML / CSS / JS · Deployed on GitHub Pages</span>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

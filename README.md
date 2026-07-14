@@ -11,6 +11,7 @@ A terminal/technical-themed portfolio site, structured around Medallion Architec
 - `style.css` — theme, layout, and responsive rules (all colors via CSS variables at the top)
 - `script.js` — scroll-reveal animation, mobile nav toggle
 - `blog-databricks-realization.html`, `blog-ltap.html`, `blog-lakehouse-rt.html` — standalone blog posts
+- `project-financial-rag.html`, `project-real-assets.html` — full case study pages for two flagship projects
 - `assets/profile.jpg` — headshot used in the hero
 - `assets/blog-*.png` — diagrams used in the blog posts
 - `assets/favicon-*.png`, `assets/apple-touch-icon.png` — site icon
@@ -43,8 +44,12 @@ Google — submitting the URL in Google Search Console speeds this up.
 - **Add a new blog post:** copy one of the existing `blog-*.html` files as a template
   (they share the same header/footer and `article-*` CSS classes), update its title/meta/body,
   then add a card linking to it in `index.html`'s `#cdc` section.
-- **Project links:** two project cards link to your GitHub profile as a placeholder
-  (marked `<!-- TODO -->` in `index.html`) — swap in the direct repo links once you have them.
+- **Add a new project case study:** copy `project-real-assets.html` as a template (no live
+  demo embed) or `project-financial-rag.html` (includes one), then link to it via a
+  `case-study-cta` link on the matching project card in `index.html`. The Retail Banking
+  project doesn't have a case study page yet.
+- **Project links:** the Retail Banking and Real Assets project cards link to your GitHub
+  profile as a placeholder (marked `<!-- TODO -->`) — swap in the direct repo links once you have them.
 - **Live demo embed:** the Financial RAG project card embeds the live Streamlit app via
   `?embed=true`. It requires visitors to bring their own OpenAI API key, and free-tier
   Streamlit apps sleep after inactivity (shows a ~20-30s wake-up delay on first load).
