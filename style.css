@@ -495,8 +495,19 @@ a:focus-visible, button:focus-visible{ outline: 2px solid var(--cyan); outline-o
 .edu-item{ margin-bottom: 14px; }
 .edu-degree{ margin: 0; font-size: 14px; color: var(--text); }
 .edu-school{ font-family: var(--font-mono); margin: 2px 0 0; font-size: 12.5px; color: var(--text-faint); }
-.cert-item{ font-size: 13.5px; color: var(--text-dim); padding: 8px 0; border-bottom: 1px dashed var(--border-soft); }
+.cert-item{
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  font-size: 13.5px; color: var(--text-dim);
+  padding: 10px 0; border-bottom: 1px dashed var(--border-soft);
+  transition: color .15s ease;
+}
+.cert-item:hover{ color: var(--text); text-decoration: none; }
 .cert-item:last-child{ border-bottom: none; }
+.cert-verify{
+  font-family: var(--font-mono); font-size: 11px; color: var(--text-faint);
+  white-space: nowrap; transition: color .15s ease;
+}
+.cert-item:hover .cert-verify{ color: var(--cyan); }
 
 /* Silver: capabilities + skills */
 .capabilities-grid{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 52px; }
