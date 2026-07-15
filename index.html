@@ -187,57 +187,41 @@
       <p class="layer-desc">Three end-to-end platforms — from production GenAI systems to the data pipelines they're built on.</p>
     </div>
 
-    <div class="projects-grid">
+    <div class="projects-grid projects-grid-tiles">
 
-      <article class="project-card project-card-flagship">
-        <div class="project-head">
-          <h3>Financial News Intelligence RAG Platform <span class="flagship-tag">Flagship</span></h3>
-          <div class="project-links">
-            <a href="https://financial-news-intelligence-rag-spfkf8yfjgbvxuzqiozyth.streamlit.app/" target="_blank" rel="noopener">Live Demo ↗</a>
-            <a href="https://github.com/Jhanvisoni0/financial-news-intelligence-rag" target="_blank" rel="noopener">GitHub ↗</a>
-          </div>
+      <article class="project-tile project-tile-flagship">
+        <div class="project-tile-head">
+          <h3>Financial News Intelligence RAG Platform</h3>
+          <span class="flagship-tag">Flagship</span>
         </div>
-        <p class="project-teaser">End-to-end RAG platform grounding LLM answers in SEC filings &amp; financial news, reaching 100% retrieval accuracy on evaluation.</p>
+        <p class="project-tile-teaser">RAG platform grounding LLM answers in SEC filings &amp; financial news — 100% retrieval accuracy.</p>
 
-        <div class="answer-preview">
+        <div class="answer-preview answer-preview-compact">
           <div class="answer-preview-bar">
             <span class="answer-preview-label">$ ask --grounded</span>
             <span class="answer-preview-status"><span class="status-dot"></span> cited</span>
           </div>
           <div class="answer-preview-body">
-            <p class="answer-preview-q">"What are the key risk factors in Apple's latest 10-K?"</p>
-            <p class="answer-preview-a">Apple discloses risk across IP protection<span class="cite">[1]</span>, third-party developer dependence<span class="cite">[2]</span>, product liability<span class="cite">[3]</span>, and macroeconomic/tariff exposure<span class="cite">[4]</span>.</p>
-            <div class="answer-preview-sources">
-              <span class="source-tag">[1] 10-K · Item 1A</span><span class="source-tag">[2] 10-K · Item 1A</span><span class="source-tag">[3] 10-K · Item 1A</span><span class="source-tag">[4] 10-K · Item 1A</span>
-            </div>
+            <p class="answer-preview-q">"Key risk factors in Apple's 10-K?"</p>
+            <p class="answer-preview-a">IP protection<span class="cite">[1]</span>, developer dependence<span class="cite">[2]</span>, tariff exposure<span class="cite">[3]</span>…</p>
           </div>
         </div>
 
-        <div class="chip-row chip-row-tight">
-          <span class="chip chip-sm">Python</span><span class="chip chip-sm">Azure Databricks</span><span class="chip chip-sm">Delta Lake</span><span class="chip chip-sm">RAG</span><span class="chip chip-sm">OpenAI</span><span class="chip chip-sm">ChromaDB</span><span class="chip chip-sm">MLflow</span><span class="chip chip-sm">Terraform</span><span class="chip chip-sm">GitHub Actions</span>
-        </div>
-        <ul class="project-highlights project-highlights-cyan">
-          <li>100% retrieval accuracy on a 15-question evaluation set — every answer traceable to its source.</li>
-          <li>Explicitly declines to answer rather than hallucinate, verified with a deliberate refusal test case.</li>
-        </ul>
+        <p class="project-tile-highlight">Explicitly declines to answer rather than hallucinate — verified with a deliberate refusal test case.</p>
 
-        <a href="project-financial-rag.html" class="case-study-cta">
-          <span>Read the full case study — architecture, design decisions &amp; the live demo</span>
-          <span class="case-study-cta-arrow">→</span>
-        </a>
+        <div class="project-tile-links">
+          <a href="https://financial-news-intelligence-rag-spfkf8yfjgbvxuzqiozyth.streamlit.app/" target="_blank" rel="noopener">Live Demo ↗</a>
+          <a href="project-financial-rag.html" class="project-tile-cta">Case study →</a>
+        </div>
       </article>
 
-      <article class="project-card">
-        <div class="project-head">
+      <article class="project-tile">
+        <div class="project-tile-head">
           <h3>Retail Banking Customer Analytics Platform</h3>
-          <div class="project-links">
-            <!-- TODO: replace with direct repo link -->
-            <a href="https://github.com/Jhanvisoni0" target="_blank" rel="noopener">GitHub ↗</a>
-          </div>
         </div>
-        <p class="project-teaser">Customer-360 analytics platform cutting a 4-day reporting cycle down to 15 minutes.</p>
+        <p class="project-tile-teaser">Customer-360 platform cutting a 4-day reporting cycle down to 15 minutes.</p>
 
-        <div class="project-diagram">
+        <div class="project-diagram project-diagram-compact">
           <svg viewBox="0 0 480 100" class="project-diagram-svg" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pipeline: three source systems, through Bronze Silver Gold, into risk scoring, to a Power BI dashboard">
             <defs>
               <marker id="arrow-rb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -254,30 +238,22 @@
           </svg>
         </div>
 
-        <div class="chip-row chip-row-tight">
-          <span class="chip chip-sm">Azure</span><span class="chip chip-sm">Databricks</span><span class="chip chip-sm">PySpark</span><span class="chip chip-sm">Delta Lake</span><span class="chip chip-sm">ADF</span><span class="chip chip-sm">Kafka</span><span class="chip chip-sm">Power BI</span><span class="chip chip-sm">Terraform</span>
-        </div>
-        <ul class="project-highlights project-highlights-bronze">
-          <li>Cut the reporting cycle from 4 days to 15 minutes with an automated pipeline serving a live Power BI dashboard.</li>
-        </ul>
+        <p class="project-tile-highlight">Cut the reporting cycle from 4 days to 15 minutes with a live Power BI dashboard.</p>
 
-        <a href="project-retail-banking.html" class="case-study-cta">
-          <span>Read the full case study — pipeline, design decisions &amp; scale scenario</span>
-          <span class="case-study-cta-arrow">→</span>
-        </a>
+        <div class="project-tile-links">
+          <!-- TODO: replace with direct repo link -->
+          <a href="https://github.com/Jhanvisoni0" target="_blank" rel="noopener">GitHub ↗</a>
+          <a href="project-retail-banking.html" class="project-tile-cta">Case study →</a>
+        </div>
       </article>
 
-      <article class="project-card">
-        <div class="project-head">
+      <article class="project-tile">
+        <div class="project-tile-head">
           <h3>Real Assets Investment Intelligence Platform</h3>
-          <div class="project-links">
-            <!-- TODO: replace with direct repo link -->
-            <a href="https://github.com/Jhanvisoni0" target="_blank" rel="noopener">GitHub ↗</a>
-          </div>
         </div>
-        <p class="project-teaser">Investment analytics platform tracking a simulated $10K portfolio to an 86% return across REITs, infrastructure, and commodities.</p>
+        <p class="project-tile-teaser">Investment analytics tracking a simulated $10K portfolio to an 86% return.</p>
 
-        <div class="project-diagram">
+        <div class="project-diagram project-diagram-compact">
           <svg viewBox="0 0 480 100" class="project-diagram-svg" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pipeline: Yahoo Finance and FRED APIs, through Bronze Silver Gold, into ML models, to an executive dashboard">
             <defs>
               <marker id="arrow-ra" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -294,17 +270,13 @@
           </svg>
         </div>
 
-        <div class="chip-row chip-row-tight">
-          <span class="chip chip-sm">Databricks</span><span class="chip chip-sm">PySpark</span><span class="chip chip-sm">Delta Lake</span><span class="chip chip-sm">yfinance / FRED APIs</span><span class="chip chip-sm">MLflow</span><span class="chip chip-sm">Unity Catalog</span>
-        </div>
-        <ul class="project-highlights project-highlights-gold">
-          <li>Tracked a simulated $10K portfolio to an 86% return while auto-flagging 1,131 market anomalies via Isolation Forest.</li>
-        </ul>
+        <p class="project-tile-highlight">Auto-flags 1,131 market anomalies via Isolation Forest, tracked in MLflow.</p>
 
-        <a href="project-real-assets.html" class="case-study-cta">
-          <span>Read the full case study — pipeline, design decisions &amp; scale scenario</span>
-          <span class="case-study-cta-arrow">→</span>
-        </a>
+        <div class="project-tile-links">
+          <!-- TODO: replace with direct repo link -->
+          <a href="https://github.com/Jhanvisoni0" target="_blank" rel="noopener">GitHub ↗</a>
+          <a href="project-real-assets.html" class="project-tile-cta">Case study →</a>
+        </div>
       </article>
 
     </div>
