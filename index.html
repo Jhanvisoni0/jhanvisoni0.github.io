@@ -187,98 +187,126 @@
       <p class="layer-desc">Three end-to-end platforms — from production GenAI systems to the data pipelines they're built on.</p>
     </div>
 
-    <div class="projects-grid projects-grid-tiles">
+    <div class="projects-grid-v2">
 
-      <article class="project-tile project-tile-flagship">
-        <div class="project-tile-head">
-          <h3>Financial News Intelligence RAG Platform</h3>
-          <span class="flagship-tag">Flagship</span>
-        </div>
-        <p class="project-tile-teaser">RAG platform grounding LLM answers in SEC filings &amp; financial news — 100% retrieval accuracy.</p>
-
-        <div class="answer-preview answer-preview-compact">
-          <div class="answer-preview-bar">
-            <span class="answer-preview-label">$ ask --grounded</span>
-            <span class="answer-preview-status"><span class="status-dot"></span> cited</span>
+      <article class="project-hero-tile">
+        <div class="project-hero-main">
+          <div class="project-tile-head">
+            <div class="project-icon-badge project-icon-badge-cyan" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="6" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="12" cy="18" r="2.2"/><line x1="7.8" y1="7.2" x2="10.5" y2="16"/><line x1="16.2" y1="7.2" x2="13.5" y2="16"/><line x1="8.2" y1="6" x2="15.8" y2="6"/></svg>
+            </div>
+            <div class="project-tile-titlegroup">
+              <h3>Financial News Intelligence RAG Platform</h3>
+              <span class="flagship-tag">Flagship</span>
+            </div>
           </div>
-          <div class="answer-preview-body">
-            <p class="answer-preview-q">"Key risk factors in Apple's 10-K?"</p>
-            <p class="answer-preview-a">IP protection<span class="cite">[1]</span>, developer dependence<span class="cite">[2]</span>, tariff exposure<span class="cite">[3]</span>…</p>
+          <p class="project-tile-teaser">RAG platform grounding LLM answers in SEC filings &amp; financial news — 100% retrieval accuracy.</p>
+
+          <div class="answer-preview answer-preview-compact">
+            <div class="answer-preview-bar">
+              <span class="answer-preview-label">$ ask --grounded</span>
+              <span class="answer-preview-status"><span class="status-dot"></span> cited</span>
+            </div>
+            <div class="answer-preview-body">
+              <p class="answer-preview-q">"Key risk factors in Apple's 10-K?"</p>
+              <p class="answer-preview-a">IP protection<span class="cite">[1]</span>, developer dependence<span class="cite">[2]</span>, tariff exposure<span class="cite">[3]</span>…</p>
+            </div>
+          </div>
+
+          <p class="project-tile-highlight">Explicitly declines to answer rather than hallucinate — verified with a deliberate refusal test case.</p>
+
+          <div class="project-tile-links">
+            <a href="https://financial-news-intelligence-rag-spfkf8yfjgbvxuzqiozyth.streamlit.app/" target="_blank" rel="noopener">Live Demo ↗</a>
+            <a href="project-financial-rag.html" class="project-tile-cta">Case study →</a>
           </div>
         </div>
 
-        <p class="project-tile-highlight">Explicitly declines to answer rather than hallucinate — verified with a deliberate refusal test case.</p>
-
-        <div class="project-tile-links">
-          <a href="https://financial-news-intelligence-rag-spfkf8yfjgbvxuzqiozyth.streamlit.app/" target="_blank" rel="noopener">Live Demo ↗</a>
-          <a href="project-financial-rag.html" class="project-tile-cta">Case study →</a>
+        <div class="project-hero-stack">
+          <p class="stack-label">// stack</p>
+          <div class="stack-list">
+            <span class="stack-item">Azure Databricks</span>
+            <span class="stack-item">RAG</span>
+            <span class="stack-item">OpenAI</span>
+            <span class="stack-item">ChromaDB</span>
+            <span class="stack-item">Delta Lake</span>
+            <span class="stack-item">MLflow</span>
+          </div>
         </div>
       </article>
 
-      <article class="project-tile">
-        <div class="project-tile-head">
-          <h3>Retail Banking Customer Analytics Platform</h3>
-        </div>
-        <p class="project-tile-teaser">Customer-360 platform cutting a 4-day reporting cycle down to 15 minutes.</p>
+      <div class="project-secondary-row">
 
-        <div class="project-diagram project-diagram-compact">
-          <svg viewBox="0 0 480 100" class="project-diagram-svg" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pipeline: three source systems, through Bronze Silver Gold, into risk scoring, to a Power BI dashboard">
-            <defs>
-              <marker id="arrow-rb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                <path d="M0,0 L10,5 L0,10 z" fill="var(--bronze)"></path>
-              </marker>
-            </defs>
-            <line x1="110" y1="50" x2="128" y2="50" stroke="var(--bronze)" stroke-width="1.5" marker-end="url(#arrow-rb)"></line>
-            <line x1="230" y1="50" x2="248" y2="50" stroke="var(--bronze)" stroke-width="1.5" marker-end="url(#arrow-rb)"></line>
-            <line x1="350" y1="50" x2="368" y2="50" stroke="var(--bronze)" stroke-width="1.5" marker-end="url(#arrow-rb)"></line>
-            <g><rect x="10" y="26" width="100" height="48" rx="6" fill="var(--bg-card)" stroke="var(--border)"></rect><text x="60" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text-dim)">3 Systems</text></g>
-            <g><rect x="130" y="26" width="100" height="48" rx="6" fill="var(--bg-card)" stroke="var(--border)"></rect><text x="180" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text-dim)">B → S → G</text></g>
-            <g><rect x="250" y="26" width="100" height="48" rx="6" fill="var(--bg-card)" stroke="var(--border)"></rect><text x="300" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text-dim)">Risk Score</text></g>
-            <g><rect x="370" y="26" width="100" height="48" rx="6" fill="var(--bronze-dim)" stroke="var(--bronze)"></rect><text x="420" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text)">Power BI</text></g>
-          </svg>
-        </div>
+        <article class="project-tile">
+          <div class="project-tile-head">
+            <div class="project-icon-badge project-icon-badge-bronze" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><line x1="5" y1="19" x2="5" y2="11"/><line x1="12" y1="19" x2="12" y2="6"/><line x1="19" y1="19" x2="19" y2="14"/></svg>
+            </div>
+            <h3>Retail Banking Customer Analytics Platform</h3>
+          </div>
+          <p class="project-tile-teaser">Customer-360 platform cutting a 4-day reporting cycle down to 15 minutes.</p>
 
-        <p class="project-tile-highlight">Cut the reporting cycle from 4 days to 15 minutes with a live Power BI dashboard.</p>
+          <div class="project-diagram project-diagram-compact">
+            <svg viewBox="0 0 480 100" class="project-diagram-svg" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pipeline: three source systems, through Bronze Silver Gold, into risk scoring, to a Power BI dashboard">
+              <defs>
+                <marker id="arrow-rb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <path d="M0,0 L10,5 L0,10 z" fill="var(--bronze)"></path>
+                </marker>
+              </defs>
+              <line x1="110" y1="50" x2="128" y2="50" stroke="var(--bronze)" stroke-width="1.5" marker-end="url(#arrow-rb)"></line>
+              <line x1="230" y1="50" x2="248" y2="50" stroke="var(--bronze)" stroke-width="1.5" marker-end="url(#arrow-rb)"></line>
+              <line x1="350" y1="50" x2="368" y2="50" stroke="var(--bronze)" stroke-width="1.5" marker-end="url(#arrow-rb)"></line>
+              <g><rect x="10" y="26" width="100" height="48" rx="6" fill="var(--bg-card)" stroke="var(--border)"></rect><text x="60" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text-dim)">3 Systems</text></g>
+              <g><rect x="130" y="26" width="100" height="48" rx="6" fill="var(--bg-card)" stroke="var(--border)"></rect><text x="180" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text-dim)">B → S → G</text></g>
+              <g><rect x="250" y="26" width="100" height="48" rx="6" fill="var(--bg-card)" stroke="var(--border)"></rect><text x="300" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text-dim)">Risk Score</text></g>
+              <g><rect x="370" y="26" width="100" height="48" rx="6" fill="var(--bronze-dim)" stroke="var(--bronze)"></rect><text x="420" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text)">Power BI</text></g>
+            </svg>
+          </div>
 
-        <div class="project-tile-links">
-          <!-- TODO: replace with direct repo link -->
-          <a href="https://github.com/Jhanvisoni0" target="_blank" rel="noopener">GitHub ↗</a>
-          <a href="project-retail-banking.html" class="project-tile-cta">Case study →</a>
-        </div>
-      </article>
+          <p class="project-tile-highlight">Cut the reporting cycle from 4 days to 15 minutes with a live Power BI dashboard.</p>
 
-      <article class="project-tile">
-        <div class="project-tile-head">
-          <h3>Real Assets Investment Intelligence Platform</h3>
-        </div>
-        <p class="project-tile-teaser">Investment analytics tracking a simulated $10K portfolio to an 86% return.</p>
+          <div class="project-tile-links">
+            <!-- TODO: replace with direct repo link -->
+            <a href="https://github.com/Jhanvisoni0" target="_blank" rel="noopener">GitHub ↗</a>
+            <a href="project-retail-banking.html" class="project-tile-cta">Case study →</a>
+          </div>
+        </article>
 
-        <div class="project-diagram project-diagram-compact">
-          <svg viewBox="0 0 480 100" class="project-diagram-svg" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pipeline: Yahoo Finance and FRED APIs, through Bronze Silver Gold, into ML models, to an executive dashboard">
-            <defs>
-              <marker id="arrow-ra" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                <path d="M0,0 L10,5 L0,10 z" fill="var(--gold)"></path>
-              </marker>
-            </defs>
-            <line x1="110" y1="50" x2="128" y2="50" stroke="var(--gold)" stroke-width="1.5" marker-end="url(#arrow-ra)"></line>
-            <line x1="230" y1="50" x2="248" y2="50" stroke="var(--gold)" stroke-width="1.5" marker-end="url(#arrow-ra)"></line>
-            <line x1="350" y1="50" x2="368" y2="50" stroke="var(--gold)" stroke-width="1.5" marker-end="url(#arrow-ra)"></line>
-            <g><rect x="10" y="26" width="100" height="48" rx="6" fill="var(--bg-card)" stroke="var(--border)"></rect><text x="60" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text-dim)">Yahoo+FRED</text></g>
-            <g><rect x="130" y="26" width="100" height="48" rx="6" fill="var(--bg-card)" stroke="var(--border)"></rect><text x="180" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text-dim)">B → S → G</text></g>
-            <g><rect x="250" y="26" width="100" height="48" rx="6" fill="var(--bg-card)" stroke="var(--border)"></rect><text x="300" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text-dim)">ML Models</text></g>
-            <g><rect x="370" y="26" width="100" height="48" rx="6" fill="var(--gold-dim)" stroke="var(--gold)"></rect><text x="420" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text)">Dashboard</text></g>
-          </svg>
-        </div>
+        <article class="project-tile">
+          <div class="project-tile-head">
+            <div class="project-icon-badge project-icon-badge-gold" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><polyline points="4,17 10,10 14,13 20,5"/><polyline points="15,5 20,5 20,10"/></svg>
+            </div>
+            <h3>Real Assets Investment Intelligence Platform</h3>
+          </div>
+          <p class="project-tile-teaser">Investment analytics tracking a simulated $10K portfolio to an 86% return.</p>
 
-        <p class="project-tile-highlight">Auto-flags 1,131 market anomalies via Isolation Forest, tracked in MLflow.</p>
+          <div class="project-diagram project-diagram-compact">
+            <svg viewBox="0 0 480 100" class="project-diagram-svg" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pipeline: Yahoo Finance and FRED APIs, through Bronze Silver Gold, into ML models, to an executive dashboard">
+              <defs>
+                <marker id="arrow-ra" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <path d="M0,0 L10,5 L0,10 z" fill="var(--gold)"></path>
+                </marker>
+              </defs>
+              <line x1="110" y1="50" x2="128" y2="50" stroke="var(--gold)" stroke-width="1.5" marker-end="url(#arrow-ra)"></line>
+              <line x1="230" y1="50" x2="248" y2="50" stroke="var(--gold)" stroke-width="1.5" marker-end="url(#arrow-ra)"></line>
+              <line x1="350" y1="50" x2="368" y2="50" stroke="var(--gold)" stroke-width="1.5" marker-end="url(#arrow-ra)"></line>
+              <g><rect x="10" y="26" width="100" height="48" rx="6" fill="var(--bg-card)" stroke="var(--border)"></rect><text x="60" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text-dim)">Yahoo+FRED</text></g>
+              <g><rect x="130" y="26" width="100" height="48" rx="6" fill="var(--bg-card)" stroke="var(--border)"></rect><text x="180" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text-dim)">B → S → G</text></g>
+              <g><rect x="250" y="26" width="100" height="48" rx="6" fill="var(--bg-card)" stroke="var(--border)"></rect><text x="300" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text-dim)">ML Models</text></g>
+              <g><rect x="370" y="26" width="100" height="48" rx="6" fill="var(--gold-dim)" stroke="var(--gold)"></rect><text x="420" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text)">Dashboard</text></g>
+            </svg>
+          </div>
 
-        <div class="project-tile-links">
-          <!-- TODO: replace with direct repo link -->
-          <a href="https://github.com/Jhanvisoni0" target="_blank" rel="noopener">GitHub ↗</a>
-          <a href="project-real-assets.html" class="project-tile-cta">Case study →</a>
-        </div>
-      </article>
+          <p class="project-tile-highlight">Auto-flags 1,131 market anomalies via Isolation Forest, tracked in MLflow.</p>
 
+          <div class="project-tile-links">
+            <!-- TODO: replace with direct repo link -->
+            <a href="https://github.com/Jhanvisoni0" target="_blank" rel="noopener">GitHub ↗</a>
+            <a href="project-real-assets.html" class="project-tile-cta">Case study →</a>
+          </div>
+        </article>
+
+      </div>
     </div>
 
     <div class="stats-band">
@@ -542,7 +570,6 @@
   <div class="container contact-inner">
     <span class="layer-tag layer-tag-cdc">06 · CONTACT</span>
     <p class="contact-closer">DATAREFINED.<span class="accent-cyan-text">VALUESHIPPED.</span></p>
-    <p class="contact-prompt"><span class="prompt">$</span> connect <span class="flag">--email</span> <span class="flag">--linkedin</span> <span class="flag">--github</span></p>
     <h2 class="contact-title">Let's build something.</h2>
     <p class="contact-sub">Open to full-time AI/LLM Engineering, GenAI Data Engineering, or Analytics Engineering roles — immediately available.</p>
     <div class="contact-links">
