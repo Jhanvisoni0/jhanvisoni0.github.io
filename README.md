@@ -10,7 +10,7 @@ A terminal/technical-themed portfolio site, structured around Medallion Architec
 - `index.html` — main page: hero, projects, architecture, experience, skills, writing, contact
 - `style.css` — theme, layout, and responsive rules (all colors via CSS variables at the top)
 - `script.js` — scroll-reveal animation, mobile nav toggle
-- `blog-databricks-realization.html`, `blog-ltap.html`, `blog-lakehouse-rt.html` — standalone blog posts
+- `blog-databricks-realization.html`, `blog-ltap.html`, `blog-lakehouse-rt.html`, `blog-databricks-ai-layers.html` — standalone blog posts
 - `project-financial-rag.html`, `project-real-assets.html`, `project-retail-banking.html` — full case study pages for all three projects
 - `assets/profile.jpg` — headshot used in the hero
 - `assets/blog-*.png` — diagrams used in the blog posts
