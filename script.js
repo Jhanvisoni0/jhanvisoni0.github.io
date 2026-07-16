@@ -31,6 +31,20 @@ document.addEventListener('DOMContentLoaded', () => {
     revealTargets.forEach(el => el.classList.add('in-view'));
   }
 
+  // ---- Blog horizontal scroll nav buttons ----
+  const blogGrid = document.getElementById('blogGrid');
+  const blogPrev = document.getElementById('blogPrev');
+  const blogNext = document.getElementById('blogNext');
+  if (blogGrid && blogPrev && blogNext) {
+    const scrollAmount = () => (blogGrid.querySelector('.blog-card')?.offsetWidth || 300) + 18;
+    blogPrev.addEventListener('click', () => {
+      blogGrid.scrollBy({ left: -scrollAmount(), behavior: 'smooth' });
+    });
+    blogNext.addEventListener('click', () => {
+      blogGrid.scrollBy({ left: scrollAmount(), behavior: 'smooth' });
+    });
+  }
+
   // ---- Custom cursor (only runs where CSS enables it: fine pointer + hover support) ----
   const canUseCustomCursor = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   const dot = document.getElementById('cursorDot');
