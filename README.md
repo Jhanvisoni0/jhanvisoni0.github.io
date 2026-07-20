@@ -38,6 +38,16 @@ update the hardcoded `https://jhanvisoni0.github.io/` URLs in the canonical link
 tags, and JSON-LD block to match. New sites can take days to weeks to get indexed by
 Google — submitting the URL in Google Search Console speeds this up.
 
+## Light/dark theme
+
+The site defaults to light or dark based on the visitor's local device time (light
+roughly 7am-7pm, dark otherwise) — no location permission is requested, since that
+would prompt every visitor and isn't reliable if denied. A toggle button in the nav
+(sun/moon icon) lets anyone override this; their explicit choice is saved in
+`localStorage` and takes precedence over the time-based default on future visits.
+All colors are CSS variables under `:root` (dark) and `[data-theme="light"]` (light)
+in `style.css` — add a new accent color in both places to keep them in sync.
+
 ## To customize
 
 - **Add a new blog post:** copy one of the existing `blog-*.html` files as a template
