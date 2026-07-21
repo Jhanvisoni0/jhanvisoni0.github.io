@@ -77,12 +77,33 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=6">
+<link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
 
+<div class="cloud-bg" aria-hidden="true">
+  <div class="cloud cloud-1"></div>
+  <div class="cloud cloud-2"></div>
+  <div class="cloud cloud-3"></div>
+</div>
+
 <div class="custom-cursor-dot" id="cursorDot"></div>
 <div class="custom-cursor-ring" id="cursorRing"></div>
+
+<div class="side-nav-wrap">
+  <div class="side-nav-tab" aria-hidden="true">
+    <span></span><span></span><span></span>
+  </div>
+  <nav class="side-nav-panel" aria-label="Section navigation">
+    <a href="#top"><span class="sn-num">00</span><span class="sn-dash"></span><span class="sn-label">Intro</span></a>
+    <a href="#gold"><span class="sn-num">01</span><span class="sn-dash"></span><span class="sn-label">Projects</span></a>
+    <a href="#architecture"><span class="sn-num">02</span><span class="sn-dash"></span><span class="sn-label">Architecture</span></a>
+    <a href="#bronze"><span class="sn-num">03</span><span class="sn-dash"></span><span class="sn-label">Experience</span></a>
+    <a href="#silver"><span class="sn-num">04</span><span class="sn-dash"></span><span class="sn-label">Toolkit</span></a>
+    <a href="#cdc"><span class="sn-num">05</span><span class="sn-dash"></span><span class="sn-label">Writing</span></a>
+    <a href="#contact"><span class="sn-num">06</span><span class="sn-dash"></span><span class="sn-label">Contact</span></a>
+  </nav>
+</div>
 
 <!-- ============ NAV ============ -->
 <header class="nav" id="nav">
@@ -97,10 +118,11 @@
         <span></span><span></span><span></span>
       </button>
       <nav class="nav-links" id="navLinks">
+        <a href="#top"><span class="line-no">00</span> intro</a>
         <a href="#gold"><span class="line-no">01</span> projects</a>
         <a href="#architecture"><span class="line-no">02</span> architecture</a>
         <a href="#bronze"><span class="line-no">03</span> experience</a>
-        <a href="#silver"><span class="line-no">04</span> skills</a>
+        <a href="#silver"><span class="line-no">04</span> toolkit</a>
         <a href="#cdc"><span class="line-no">05</span> writing</a>
         <a href="#contact"><span class="line-no">06</span> contact</a>
       </nav>
@@ -157,6 +179,17 @@
           <span class="chip chip-pill">Medallion Architecture</span>
           <span class="chip chip-pill">Delta Lake</span>
           <span class="chip chip-pill">Azure Databricks</span>
+        </div>
+
+        <div class="through-years">
+          <p class="through-years-label">// through the years</p>
+          <ol class="through-years-list">
+            <li><span class="ty-num">1</span><span class="ty-year">'21</span><span class="ty-text">Techved Consultancy — Senior Data Analyst</span></li>
+            <li><span class="ty-num">2</span><span class="ty-year">'22</span><span class="ty-text">Joined MSCI as Data Engineer / Data Analyst</span></li>
+            <li><span class="ty-num">3</span><span class="ty-year">'24</span><span class="ty-text">M.S. Management Information Systems begins — Univ. of Houston Clear Lake</span></li>
+            <li><span class="ty-num">4</span><span class="ty-year">'26</span><span class="ty-text">Shipped a production RAG platform — 100% retrieval accuracy</span></li>
+            <li><span class="ty-num">5</span><span class="ty-year">'26</span><span class="ty-text">Open to AI/LLM Engineering &amp; GenAI Data Engineering roles</span></li>
+          </ol>
         </div>
       </div>
 
@@ -537,48 +570,55 @@
   <div class="container">
     <div class="layer-head">
       <span class="layer-tag layer-tag-silver">04 · SILVER LAYER</span>
-      <h2 class="layer-title">Skills &amp; Capabilities <span class="layer-sub">// cleaned, deduplicated, schema-enforced</span></h2>
-      <p class="layer-desc">The raw signal above, joined and conformed into a structured skill set.</p>
+      <h2 class="layer-title">Technical Toolkit <span class="layer-sub">// cleaned, deduplicated, schema-enforced</span></h2>
+      <p class="layer-desc">Seven working disciplines, carried from raw ingestion to shipped system.</p>
     </div>
 
     <div class="skills-grid">
       <div class="skill-card skill-card-featured">
+        <p class="skill-card-tag">T.01 · 6 tools</p>
         <h4>GenAI &amp; LLM Systems</h4>
         <div class="chip-row">
           <span class="chip">Retrieval-Augmented Generation (RAG)</span><span class="chip">Large Language Models (LLM)</span><span class="chip">OpenAI API</span><span class="chip">Vector Search</span><span class="chip">Prompt Engineering</span><span class="chip">LLM-as-judge Evaluation</span>
         </div>
       </div>
       <div class="skill-card">
+        <p class="skill-card-tag">T.02 · 4 tools</p>
         <h4>Languages</h4>
         <div class="chip-row">
           <span class="chip">Python</span><span class="chip">SQL</span><span class="chip">PySpark</span><span class="chip">Java</span>
         </div>
       </div>
       <div class="skill-card">
+        <p class="skill-card-tag">T.03 · 7 tools</p>
         <h4>Orchestration &amp; Engineering</h4>
         <div class="chip-row">
           <span class="chip">Azure Data Factory</span><span class="chip">Apache Airflow</span><span class="chip">Databricks Workflows</span><span class="chip">Auto Loader</span><span class="chip">Delta Live Tables</span><span class="chip">dbt</span><span class="chip">Apache Kafka</span>
         </div>
       </div>
       <div class="skill-card">
+        <p class="skill-card-tag">T.04 · 7 tools</p>
         <h4>Cloud &amp; Lakehouse</h4>
         <div class="chip-row">
           <span class="chip">ADLS Gen2</span><span class="chip">Azure SQL</span><span class="chip">Synapse</span><span class="chip">Key Vault</span><span class="chip">Microsoft Fabric</span><span class="chip">Databricks</span><span class="chip">AWS</span>
         </div>
       </div>
       <div class="skill-card">
+        <p class="skill-card-tag">T.05 · 5 tools</p>
         <h4>DevOps &amp; IaC</h4>
         <div class="chip-row">
           <span class="chip">Azure DevOps</span><span class="chip">CI/CD</span><span class="chip">Terraform</span><span class="chip">GitHub Actions</span><span class="chip">Git</span>
         </div>
       </div>
       <div class="skill-card">
+        <p class="skill-card-tag">T.06 · 5 tools</p>
         <h4>Modeling &amp; Architecture</h4>
         <div class="chip-row">
           <span class="chip">Medallion Architecture</span><span class="chip">Delta Lake</span><span class="chip">Star Schema</span><span class="chip">Dimensional Modeling</span><span class="chip">SCD Type 1/2</span>
         </div>
       </div>
       <div class="skill-card">
+        <p class="skill-card-tag">T.07 · 5 tools</p>
         <h4>BI &amp; Analytics</h4>
         <div class="chip-row">
           <span class="chip">Power BI</span><span class="chip">Tableau</span><span class="chip">SQL Server</span><span class="chip">Oracle</span><span class="chip">Jupyter</span>

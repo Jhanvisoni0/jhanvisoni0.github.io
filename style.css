@@ -1,34 +1,34 @@
 /* ==========================================================================
-   Design tokens
+   Design tokens — warm editorial palette (paper/ink, not cyberpunk-terminal)
    ========================================================================== */
 :root{
-  --bg: #0a0d12;
-  --bg-raised: #10141b;
-  --bg-card: #131822;
-  --border: #232a38;
-  --border-soft: #1a2029;
+  --bg: #17130f;
+  --bg-raised: #1e1812;
+  --bg-card: #241d15;
+  --border: #3d3226;
+  --border-soft: #2a231a;
 
-  --cyan-rgb: 46,230,200;
-  --gold-rgb: 255,194,61;
-  --bronze-rgb: 255,138,82;
-  --arch-rgb: 181,115,245;
-  --bg-rgb: 10,13,18;
+  --cyan-rgb: 232,128,74;
+  --gold-rgb: 217,164,65;
+  --bronze-rgb: 224,152,90;
+  --arch-rgb: 193,122,145;
+  --bg-rgb: 23,19,15;
 
-  --text: #cdd6e0;
-  --text-dim: #7c8898;
-  --text-faint: #4d5666;
+  --text: #f0e6d6;
+  --text-dim: #b8a98f;
+  --text-faint: #8a7c68;
 
-  --bronze: #ff8a52;
-  --bronze-dim: #a34e28;
-  --silver: #b0c4de;
-  --silver-dim: #64768c;
-  --gold: #ffc23d;
-  --gold-dim: #a9781f;
-  --arch: #b573f5;
-  --arch-dim: #6d3a9e;
+  --bronze: #e0985a;
+  --bronze-dim: #a8703a;
+  --silver: #a89985;
+  --silver-dim: #6b5f4d;
+  --gold: #d9a441;
+  --gold-dim: #a67c1e;
+  --arch: #c17a91;
+  --arch-dim: #8a4a5c;
 
-  --cyan: #2ee6c8;
-  --cyan-dim: #1a8a76;
+  --cyan: #e8804a;
+  --cyan-dim: #a85530;
 
   --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -39,39 +39,39 @@
 }
 
 /* ==========================================================================
-   Light theme — every color re-verified for WCAG AA contrast on light backgrounds.
+   Light theme — warm paper/cream tone, every color re-verified for WCAG AA.
    "Dim" variants flip direction here: in dark mode they're darker/muted for
-   borders on a black background; in light mode they're medium-toned so they
-   still read clearly as borders/fills on a white background.
+   borders on a near-black background; in light mode they're medium-toned so
+   they still read clearly as borders/fills on a cream background.
    ========================================================================== */
 [data-theme="light"]{
-  --bg: #f6f7f9;
-  --bg-raised: #ffffff;
+  --bg: #f5f1e8;
+  --bg-raised: #fbf8f2;
   --bg-card: #ffffff;
-  --border: #d7dce2;
-  --border-soft: #e8eaee;
+  --border: #ddd4c0;
+  --border-soft: #e8e1d2;
 
-  --cyan-rgb: 10,122,104;
-  --gold-rgb: 143,95,8;
-  --bronze-rgb: 181,84,31;
-  --arch-rgb: 139,63,209;
-  --bg-rgb: 246,247,249;
+  --cyan-rgb: 168,80,31;
+  --gold-rgb: 143,102,18;
+  --bronze-rgb: 138,90,46;
+  --arch-rgb: 122,68,86;
+  --bg-rgb: 245,241,232;
 
-  --text: #1a2029;
-  --text-dim: #4d5666;
-  --text-faint: #707d8f;
+  --text: #2a2420;
+  --text-dim: #5c5245;
+  --text-faint: #8a7d6a;
 
-  --bronze: #b5541f;
-  --bronze-dim: #d97a3f;
-  --silver: #46566c;
-  --silver-dim: #8296ac;
-  --gold: #8f5f08;
-  --gold-dim: #c99a2e;
-  --arch: #8b3fd1;
-  --arch-dim: #b478e8;
+  --bronze: #8a5a2e;
+  --bronze-dim: #c99458;
+  --silver: #665c4d;
+  --silver-dim: #a89985;
+  --gold: #8f6612;
+  --gold-dim: #c9a13e;
+  --arch: #7a4456;
+  --arch-dim: #b87a91;
 
-  --cyan: #0a7a68;
-  --cyan-dim: #3fae99;
+  --cyan: #a8501f;
+  --cyan-dim: #d4885a;
 }
 
 /* Elements with solid-color fills need their overlay text flipped for contrast */
@@ -87,6 +87,28 @@ body, .project-card, .project-tile, .project-hero-tile, .skill-card, .principle,
 
 *, *::before, *::after{ box-sizing: border-box; }
 html{ scroll-behavior: smooth; }
+
+/* Atmospheric "cloud" background — abstract data-cloud motif (soft, drifting,
+   blurred shapes in the site's accent colors), not literal sky/weather imagery.
+   Fixed behind all content, low opacity so it never competes with text. */
+.cloud-bg{
+  position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none;
+}
+.cloud{
+  position: absolute; border-radius: 50%; filter: blur(90px);
+}
+.cloud-1{ width: 520px; height: 520px; background: var(--cyan); opacity: 0.14; top: -140px; left: -120px; animation: cloud-drift-a 26s ease-in-out infinite; }
+.cloud-2{ width: 620px; height: 620px; background: var(--arch); opacity: 0.11; top: 18%; right: -180px; animation: cloud-drift-b 32s ease-in-out infinite; }
+.cloud-3{ width: 460px; height: 460px; background: var(--gold); opacity: 0.10; bottom: -140px; left: 28%; animation: cloud-drift-a 29s ease-in-out infinite reverse; }
+
+@keyframes cloud-drift-a{
+  0%, 100%{ transform: translate(0,0); }
+  50%{ transform: translate(40px, -30px); }
+}
+@keyframes cloud-drift-b{
+  0%, 100%{ transform: translate(0,0); }
+  50%{ transform: translate(-35px, 25px); }
+}
 
 @media (prefers-reduced-motion: reduce){
   html{ scroll-behavior: auto; }
@@ -279,6 +301,20 @@ a:focus-visible, button:focus-visible{ outline: 2px solid var(--cyan); outline-o
 
 .hero-pills{ margin-top: 4px; }
 .chip-pill{ border-color: var(--border); color: var(--text-dim); border-radius: 20px; padding: 6px 13px; }
+
+.through-years{ margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--border-soft); }
+.through-years-label{ font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); margin: 0 0 12px; }
+.through-years-list{ list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.through-years-list li{ display: flex; align-items: baseline; gap: 10px; font-size: 12.5px; }
+.ty-num{
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--bg-card); border: 1px solid var(--border);
+  font-family: var(--font-mono); font-size: 9px; color: var(--text-faint);
+  flex: 0 0 auto;
+}
+.ty-year{ font-family: var(--font-mono); font-size: 12px; color: var(--gold); font-weight: 700; flex: 0 0 auto; }
+.ty-text{ color: var(--text-dim); }
 
 .hero-stats{
   display: flex; gap: 28px; flex-wrap: wrap;
@@ -735,6 +771,7 @@ a:focus-visible, button:focus-visible{ outline: 2px solid var(--cyan); outline-o
 .skill-card:hover{ border-color: var(--silver-dim); transform: translateY(-3px); }
 .skill-card-featured{ grid-column: 1 / -1; border-color: var(--cyan-dim); background: linear-gradient(180deg, rgba(var(--cyan-rgb),0.05), var(--bg-card) 60%); }
 .skill-card-featured h4{ color: var(--cyan); }
+.skill-card-tag{ font-family: var(--font-mono); font-size: 10.5px; color: var(--text-faint); margin: 0 0 8px; letter-spacing: 0.04em; }
 .skill-card h4{ font-size: 13px; color: var(--silver); margin-bottom: 12px; font-weight: 600; }
 .chip-row{ display: flex; flex-wrap: wrap; gap: 8px; }
 .chip{
@@ -989,8 +1026,57 @@ a:focus-visible, button:focus-visible{ outline: 2px solid var(--cyan); outline-o
 }
 
 /* ==========================================================================
-   Blog post pages (unused placeholder rules removed — using article-* system instead)
+   Side nav — left-edge hover-triggered panel (desktop with a real mouse only;
+   mobile/touch keeps the original top hamburger nav as a reliable fallback,
+   since hover has no equivalent on touchscreens)
    ========================================================================== */
+.side-nav-wrap{ display: none; }
+
+@media (hover: hover) and (pointer: fine) and (min-width: 761px){
+  .side-nav-wrap{
+    display: flex; align-items: center;
+    position: fixed; left: 0; top: 0; bottom: 0; width: 26px; z-index: 60;
+  }
+  .side-nav-tab{
+    width: 22px; height: 90px; margin-left: 0;
+    border-radius: 0 8px 8px 0;
+    background: rgba(var(--bg-rgb), 0.9);
+    border: 1px solid var(--border); border-left: none;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  }
+  .side-nav-tab span{ width: 3px; height: 3px; border-radius: 50%; background: var(--text-faint); }
+
+  .side-nav-panel{
+    position: absolute; left: 0; top: 50%; transform: translate(-12px, -50%);
+    opacity: 0; pointer-events: none;
+    display: flex; flex-direction: column;
+    background: rgba(var(--bg-rgb), 0.94); backdrop-filter: blur(14px);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 10px 22px; min-width: 210px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+    transition: transform .25s ease, opacity .25s ease;
+  }
+  .side-nav-wrap:hover .side-nav-panel,
+  .side-nav-wrap:focus-within .side-nav-panel{
+    transform: translate(6px, -50%); opacity: 1; pointer-events: auto;
+  }
+  .side-nav-panel a{
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 0; font-family: var(--font-mono); font-size: 13px; color: var(--text-dim);
+    border-bottom: 1px dashed var(--border-soft);
+  }
+  .side-nav-panel a:last-child{ border-bottom: none; }
+  .sn-num{ color: var(--text-faint); font-size: 11px; width: 18px; flex: 0 0 auto; }
+  .sn-dash{ width: 16px; height: 1px; background: var(--border); flex: 0 0 auto; }
+  .sn-label{ white-space: nowrap; }
+  .side-nav-panel a:hover .sn-label,
+  .side-nav-panel a:hover .sn-num{ color: var(--cyan); }
+  .side-nav-panel a:hover .sn-dash{ background: var(--cyan); }
+
+  /* Side nav replaces the top links on desktop; top bar keeps just logo + theme toggle */
+  .nav-links{ display: none !important; }
+  .nav-toggle{ display: none !important; }
+}
 
 @media (max-width: 760px){
   .nav-toggle{ display: flex; }

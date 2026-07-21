@@ -38,6 +38,23 @@ update the hardcoded `https://jhanvisoni0.github.io/` URLs in the canonical link
 tags, and JSON-LD block to match. New sites can take days to weeks to get indexed by
 Google — submitting the URL in Google Search Console speeds this up.
 
+## Visual identity (overhauled)
+
+The site moved from a cyan/teal terminal look to a warm editorial palette —
+rust, mustard, copper, plum, and taupe accents on a warm near-black (dark) or
+cream paper (light) background. All colors are still CSS variables in
+`style.css`, so both themes stay in sync from one source.
+
+- **Cloud background** — soft, slowly-drifting blurred color shapes behind all
+  content (`.cloud-bg`), a `cloud computing` motif rather than literal sky
+  imagery. Pure CSS, no images.
+- **Left hover-nav** — on desktop (a real mouse + wide viewport), a slim tab on
+  the left edge reveals a numbered 00–06 nav panel on hover. Mobile/touch
+  devices keep the original top hamburger menu, since hover has no touchscreen
+  equivalent.
+- **Technical Toolkit** — the Skills section (04) is now framed this way,
+  matching the "T.01 · N tools" labels added earlier.
+
 ## Light/dark theme
 
 The site defaults to light or dark based on the visitor's local device time (light
