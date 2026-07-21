@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (canUseCustomCursor && dot && ring) {
     const HOVER_SELECTOR = 'a, button, .project-tile, .project-hero-tile, .stack-item, ' +
-      '.skill-card, .principle, .timeline-item, .chip, .blog-card, .cert-item, .contact-link';
+      '.skill-card, .principle, .timeline-item, .blog-card, .cert-item, .contact-link';
     const TEXT_SELECTOR = 'p, li, h1, h2, h3, h4';
 
     let shown = false;
