@@ -2,17 +2,17 @@
    Design tokens — warm editorial palette (paper/ink, not cyberpunk-terminal)
    ========================================================================== */
 :root{
-  --bg: #17130f;
-  --bg-raised: #1e1812;
-  --bg-card: #241d15;
-  --border: #3d3226;
-  --border-soft: #2a231a;
+  --bg: #2b241c;
+  --bg-raised: #342b21;
+  --bg-card: #3d3226;
+  --border: #4d3f30;
+  --border-soft: #382e23;
 
   --cyan-rgb: 232,128,74;
   --gold-rgb: 217,164,65;
   --bronze-rgb: 224,152,90;
   --arch-rgb: 193,122,145;
-  --bg-rgb: 23,19,15;
+  --bg-rgb: 43,36,28;
 
   --text: #f0e6d6;
   --text-dim: #b8a98f;
