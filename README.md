@@ -14,7 +14,7 @@ All lines end at the terminus: contact.
 - `style.css` — design tokens (light/dark + line colours) at the top, then map, drawer, list and article styles
 - `script.js` — theme toggle, Map/List toggle, departure-board animation, map builder, drawer, deep links
 - `blog-*.html`, `project-*.html` — the four posts and three case studies (share the article styles)
-- `assets/` — profile photo, favicons, blog diagrams, and `assets/fonts/` (the site's fonts, hosted here so nothing loads from Google)
+- `assets/` — profile photo, favicons, blog diagrams
 - `googlebca756fa1ded5ad0.html` — Google Search Console verification. **Keep it at the repo root.**
 
 No build step. Open `index.html` in a browser to preview.
@@ -46,8 +46,12 @@ Tracks are drawn in `script.js` (search for `track(`).
 
 ## Look and feel
 
-- Fonts: Bricolage Grotesque (headings), Instrument Sans (text), DM Mono (labels). All three are open-source (SIL OFL).
+- Fonts: just two — Bricolage Grotesque (headings) and Instrument Sans (everything else). Both are open-source (SIL OFL) and are embedded inside `style.css`, so there are no font files to upload and nothing loads from Google.
 - Colours: line colours and both themes are CSS variables at the top of `style.css` — change them there and everything follows.
+
+## The "Ask me" departure
+
+The last row of the departure board flips through curiosity hooks (the XBRL bug, the 40% query-time cut, etc.) and each has an Open button that jumps to the matching station. Edit the list in `script.js` (search for `TEASERS`): each entry is `[text, station id]`. It auto-flips until the visitor presses Flip, and pauses on hover.
 
 ## Themes and views
 
@@ -58,7 +62,7 @@ Tracks are drawn in `script.js` (search for `track(`).
 ## Updating the site (cache-busting)
 
 GitHub Pages and browsers cache CSS/JS. When you change `style.css` or `script.js`, bump the
-version in every page (`style.css?v=22`, `script.js?v=11`), otherwise visitors may see the old look.
+version in every page (`style.css?v=24`, `script.js?v=12`), otherwise visitors may see the old look.
 
 ## Deploy on GitHub Pages
 

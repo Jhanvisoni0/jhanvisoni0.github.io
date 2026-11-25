@@ -54,7 +54,9 @@
     var finalText = el.getAttribute('data-text') || el.textContent;
     var dur = 650 + Math.min(finalText.length, 60) * 8;
     var t0 = null;
+    var run = el._run = (el._run || 0) + 1;
     function frame(ts) {
+      if (el._run !== run) return;
       if (t0 === null) t0 = ts;
       var p = (ts - t0) / dur;
       if (p >= 1) { el.textContent = finalText; return; }
@@ -73,6 +75,46 @@
     $$('.board-row').forEach(function (row, r) {
       $$('.flip', row).forEach(function (el, c) { scramble(el, 250 + r * 220 + c * 60); });
     });
+  }
+
+
+  /* ---------------- "Ask me": flip through teasers ---------------- */
+  var ask = $('.board-ask');
+  if (ask) {
+    var TEASERS = [
+      ['The XBRL bug that silently zeroed my keyword detection', 'st-rag'],
+      ['How Z-ordering cut query time 40% at MSCI', 'st-msci'],
+      ['4 days of bank reporting down to 15 minutes. How?', 'st-banking'],
+      ['A chatbot that says "I don\'t know" instead of guessing', 'st-rag'],
+      ['Why Databricks isn\'t just managed Spark', 'st-post-realization'],
+      ['45 years of databases, one restaurant whiteboard', 'st-post-ltap'],
+      ['REITs: +23% in low-rate years, \u22128% when rates shift', 'st-assets']
+    ];
+    var askV = $('.ask-v', ask), askGo = $('.ask-go', ask), askFlip = $('.ask-flip', ask), askLive = $('.ask-live', ask);
+    var askI = 0, askTimer = null, askPaused = false;
+    function showAsk(i, user) {
+      askI = (i + TEASERS.length) % TEASERS.length;
+      var t = TEASERS[askI];
+      askV.setAttribute('data-text', t[0]);
+      askGo.setAttribute('href', '#' + t[1]);
+      if (reduce) askV.textContent = t[0]; else scramble(askV, 0);
+      if (user) askLive.textContent = 'Next question: ' + t[0];
+    }
+    function stopAuto() { if (askTimer) { clearInterval(askTimer); askTimer = null; } }
+    askFlip.addEventListener('click', function () {
+      stopAuto();
+      askFlip.classList.add('used');
+      showAsk(askI + 1, true);
+    });
+    ask.addEventListener('mouseenter', function () { askPaused = true; });
+    ask.addEventListener('mouseleave', function () { askPaused = false; });
+    ask.addEventListener('focusin', function () { askPaused = true; });
+    ask.addEventListener('focusout', function () { askPaused = false; });
+    if (!reduce) {
+      askTimer = setInterval(function () {
+        if (!askPaused && !doc.hidden) showAsk(askI + 1, false);
+      }, 6500);
+    }
   }
 
   /* ---------------- map ---------------- */
