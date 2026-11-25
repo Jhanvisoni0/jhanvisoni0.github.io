@@ -438,3 +438,17 @@ html[data-view="map"] .list{ display:none; }
   .pip{ transition:opacity .2s !important; }
   .pip-svg,.pip-blink,.pip-lamp,.hl-target{ animation:none !important; }
 }
+
+/* Pip's idle game */
+.pip.zip{ transition:transform .34s cubic-bezier(.2,.9,.3,1), opacity .5s; }
+.pip.peeking .pip-svg{ animation:none; }
+.pip-sweat{ opacity:0; }
+.pip.tired .pip-sweat{ opacity:1; animation:pipsweat 1.2s ease-in infinite; }
+.pip.tired .pip-svg{ animation:pipbob 6s ease-in-out infinite; }
+@keyframes pipsweat{ 0%{ transform:translateY(-3px); opacity:0; } 30%{ opacity:1; } 100%{ transform:translateY(9px); opacity:0; } }
+.pip-say{ position:absolute; left:50%; bottom:calc(100% - 4px); transform:translateX(-50%) scale(.85); white-space:nowrap; padding:6px 13px; border-radius:999px; background:var(--panel); color:var(--ink); border:2px solid var(--ink); font:700 13.5px var(--f-body); box-shadow:3px 3px 0 var(--ai); opacity:0; pointer-events:none; transition:opacity .15s, transform .15s; }
+.pip.saying .pip-say{ opacity:1; transform:translateX(-50%); }
+.pip[data-v="down"] .pip-say{ bottom:auto; top:calc(100% - 4px); }
+.pip-play{ font:600 13px var(--f-body); padding:6px 13px; border-radius:999px; cursor:pointer; border:1.5px dashed var(--ink3); background:transparent; color:var(--ink2); }
+.pip-play:hover{ border-style:solid; color:var(--ink); border-color:var(--ink); }
+.pip-conf{ position:fixed; width:9px; height:9px; border-radius:2px; z-index:70; pointer-events:none; }

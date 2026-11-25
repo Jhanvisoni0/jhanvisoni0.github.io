@@ -414,9 +414,10 @@
         '<button type="button" class="pip-x" aria-label="Stop the tips">✕</button>' +
         '<p class="pip-k">Ask Jhanvi about…</p>' +
         '<p class="pip-q"></p>' +
-        '<div class="pip-btns"><button type="button" class="pip-flip">Another ↻</button><a class="pip-go" href="#">Show me →</a></div>' +
+        '<div class="pip-btns"><button type="button" class="pip-flip">Another ↻</button><a class="pip-go" href="#">Show me →</a><button type="button" class="pip-play">Play catch</button></div>' +
       '</div>' +
       '<span class="pip-tag" aria-hidden="true">There it is.</span>' +
+      '<span class="pip-say" aria-hidden="true"></span>' +
       '<button type="button" class="pip-body" aria-expanded="false" aria-label="Pip, your guide. Open a question about Jhanvi\'s work.">' +
         '<svg class="pip-svg" viewBox="0 0 76 84" width="76" height="84" aria-hidden="true" focusable="false">' +
           '<line x1="38" y1="14" x2="38" y2="7" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>' +
@@ -427,15 +428,18 @@
           '<circle cx="20" cy="49" r="3" fill="#ff58b4" opacity=".5"/><circle cx="56" cy="49" r="3" fill="#ff58b4" opacity=".5"/>' +
           '<path d="M33 49 Q38 53 43 49" stroke="#0a1022" stroke-width="2" fill="none" stroke-linecap="round"/>' +
           '<rect x="16" y="58" width="14" height="4" rx="2" fill="#5d8bff"/><rect x="31" y="58" width="14" height="4" rx="2" fill="#ff58b4"/><rect x="46" y="58" width="14" height="4" rx="2" fill="#2fe3b0"/>' +
+          '<path class="pip-sweat" d="M66 24 q4 6 0 10 q-4 -4 0 -10z" fill="#5dc8ff"/>' +
           '<circle cx="24" cy="75" r="6" fill="#ff58b4" stroke="#0a1022" stroke-width="2"/><circle cx="52" cy="75" r="6" fill="#2fe3b0" stroke="#0a1022" stroke-width="2"/>' +
         '</svg>' +
       '</button>';
     doc.body.appendChild(el);
 
     var body = $('.pip-body', el), bubble = $('.pip-bubble', el), qEl = $('.pip-q', el);
-    var goEl = $('.pip-go', el), flipEl = $('.pip-flip', el), xEl = $('.pip-x', el), look = $('.pip-look', el);
+    var kEl = $('.pip-k', el), sayEl = $('.pip-say', el), playEl = $('.pip-play', el), goEl = $('.pip-go', el), flipEl = $('.pip-flip', el), xEl = $('.pip-x', el), look = $('.pip-look', el);
+    var game = null, lastAct = Date.now(), lastMove = 0, moves = 0, plays = 0, ptr = { x: -999, y: -999 };
+    var caughtN = 0; try { caughtN = +sessionStorage.getItem('pipCaught') || 0; } catch (e) {}
     var open = false, guiding = false, anchorI = 0, hit = null, autoPops = 0, userTouched = false;
-    var timers = { close: null, guide: null, track: null, clear: null };
+    var timers = { close: null, guide: null, track: null, clear: null, peek: null, tired: null, zip: null, say: null, chase: null };
 
     function W() { return doc.documentElement.clientWidth; }
     function H() { return window.innerHeight; }
@@ -472,6 +476,7 @@
       body.setAttribute('aria-expanded', String(v));
       askApi.hold(v);
       clearTimeout(timers.close);
+      if (!v) kEl.textContent = 'Ask Jhanvi about\u2026';
       if (v) {
         sync();
         if (auto) timers.close = setTimeout(function () { if (!el.matches(':hover') && !el.contains(doc.activeElement)) setOpen(false); }, 10000);
@@ -481,7 +486,7 @@
       el.classList.remove('hop'); void el.offsetWidth; el.classList.add('hop');
     }
     function wander() {
-      if (open || guiding || el.classList.contains('away') || reduce) return;
+      if (open || guiding || game || el.classList.contains('away') || reduce) return;
       var a = anchors(), n = anchorI;
       if (a.length > 1) { do { n = Math.floor(Math.random() * a.length); } while (n === anchorI); }
       anchorI = n;
@@ -546,6 +551,7 @@
     function goTo(i) {
       var t = T[i];
       setOpen(false);
+      endGame();
       endGuide();
       if (root.getAttribute('data-view') === 'map') {
         pendingMark = t[2];
@@ -558,6 +564,7 @@
       }
     }
     onStationOpened = function () {
+      if (game) endGame();
       refreshAway();
       if (!guiding) settle();
       if (pendingMark) {
@@ -569,7 +576,11 @@
 
     /* interactions */
     function touched() { userTouched = true; }
-    body.addEventListener('click', function () { touched(); hop(); setOpen(!open, false); });
+    body.addEventListener('click', function () {
+      if (game === 'peek') { startChase('Found me! Now catch me!'); return; }
+      if (game === 'chase' || game === 'tired') { caught(); return; }
+      touched(); hop(); setOpen(!open, false);
+    });
     xEl.addEventListener('click', function () {
       touched(); quiet = true;
       try { sessionStorage.setItem('pipQuiet', '1'); } catch (e) {}
@@ -601,16 +612,161 @@
     }
     /* a bubble the viewer has not asked for appears at most a few times, then stays quiet */
     function autoPop() {
-      if (quiet || userTouched || guiding || open || doc.hidden || drawerOpen() || autoPops >= 4) return false;
+      if (game || quiet || userTouched || guiding || open || doc.hidden || drawerOpen() || autoPops >= 4) return false;
       autoPops++; setOpen(true, true); hop(); return true;
     }
+
+    /* ---- idle game: hide-and-seek, then catch-me ---- */
+    function say(text, ms) {
+      sayEl.textContent = text;
+      el.classList.add('saying');
+      clearTimeout(timers.say);
+      timers.say = setTimeout(function () { el.classList.remove('saying'); }, ms || 1400);
+    }
+    function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+    function near(x, y, d) {
+      var r = body.getBoundingClientRect();
+      var dx = x - (r.left + r.width / 2), dy = y - (r.top + r.height / 2);
+      return Math.sqrt(dx * dx + dy * dy) < d;
+    }
+    function zipTo(s) {
+      el.classList.add('zip');
+      place(s[0], s[1], s[0] < W() / 2 ? 'l' : 'r');
+      clearTimeout(timers.zip);
+      timers.zip = setTimeout(function () { el.classList.remove('zip'); }, 460);
+      lastMove = Date.now();
+    }
+    function randSpot() {
+      var w = W(), h = H();
+      var maxX = w - W0 - 14 - (drawerOpen() && w >= 900 ? 470 : 0);
+      var x, y, k = 0;
+      do {
+        x = 14 + Math.random() * Math.max(10, maxX - 14);
+        y = 80 + Math.random() * Math.max(10, h - S - 94);
+        k++;
+      } while (k < 14 && (near(x + W0 / 2, y + S / 2, 120) || Math.hypot(x + W0 / 2 - ptr.x, y + S / 2 - ptr.y) < 230));
+      return [x, y];
+    }
+    function confetti() {
+      var r = body.getBoundingClientRect(), cx = r.left + 38, cy = r.top + 42;
+      var cols = ['#5d8bff', '#ff58b4', '#2fe3b0'];
+      for (var i = 0; i < 18; i++) {
+        var d = doc.createElement('i');
+        d.className = 'pip-conf';
+        d.style.left = cx + 'px'; d.style.top = cy + 'px';
+        d.style.background = cols[i % 3];
+        doc.body.appendChild(d);
+        var a = Math.random() * Math.PI * 2, dist = 70 + Math.random() * 90;
+        (function (n, ang, dd) {
+          if (!n.animate) { n.remove(); return; }
+          n.animate([
+            { transform: 'translate(0,0) rotate(0) scale(1)', opacity: 1 },
+            { transform: 'translate(' + Math.cos(ang) * dd + 'px,' + (Math.sin(ang) * dd + 40) + 'px) rotate(260deg) scale(.4)', opacity: 0 }
+          ], { duration: 950, easing: 'cubic-bezier(.2,.8,.3,1)' }).onfinish = function () { n.remove(); };
+        })(d, a, dist);
+      }
+    }
+    function clearGameTimers() {
+      clearTimeout(timers.peek); clearTimeout(timers.tired); clearInterval(timers.chase); timers.chase = null;
+    }
+    function endGame() {
+      if (!game) return;
+      clearGameTimers();
+      game = null;
+      el.classList.remove('peeking', 'tired', 'zip', 'saying');
+      look.style.transform = '';
+      lastAct = Date.now();
+      settle();
+    }
+    function startPeek() {
+      game = 'peek'; plays++;
+      setOpen(false);
+      el.classList.add('peeking');
+      var x = 40 + Math.random() * Math.max(10, W() - W0 - 80);
+      place(x, H() - 52, 'l');
+      look.style.transform = 'translate(0,-2px)';
+      setTimeout(function () { if (game === 'peek') say('Psst… find me!', 3000); }, 1500);
+      timers.peek = setTimeout(function () { if (game === 'peek') endGame(); }, 10000);
+    }
+    function startChase(msg) {
+      clearGameTimers();
+      game = 'chase'; moves = 0;
+      setOpen(false);
+      el.classList.remove('peeking', 'tired');
+      look.style.transform = '';
+      zipTo(randSpot());
+      say(msg || 'Catch me if you can!', 1600);
+      timers.chase = setInterval(function () {
+        if (game === 'chase' && Date.now() - lastMove > 1900) dodge();
+      }, 600);
+    }
+    function dodge() {
+      if (game !== 'chase') return;
+      moves++;
+      if (moves >= 6) { tire(); return; }
+      zipTo(randSpot());
+      say(pick(['Too slow!', 'Nope!', 'Over here!', 'Whoosh!']), 900);
+    }
+    function tire() {
+      game = 'tired';
+      clearInterval(timers.chase); timers.chase = null;
+      el.classList.add('tired');
+      say('Phew… okay, you got me?', 3200);
+      timers.tired = setTimeout(function () {
+        say('Ha! I win this round.', 2200);
+        setTimeout(endGame, 2300);
+      }, 5200);
+    }
+    function caught() {
+      clearGameTimers();
+      game = 'won';
+      el.classList.remove('tired');
+      confetti(); hop();
+      caughtN++;
+      try { sessionStorage.setItem('pipCaught', String(caughtN)); } catch (e) {}
+      say('Caught!', 1200);
+      setTimeout(function () {
+        game = null;
+        el.classList.remove('peeking', 'zip', 'saying');
+        lastAct = Date.now();
+        askApi.show(askApi.cur() + 1, true);
+        kEl.textContent = 'You caught me' + (caughtN > 1 ? ' ×' + caughtN : '') + '! Try this one:';
+        sync();
+        setOpen(true, false);
+      }, 900);
+    }
+    playEl.addEventListener('click', function () { touched(); setOpen(false); startChase('Okay, catch me!'); });
+    function activity(e) {
+      if (e.type === 'pointermove') { ptr.x = e.clientX; ptr.y = e.clientY; }
+      if (game === 'peek') {
+        if (e.type === 'pointermove' && near(e.clientX, e.clientY, 150)) { startChase('Found me! Now catch me!'); return; }
+        if (e.type === 'scroll' || e.type === 'keydown' || e.type === 'wheel') { endGame(); }
+        return;
+      }
+      if (game === 'chase') {
+        if (e.type === 'pointermove' && Date.now() - lastMove > 480 && near(e.clientX, e.clientY, 135)) setTimeout(dodge, 190);
+        return;
+      }
+      if (game) return;
+      lastAct = Date.now();
+    }
+    ['pointermove', 'pointerdown', 'keydown', 'wheel', 'scroll', 'touchstart'].forEach(function (t) {
+      window.addEventListener(t, activity, { passive: true });
+    });
+    if (!reduce) {
+      setInterval(function () {
+        if (game || quiet || guiding || open || doc.hidden || drawerOpen() || plays >= 2) return;
+        if (Date.now() - lastAct > 12000) startPeek();
+      }, 1000);
+    }
+
     settle();
     sync();
     setTimeout(function () { el.classList.add('in'); }, 900);
     if (!reduce) {
       setTimeout(autoPop, 4200);
       var tick = setInterval(function () {
-        if (open || guiding) return;
+        if (open || guiding || game) return;
         wander();
         if (!quiet && !userTouched && autoPops < 4) setTimeout(autoPop, 1700);
       }, 14000);
