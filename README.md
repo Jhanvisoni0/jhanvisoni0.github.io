@@ -1,92 +1,73 @@
-# jhanvisoni0.github.io — Portfolio
+# jhanvisoni0.github.io — Career transit map
 
-A terminal/technical-themed portfolio site, structured around Medallion Architecture
-(Bronze → Silver → Gold) to mirror the way I actually organize data in production.
+A portfolio drawn as a metro map. Three lines carry the story:
 
-**Live:** https://jhanvisoni0.github.io (or your connected custom domain, once set up)
+- **E · Engineering** — roles (Techved, MSCI) and data-platform projects
+- **A · AI & Writing** — the RAG platform, the blog posts, and the LLM chatbot in progress (dashed track)
+- **L · Learning** — degrees and verifiable credentials
 
-## Structure
+All lines end at the terminus: contact.
 
-- `index.html` — main page: hero, projects, architecture, experience, skills, writing, contact
-- `style.css` — theme, layout, and responsive rules (all colors via CSS variables at the top)
-- `script.js` — scroll-reveal animation, mobile nav toggle
-- `blog-databricks-realization.html`, `blog-ltap.html`, `blog-lakehouse-rt.html`, `blog-databricks-ai-layers.html` — standalone blog posts
-- `project-financial-rag.html`, `project-real-assets.html`, `project-retail-banking.html` — full case study pages for all three projects
-- `assets/profile.jpg` — headshot used in the hero
-- `assets/blog-*.png` — diagrams used in the blog posts
-- `assets/favicon-*.png`, `assets/apple-touch-icon.png` — site icon
-- No build step, no dependencies. Open `index.html` directly in a browser to preview locally.
+## Files
 
-## Sections (index.html)
+- `index.html` — the whole homepage (departure board, map, timetable/list view, Technical Toolkit, contact)
+- `style.css` — design tokens (light/dark + line colours) at the top, then map, drawer, list and article styles
+- `script.js` — theme toggle, Map/List toggle, departure-board animation, map builder, drawer, deep links
+- `blog-*.html`, `project-*.html` — the four posts and three case studies (share the article styles)
+- `assets/` — profile photo, favicons, blog diagrams
+- `googlebca756fa1ded5ad0.html` — Google Search Console verification. **Keep it at the repo root.**
 
-| Section | Metaphor | Content |
-|---|---|---|
-| Hero | — | photo, badge, name, bold tagline, bio, quick stats, vitals card, CTAs |
-| Gold Layer | production-ready | featured projects (case-study style) + live embedded Streamlit demo |
-| Architecture | system design | Medallion Architecture pipeline diagram + core principles |
-| Bronze Layer | raw ingestion | work experience, education, certifications |
-| Silver Layer | validated & structured | capabilities overview + skills grouped by category |
-| Change Data Capture | streaming updates | real blog posts, linking to the standalone pages |
-| Contact | — | email, LinkedIn, GitHub |
+No build step. Open `index.html` in a browser to preview.
 
-## SEO / search appearance
+## One source of truth
 
-`index.html`'s `<head>` includes a title/description tuned for how it should appear in
-search results, Open Graph + Twitter card tags for link previews, and a JSON-LD `Person`
-schema to help Google recognize this as a person page. If you ever move to a custom domain,
-update the hardcoded `https://jhanvisoni0.github.io/` URLs in the canonical link, Open Graph
-tags, and JSON-LD block to match. New sites can take days to weeks to get indexed by
-Google — submitting the URL in Google Search Console speeds this up.
+Every station is a single `<article class="station">` in the `#timetable` section of `index.html`.
+The **List** view shows those articles as they are. The **Map** view reads the same articles and
+builds the stations and the drawer content from them, so edit content once.
 
-## Visual identity (overhauled)
+Position and label are data attributes on the article:
 
-The site moved from a cyan/teal terminal look to a warm editorial palette —
-rust, mustard, copper, plum, and taupe accents on a warm near-black (dark) or
-cream paper (light) background. All colors are still CSS variables in
-`style.css`, so both themes stay in sync from one source.
+| Attribute | Meaning |
+|---|---|
+| `data-line` | `eng`, `ai`, `lrn` (or `all` for the terminus) |
+| `data-x`, `data-y` | position on the 2800 × 640 map canvas |
+| `data-label` | `up`, `down` or `right` — where the name sits |
+| `data-name`, `data-sub` | text on the map sign |
+| `data-state="building"` | dashed ring, for work in progress |
+| `data-link="eng"` | marks a transfer station |
 
-- **Cloud background** — soft, slowly-drifting blurred color shapes behind all
-  content (`.cloud-bg`), a `cloud computing` motif rather than literal sky
-  imagery. Pure CSS, no images.
-- **Left hover-nav** — on desktop (a real mouse + wide viewport), a slim tab on
-  the left edge reveals a numbered 00–06 nav panel on hover. Mobile/touch
-  devices keep the original top hamburger menu, since hover has no touchscreen
-  equivalent.
-- **Technical Toolkit** — the Skills section (04) is now framed this way,
-  matching the "T.01 · N tools" labels added earlier.
+Tracks are drawn in `script.js` (search for `track(`).
 
-## Light/dark theme
+## Add a station
 
-The site defaults to light or dark based on the visitor's local device time (light
-roughly 7am-7pm, dark otherwise) — no location permission is requested, since that
-would prompt every visitor and isn't reliable if denied. A toggle button in the nav
-(sun/moon icon) lets anyone override this; their explicit choice is saved in
-`localStorage` and takes precedence over the time-based default on future visits.
-All colors are CSS variables under `:root` (dark) and `[data-theme="light"]` (light)
-in `style.css` — add a new accent color in both places to keep them in sync.
+1. Copy an `<article class="station">` block into the right `.lgroup` and give it a unique `id="st-…"`.
+2. Set its `data-x` / `data-y` so it sits on that line's track (y = 150 Engineering, 320 AI, 490 Learning), clear of neighbouring labels.
+3. For a new post or case study, copy an existing `blog-*.html` / `project-*.html` and add a link inside the article.
 
-## To customize
+## Themes and views
 
-- **Add a new blog post:** copy one of the existing `blog-*.html` files as a template
-  (they share the same header/footer and `article-*` CSS classes), update its title/meta/body,
-  then add a card linking to it in `index.html`'s `#cdc` section.
-- **Add a new project case study:** copy `project-real-assets.html` or `project-retail-banking.html`
-  as a template (no live demo embed) or `project-financial-rag.html` (includes one), then link to it
-  via a `case-study-cta` link on the matching project card in `index.html`. All three current
-  projects already have case study pages linked.
-- **Project links:** the Retail Banking and Real Assets project cards link to your GitHub
-  profile as a placeholder (marked `<!-- TODO -->`) — swap in the direct repo links once you have them.
-- **Live demo embed:** the Financial RAG project card embeds the live Streamlit app via
-  `?embed=true`. It requires visitors to bring their own OpenAI API key, and free-tier
-  Streamlit apps sleep after inactivity (shows a ~20-30s wake-up delay on first load).
-- **Colors/fonts:** all theme colors and font variables are at the top of `style.css` under `:root`.
+- Theme: follows the visitor's local time (light 7:00–18:59, dark otherwise) until they press the sun/moon button; the choice is saved in `localStorage`.
+- View: Map by default on screens 900px and wider, List on phones; the Map/List switch is saved too.
+- `prefers-reduced-motion` turns off the track drawing, board scramble and smooth scrolling.
+
+## Updating the site (cache-busting)
+
+GitHub Pages and browsers cache CSS/JS. When you change `style.css` or `script.js`, bump the
+version in every page (`style.css?v=20`, `script.js?v=10`), otherwise visitors may see the old look.
 
 ## Deploy on GitHub Pages
 
-1. Create a repo named exactly `<your-github-username>.github.io`.
-2. Upload **all** files/folders listed above to the repo root (replacing the whole set is
-   safer than adding files one at a time — avoids stray duplicates).
-3. In the repo's **Settings → Pages**, set the source to the `main` branch (root).
-4. Your site goes live at `https://<your-github-username>.github.io` within a minute or two.
-5. Optional: connect a custom domain (e.g. `jhanvisoni.com`) in the same Pages settings screen,
-   then add the DNS records your domain registrar asks for — and update the SEO URLs mentioned above.
+1. Repo named `<username>.github.io`, Settings → Pages → `main` branch, root.
+2. Upload **everything** in this folder, replacing the old files. Delete any files from the old
+   design that are not in this folder (for example a resume PDF).
+3. Wait a minute or two, then hard-refresh.
+
+## SEO
+
+`index.html` has the title, description, Open Graph/Twitter tags and JSON-LD `Person` data.
+If you move to a custom domain, update the hardcoded `https://jhanvisoni0.github.io/` URLs.
+
+## Before you share it widely
+
+- The Retail Banking and Real Assets stations link to your GitHub profile; swap in direct repo links when you have them.
+- Blog posts are dated only "2026" — add exact months once you confirm them.

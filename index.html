@@ -6,16 +6,17 @@
 
 <script>
 (function(){
+  var r = document.documentElement;
   try {
-    var saved = localStorage.getItem('theme');
-    var theme = saved;
-    if (theme !== 'light' && theme !== 'dark') {
-      var hour = new Date().getHours();
-      theme = (hour >= 7 && hour < 19) ? 'light' : 'dark';
-    }
-    document.documentElement.setAttribute('data-theme', theme);
-  } catch(e) {
-    document.documentElement.setAttribute('data-theme', 'dark');
+    var t = localStorage.getItem('theme');
+    if (t !== 'light' && t !== 'dark') { var h = new Date().getHours(); t = (h >= 7 && h < 19) ? 'light' : 'dark'; }
+    r.setAttribute('data-theme', t);
+    var v = localStorage.getItem('view');
+    if (v !== 'map' && v !== 'list') { v = window.innerWidth >= 900 ? 'map' : 'list'; }
+    r.setAttribute('data-view', v);
+  } catch (e) {
+    r.setAttribute('data-theme', 'dark');
+    r.setAttribute('data-view', 'list');
   }
 })();
 </script>
@@ -24,7 +25,6 @@
 <meta name="description" content="AI-focused Data Engineer building production GenAI and LLM systems, including an end-to-end RAG platform reaching 100% retrieval accuracy. 3.5+ years of production data engineering on Azure &amp; Databricks.">
 <link rel="canonical" href="https://jhanvisoni0.github.io/">
 
-<!-- Open Graph / Facebook / LinkedIn -->
 <meta property="og:type" content="profile">
 <meta property="og:url" content="https://jhanvisoni0.github.io/">
 <meta property="og:title" content="Jhanvi Soni | AI/LLM Data Engineer — RAG, GenAI Systems &amp; Databricks">
@@ -33,18 +33,15 @@
 <meta property="profile:first_name" content="Jhanvi">
 <meta property="profile:last_name" content="Soni">
 
-<!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Jhanvi Soni | AI/LLM Data Engineer — RAG, GenAI Systems &amp; Databricks">
 <meta name="twitter:description" content="AI-focused Data Engineer building production GenAI and LLM systems, including an end-to-end RAG platform reaching 100% retrieval accuracy.">
 <meta name="twitter:image" content="https://jhanvisoni0.github.io/assets/profile.jpg">
 
-<!-- Favicon -->
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
 <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon-512.png">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
 
-<!-- Structured data: helps Google understand this is a person, not a generic page -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -55,657 +52,342 @@
   "jobTitle": "AI/LLM Data Engineer",
   "description": "AI-focused Data Engineer building production GenAI and LLM systems, with 3.5+ years of production data engineering across financial services and consulting.",
   "email": "mailto:jhanvisoni0@gmail.com",
-  "address": {
-    "@type": "PostalAddress",
-    "addressLocality": "Houston",
-    "addressRegion": "TX",
-    "addressCountry": "US"
-  },
-  "alumniOf": [
-    {
-      "@type": "CollegeOrUniversity",
-      "name": "University of Houston Clear Lake"
-    }
-  ],
-  "sameAs": [
-    "https://linkedin.com/in/jhanvisonii/",
-    "https://github.com/Jhanvisoni0"
-  ]
+  "address": { "@type": "PostalAddress", "addressLocality": "Houston", "addressRegion": "TX", "addressCountry": "US" },
+  "alumniOf": [ { "@type": "CollegeOrUniversity", "name": "University of Houston Clear Lake" } ],
+  "sameAs": [ "https://linkedin.com/in/jhanvisonii/", "https://github.com/Jhanvisoni0" ]
 }
 </script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=13">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=20">
 </head>
 <body>
 
-<div class="cloud-bg" aria-hidden="true">
-  <div class="cloud cloud-1"></div>
-  <div class="cloud cloud-2"></div>
-  <div class="cloud cloud-3"></div>
-  <div class="cloud cloud-4"></div>
-</div>
+<a class="skip" href="#main">Skip to content</a>
 
-<div class="custom-cursor-dot" id="cursorDot"></div>
-<div class="custom-cursor-ring" id="cursorRing"></div>
-
-<div class="side-nav-wrap">
-  <div class="side-nav-tab" aria-hidden="true">
-    <span></span><span></span><span></span>
-  </div>
-  <nav class="side-nav-panel" aria-label="Section navigation">
-    <a href="#top"><span class="sn-num">00</span><span class="sn-dash"></span><span class="sn-label">Intro</span></a>
-    <a href="#gold"><span class="sn-num">01</span><span class="sn-dash"></span><span class="sn-label">Projects</span></a>
-    <a href="#architecture"><span class="sn-num">02</span><span class="sn-dash"></span><span class="sn-label">Architecture</span></a>
-    <a href="#bronze"><span class="sn-num">03</span><span class="sn-dash"></span><span class="sn-label">Experience</span></a>
-    <a href="#silver"><span class="sn-num">04</span><span class="sn-dash"></span><span class="sn-label">Toolkit</span></a>
-    <a href="#cdc"><span class="sn-num">05</span><span class="sn-dash"></span><span class="sn-label">Writing</span></a>
-    <a href="#contact"><span class="sn-num">06</span><span class="sn-dash"></span><span class="sn-label">Contact</span></a>
-  </nav>
-</div>
-
-<!-- ============ NAV ============ -->
-<header class="nav" id="nav">
-  <div class="nav-inner">
-    <a href="#top" class="nav-logo">JS<span class="cursor-blink">_</span></a>
-    <div class="nav-right">
-      <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark theme">
-        <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
-        <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></svg>
-      </button>
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-      <nav class="nav-links" id="navLinks">
-        <a href="#top"><span class="line-no">00</span> intro</a>
-        <a href="#gold"><span class="line-no">01</span> projects</a>
-        <a href="#architecture"><span class="line-no">02</span> architecture</a>
-        <a href="#bronze"><span class="line-no">03</span> experience</a>
-        <a href="#silver"><span class="line-no">04</span> toolkit</a>
-        <a href="#cdc"><span class="line-no">05</span> writing</a>
-        <a href="#contact"><span class="line-no">06</span> contact</a>
-      </nav>
+<header class="bar">
+  <a class="brand" href="#top" aria-label="Jhanvi Soni — back to top">
+    <span class="roundel"><b>JS</b></span>
+    <span class="brand-name">Jhanvi Soni</span>
+  </a>
+  <div class="bar-tools">
+    <div class="seg" role="group" aria-label="Choose view">
+      <button type="button" data-view-btn="map" aria-pressed="true">Map</button>
+      <button type="button" data-view-btn="list" aria-pressed="false">List</button>
     </div>
+    <button type="button" class="icon-btn" id="themeToggle" aria-label="Switch theme">
+      <svg class="i-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
+      <svg class="i-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></svg>
+    </button>
   </div>
 </header>
 
-<!-- ============ HERO ============ -->
-<section class="hero" id="top">
-  <div class="hero-grid"></div>
-  <div class="container">
-    <div class="hero-layout">
+<main id="main">
 
-      <div class="hero-text">
-        <span class="hero-badge">Azure Databricks Data Engineer Associate</span>
-        <h1 class="hero-name">Jhanvi Soni</h1>
-        <p class="hero-tagline">AI systems, grounded.<br>Pipelines that scale.<br>Insights that ship.</p>
-        <p class="hero-role">AI/LLM Data Engineer <span class="dot-sep">·</span> GenAI Systems <span class="dot-sep">·</span> Analytics Engineer</p>
-        <p class="hero-location">Houston, Texas</p>
-        <p class="hero-bio">AI-focused Data Engineer building production GenAI and LLM systems — most recently an end-to-end Retrieval-Augmented Generation platform reaching 100% retrieval accuracy on evaluation, with citation-grounded generation and LLM-as-judge testing to catch hallucinations before they reach users. That sits on top of 3.5+ years of production data engineering across financial services and consulting — PySpark pipelines, Medallion Architecture, and Delta Lake on Azure and Databricks.</p>
-
-        <div class="hero-stats">
-          <div class="hero-stat">
-            <span class="hero-stat-number">100%</span>
-            <span class="hero-stat-label">Retrieval accuracy, RAG platform eval</span>
-            <span class="hero-stat-source">Personal project</span>
-          </div>
-          <div class="hero-stat">
-            <span class="hero-stat-number">3.5+</span>
-            <span class="hero-stat-label">Years in production data engineering</span>
-            <span class="hero-stat-source">MSCI · Techved</span>
-          </div>
-          <div class="hero-stat">
-            <span class="hero-stat-number">100+</span>
-            <span class="hero-stat-label">Data feeds monitored in production</span>
-            <span class="hero-stat-source">MSCI</span>
-          </div>
-          <div class="hero-stat">
-            <span class="hero-stat-number">$300K+</span>
-            <span class="hero-stat-label">Client revenue contributed</span>
-            <span class="hero-stat-source">Techved</span>
-          </div>
-        </div>
-
-        <div class="hero-actions">
-          <a href="#gold" class="btn btn-primary">View Projects</a>
-          <a href="#architecture" class="btn btn-ghost">Explore Architecture</a>
-        </div>
-
-        <div class="chip-row hero-pills">
-          <span class="chip chip-pill">RAG</span>
-          <span class="chip chip-pill">LLM Systems</span>
-          <span class="chip chip-pill">PySpark</span>
-          <span class="chip chip-pill">Medallion Architecture</span>
-          <span class="chip chip-pill">Delta Lake</span>
-          <span class="chip chip-pill">Azure Databricks</span>
-        </div>
-
-        <div class="through-years">
-          <p class="through-years-label">// through the years</p>
-          <ol class="through-years-list">
-            <li><span class="ty-num">1</span><span class="ty-year">'21</span><span class="ty-text">Techved Consultancy — Senior Data Analyst</span></li>
-            <li><span class="ty-num">2</span><span class="ty-year">'22</span><span class="ty-text">Joined MSCI as Data Engineer / Data Analyst</span></li>
-            <li><span class="ty-num">3</span><span class="ty-year">'24</span><span class="ty-text">M.S. Management Information Systems begins — Univ. of Houston Clear Lake</span></li>
-            <li><span class="ty-num">4</span><span class="ty-year">'26</span><span class="ty-text">Shipped a production RAG platform — 100% retrieval accuracy</span></li>
-            <li><span class="ty-num">5</span><span class="ty-year">'26</span><span class="ty-text">Open to AI/LLM Engineering &amp; GenAI Data Engineering roles</span></li>
-          </ol>
-        </div>
-      </div>
-
-      <div class="hero-photo-wrap">
-        <div class="hero-photo-frame">
-          <span class="frame-corner corner-tl"></span>
-          <span class="frame-corner corner-tr"></span>
-          <span class="frame-corner corner-bl"></span>
-          <span class="frame-corner corner-br"></span>
-          <img src="assets/profile.jpg?v=3" alt="Jhanvi Soni" class="hero-photo">
-        </div>
-
-        <div class="vitals-card">
-          <p class="vitals-heading">// vitals</p>
-          <div class="vitals-row">
-            <span class="vitals-label">Currently</span>
-            <span class="vitals-value">AI/LLM Data Engineer · open to full-time roles</span>
-          </div>
-          <div class="vitals-row">
-            <span class="vitals-label">Building</span>
-            <span class="vitals-value">LLM chatbot project (in progress)</span>
-          </div>
-          <div class="vitals-row">
-            <span class="vitals-label">Previously</span>
-            <span class="vitals-value">MSCI · Techved</span>
-          </div>
-          <div class="vitals-row">
-            <span class="vitals-label">Based in</span>
-            <span class="vitals-value">Houston, TX · 29.76°N, 95.37°W</span>
-          </div>
-          <div class="vitals-row">
-            <span class="vitals-label">Open to</span>
-            <span class="vitals-value">AI/LLM · GenAI Data Eng · Analytics</span>
-          </div>
-        </div>
-      </div>
-
+<!-- ======================= INTRO / DEPARTURE BOARD ======================= -->
+<section class="intro wrap" id="top">
+  <div class="intro-grid">
+    <div class="intro-text">
+      <p class="eyebrow"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>Now arriving · Houston, TX</p>
+      <h1>Jhanvi<br>Soni</h1>
+      <p class="role">AI/LLM Data Engineer<span class="sep">/</span>GenAI Systems<span class="sep">/</span>Analytics Engineer</p>
+      <p class="lede">I build production GenAI and LLM systems — most recently an end-to-end RAG platform with citation-grounded answers and LLM-as-judge evaluation — on top of 3.5+ years of production data engineering at MSCI and Techved.</p>
     </div>
+    <aside class="pass" aria-label="Photo pass">
+      <div class="pass-bars" aria-hidden="true"><i></i><i></i><i></i></div>
+      <img src="assets/profile.jpg?v=3" alt="Portrait of Jhanvi Soni" width="160" height="160">
+      <p class="pass-title">All lines pass</p>
+      <p class="pass-meta">Azure Databricks Data Engineer Associate</p>
+    </aside>
+  </div>
 
-    <a href="#gold" class="scroll-cue">
-      <span>scroll</span>
-      <span class="scroll-arrow">↓</span>
-    </a>
+  <div class="board" aria-label="Departure board">
+    <div class="board-head"><span>Departures</span><span class="board-dot" aria-hidden="true"></span></div>
+    <div class="board-row">
+      <span class="sr">Now: building an LLM chatbot covering orchestration, retrieval and evaluation. In progress.</span>
+      <span class="b-k flip" data-text="NOW" aria-hidden="true">NOW</span>
+      <span class="b-v flip" data-text="Building an LLM chatbot: orchestration, retrieval, evaluation" aria-hidden="true">Building an LLM chatbot: orchestration, retrieval, evaluation</span>
+      <span class="b-s flip" data-text="In progress" aria-hidden="true">In progress</span>
+    </div>
+    <div class="board-row">
+      <span class="sr">Open to full-time AI/LLM, GenAI data engineering and analytics engineering roles. Immediately available.</span>
+      <span class="b-k flip" data-text="OPEN TO" aria-hidden="true">OPEN TO</span>
+      <span class="b-v flip" data-text="Full-time AI/LLM, GenAI data engineering &amp; analytics engineering roles" aria-hidden="true">Full-time AI/LLM, GenAI data engineering &amp; analytics engineering roles</span>
+      <span class="b-s flip" data-text="Immediately" aria-hidden="true">Immediately</span>
+    </div>
+    <div class="board-row">
+      <span class="sr">3.5 plus years of production data engineering in financial services and consulting, at MSCI and Techved.</span>
+      <span class="b-k flip" data-text="3.5+ YRS" aria-hidden="true">3.5+ YRS</span>
+      <span class="b-v flip" data-text="Production data engineering in financial services &amp; consulting" aria-hidden="true">Production data engineering in financial services &amp; consulting</span>
+      <span class="b-s flip" data-text="MSCI · Techved" aria-hidden="true">MSCI · Techved</span>
+    </div>
+    <div class="board-row">
+      <span class="sr">100 percent retrieval accuracy on a 15-question RAG evaluation. Personal project.</span>
+      <span class="b-k flip" data-text="100%" aria-hidden="true">100%</span>
+      <span class="b-v flip" data-text="Retrieval accuracy on a 15-question RAG evaluation" aria-hidden="true">Retrieval accuracy on a 15-question RAG evaluation</span>
+      <span class="b-s flip" data-text="Personal project" aria-hidden="true">Personal project</span>
+    </div>
   </div>
 </section>
 
-<!-- ============ MARQUEE :: SKILLS TICKER ============ -->
-<div class="marquee" aria-hidden="true">
-  <div class="marquee-track">
-    <span class="marquee-item marquee-cyan">PySpark</span><span class="marquee-sep">✦</span>
-    <span class="marquee-item marquee-gold">RAG</span><span class="marquee-sep">✦</span>
-    <span class="marquee-item marquee-bronze">LLM Systems</span><span class="marquee-sep">✦</span>
-    <span class="marquee-item marquee-arch">Delta Lake</span><span class="marquee-sep">✦</span>
-    <span class="marquee-item marquee-silver">Azure Databricks</span><span class="marquee-sep">✦</span>
-    <span class="marquee-item marquee-cyan">Medallion Architecture</span><span class="marquee-sep">✦</span>
-    <span class="marquee-item marquee-gold">MLflow</span><span class="marquee-sep">✦</span>
-    <span class="marquee-item marquee-bronze">Terraform</span><span class="marquee-sep">✦</span>
-    <span class="marquee-item marquee-arch">GenAI</span><span class="marquee-sep">✦</span>
-    <span class="marquee-item marquee-silver">Python</span><span class="marquee-sep">✦</span>
-    <span class="marquee-item marquee-cyan">Power BI</span><span class="marquee-sep">✦</span>
-    <span class="marquee-item marquee-gold">Unity Catalog</span><span class="marquee-sep">✦</span>
-    <!-- duplicate for seamless loop -->
-    <span class="marquee-item marquee-cyan">PySpark</span><span class="marquee-sep">✦</span>
-    <span class="marquee-item marquee-gold">RAG</span><span class="marquee-sep">✦</span>
-    <span class="marquee-item marquee-bronze">LLM Systems</span><span class="marquee-sep">✦</span>
-    <span class="marquee-item marquee-arch">Delta Lake</span><span class="marquee-sep">✦</span>
-    <span class="marquee-item marquee-silver">Azure Databricks</span><span class="marquee-sep">✦</span>
-    <span class="marquee-item marquee-cyan">Medallion Architecture</span><span class="marquee-sep">✦</span>
-    <span class="marquee-item marquee-gold">MLflow</span><span class="marquee-sep">✦</span>
-    <span class="marquee-item marquee-bronze">Terraform</span><span class="marquee-sep">✦</span>
-    <span class="marquee-item marquee-arch">GenAI</span><span class="marquee-sep">✦</span>
-    <span class="marquee-item marquee-silver">Python</span><span class="marquee-sep">✦</span>
-    <span class="marquee-item marquee-cyan">Power BI</span><span class="marquee-sep">✦</span>
-    <span class="marquee-item marquee-gold">Unity Catalog</span><span class="marquee-sep">✦</span>
-  </div>
-</div>
-
-<!-- ============ GOLD :: FEATURED PROJECTS ============ -->
-<section class="layer gold" id="gold">
-  <div class="container">
-    <div class="layer-head">
-      <span class="layer-tag layer-tag-gold">01 · GOLD LAYER</span>
-      <h2 class="layer-title">AI &amp; Data Engineering Projects <span class="layer-sub">// curated, business-facing output</span></h2>
-      <p class="layer-desc">Three end-to-end platforms — from production GenAI systems to the data pipelines they're built on.</p>
+<!-- ======================= THE MAP ======================= -->
+<section class="mapsec" id="map" aria-label="Career transit map">
+  <div class="map-head wrap">
+    <div class="legend" role="group" aria-label="Highlight a line">
+      <button type="button" class="lg" data-line="eng" aria-pressed="false"><i>E</i>Engineering</button>
+      <button type="button" class="lg" data-line="ai" aria-pressed="false"><i>A</i>AI &amp; Writing</button>
+      <button type="button" class="lg" data-line="lrn" aria-pressed="false"><i>L</i>Learning</button>
     </div>
-
-    <div class="projects-grid-v2">
-
-      <article class="project-hero-tile">
-        <div class="project-hero-main">
-          <div class="project-tile-head">
-            <div class="project-icon-badge project-icon-badge-cyan" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="6" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="12" cy="18" r="2.2"/><line x1="7.8" y1="7.2" x2="10.5" y2="16"/><line x1="16.2" y1="7.2" x2="13.5" y2="16"/><line x1="8.2" y1="6" x2="15.8" y2="6"/></svg>
-            </div>
-            <div class="project-tile-titlegroup">
-              <h3>Financial News Intelligence RAG Platform</h3>
-              <span class="flagship-tag">Flagship</span>
-            </div>
-          </div>
-          <p class="project-tile-teaser">RAG platform grounding LLM answers in SEC filings &amp; financial news — 100% retrieval accuracy.</p>
-
-          <div class="answer-preview answer-preview-compact">
-            <div class="answer-preview-bar">
-              <span class="answer-preview-label">$ ask --grounded</span>
-              <span class="answer-preview-status"><span class="status-dot"></span> cited</span>
-            </div>
-            <div class="answer-preview-body">
-              <p class="answer-preview-q">"Key risk factors in Apple's 10-K?"</p>
-              <p class="answer-preview-a">IP protection<span class="cite">[1]</span>, developer dependence<span class="cite">[2]</span>, tariff exposure<span class="cite">[3]</span>…</p>
-            </div>
-          </div>
-
-          <p class="project-tile-highlight">Explicitly declines to answer rather than hallucinate — verified with a deliberate refusal test case.</p>
-
-          <div class="project-tile-links">
-            <a href="https://financial-news-intelligence-rag-spfkf8yfjgbvxuzqiozyth.streamlit.app/" target="_blank" rel="noopener">Live Demo ↗</a>
-            <a href="project-financial-rag.html" class="project-tile-cta">Case study →</a>
-          </div>
+    <p class="map-hint" id="mapHint">Drag the map sideways · click a station</p>
+  </div>
+  <div class="map-frame" id="mapFrame" data-focus="">
+    <button type="button" class="map-arrow prev" id="mapPrev" aria-label="Scroll the map left">←</button>
+    <button type="button" class="map-arrow next" id="mapNext" aria-label="Scroll the map right">→</button>
+    <div class="map-scroll" id="mapScroll" tabindex="0" role="region" aria-label="Career map. Scroll sideways to travel along the lines.">
+      <div class="map-canvas" id="mapCanvas">
+        <div class="map-intro">
+          <p class="kicker"><span data-count>16</span> stations · 3 lines</p>
+          <h2>Pick a line.<br>Ride it.</h2>
+          <p>Drag the map, tap any station for the details, or switch to <strong>List</strong> for the whole timetable at once.</p>
         </div>
+      </div>
+    </div>
+    <div class="map-progress" aria-hidden="true"><span id="mapBar"></span></div>
+  </div>
+</section>
 
-        <div class="project-hero-stack">
-          <p class="stack-label">// stack</p>
-          <div class="stack-list">
-            <span class="stack-item">Azure Databricks</span>
-            <span class="stack-item">RAG</span>
-            <span class="stack-item">OpenAI</span>
-            <span class="stack-item">ChromaDB</span>
-            <span class="stack-item">Delta Lake</span>
-            <span class="stack-item">MLflow</span>
-          </div>
-        </div>
+<!-- ======================= TIMETABLE (LIST VIEW + SINGLE SOURCE OF TRUTH) ======================= -->
+<section class="list wrap" id="timetable" aria-label="Timetable">
+  <div class="list-head">
+    <h2>Timetable</h2>
+    <p>Everything on the map, line by line.</p>
+  </div>
+  <div class="list-cols">
+
+    <div class="lgroup" data-line="eng">
+      <h3 class="lg-title"><i>E</i>Engineering line</h3>
+
+      <article class="station" id="st-techved" data-line="eng" data-x="420" data-y="150" data-label="up" data-name="Techved" data-sub="Sr. Data Analyst · 2021–22">
+        <p class="st-meta"><span class="st-kind">Role</span><span class="st-when">Jan 2021 – Jul 2022</span></p>
+        <h3 class="st-title">Techved Consultancy</h3>
+        <p class="st-role">Senior Data Analyst · Mumbai, India</p>
+        <p class="st-sum">Consulting analytics across 6+ client engagements — from SQL and Python pipelines to dimensional models and live dashboards.</p>
+        <ul class="st-points">
+          <li>Built SQL and Python pipelines, dimensional models, and Power BI/Tableau dashboards that replaced manual reporting with real-time operational visibility.</li>
+          <li>Contributed to $300K+ in client expansion revenue by delivering proof-of-concept data models and dashboards.</li>
+          <li>Promoted from Associate to Senior Associate within 11 months.</li>
+          <li>Validated data accuracy with Advanced Excel and SQL ahead of stakeholder-facing presentations.</li>
+        </ul>
+        <dl class="st-metrics"><div><dt>$300K+</dt><dd>client expansion revenue contributed</dd></div><div><dt>6+</dt><dd>client engagements</dd></div><div><dt>11 mo</dt><dd>to promotion</dd></div></dl>
+        <p class="st-tags"><span>SQL</span><span>Python</span><span>Power BI</span><span>Tableau</span><span>Dimensional modeling</span></p>
       </article>
 
-      <div class="project-secondary-row">
+      <article class="station" id="st-msci" data-line="eng" data-x="760" data-y="150" data-label="up" data-name="MSCI" data-sub="Data Engineer · 2022–24">
+        <p class="st-meta"><span class="st-kind">Role</span><span class="st-when">Aug 2022 – Jul 2024</span></p>
+        <h3 class="st-title">MSCI</h3>
+        <p class="st-role">Data Engineer / Data Analyst · Morgan Stanley Capital International, Mumbai</p>
+        <p class="st-sum">Production lakehouse and reporting pipelines for equity and Real Assets data, used as the source of truth by quant, risk and product teams.</p>
+        <ul class="st-points">
+          <li>Cut average query time by 40% with partition pruning, predicate pushdown and Z-ordering across equity and Real Assets reporting pipelines.</li>
+          <li>Lifted reporting accuracy 20% with automated data-quality frameworks monitoring 100+ feeds: schema mismatch, null and duplicate checks, audit logging.</li>
+          <li>Migrated 20+ legacy SQL workflows to PySpark on Azure Databricks; designed star-schema fact/dimension tables and SCD Type 1 &amp; 2 models.</li>
+          <li>Built ETL/ELT on Azure (ADLS Gen2, Azure SQL, ADF), provisioned with Terraform and shipped through Azure DevOps CI/CD with automated validation gates.</li>
+          <li>Built self-serve Power BI semantic models and mentored junior analysts on Databricks and Delta Lake practices.</li>
+        </ul>
+        <dl class="st-metrics"><div><dt>40%</dt><dd>faster query execution</dd></div><div><dt>20%</dt><dd>reporting accuracy lift</dd></div><div><dt>100+</dt><dd>feeds monitored</dd></div><div><dt>20+</dt><dd>workflows migrated</dd></div></dl>
+        <p class="st-note">The same schema validation and audit-trail discipline is what makes an AI system safe to ground answers in.</p>
+        <p class="st-tags"><span>PySpark</span><span>Azure Databricks</span><span>Delta Lake</span><span>Terraform</span><span>Azure DevOps</span><span>Power BI</span></p>
+      </article>
 
-        <article class="project-tile">
-          <div class="project-tile-head">
-            <div class="project-icon-badge project-icon-badge-bronze" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><line x1="5" y1="19" x2="5" y2="11"/><line x1="12" y1="19" x2="12" y2="6"/><line x1="19" y1="19" x2="19" y2="14"/></svg>
-            </div>
-            <h3>Retail Banking Customer Analytics Platform</h3>
-          </div>
-          <p class="project-tile-teaser">Customer-360 platform cutting a 4-day reporting cycle down to 15 minutes.</p>
+      <article class="station" id="st-banking" data-line="eng" data-x="1100" data-y="150" data-label="up" data-name="Retail Banking" data-sub="Project · 4 days → 15 min">
+        <p class="st-meta"><span class="st-kind">Project</span><span class="st-when">Personal project</span></p>
+        <h3 class="st-title">Retail Banking Customer Analytics</h3>
+        <p class="st-role">Azure data platform</p>
+        <p class="st-sum">Unifies customer, loan and transaction data from 3 source systems into one automated Medallion pipeline with nightly anomaly scoring and a live Power BI dashboard.</p>
+        <ul class="st-points">
+          <li>Cut the reporting cycle from 4 days to 15 minutes with a Gold-layer Customer 360: loan-to-deposit ratio, delinquency flags, transaction velocity.</li>
+          <li>Ingests 50K transactions and 5K customer profiles through ADF and Auto Loader into ADLS Gen2; Databricks Workflows runs it daily at 6 AM with retries and alerts.</li>
+          <li>An Isolation Forest model flagged 1,500 high-risk transactions on its first run, tracked in MLflow; credentials live in Key Vault with table-level RBAC through Unity Catalog.</li>
+        </ul>
+        <dl class="st-metrics"><div><dt>4d → 15m</dt><dd>reporting cycle</dd></div><div><dt>50K</dt><dd>transactions processed</dd></div><div><dt>1,500</dt><dd>high-risk flags, first run</dd></div></dl>
+        <p class="st-tags"><span>Azure Data Factory</span><span>Databricks</span><span>PySpark</span><span>Delta Lake</span><span>Kafka</span><span>Terraform</span><span>Power BI</span><span>MLflow</span></p>
+        <p class="st-links"><a href="project-retail-banking.html">Full case study →</a><a href="https://github.com/Jhanvisoni0" target="_blank" rel="noopener">GitHub ↗</a></p>
+      </article>
 
-          <div class="project-diagram project-diagram-compact">
-            <svg viewBox="0 0 480 100" class="project-diagram-svg" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pipeline: three source systems, through Bronze Silver Gold, into risk scoring, to a Power BI dashboard">
-              <defs>
-                <marker id="arrow-rb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                  <path d="M0,0 L10,5 L0,10 z" fill="var(--bronze)"></path>
-                </marker>
-              </defs>
-              <line x1="110" y1="50" x2="128" y2="50" stroke="var(--bronze)" stroke-width="1.5" marker-end="url(#arrow-rb)"></line>
-              <line x1="230" y1="50" x2="248" y2="50" stroke="var(--bronze)" stroke-width="1.5" marker-end="url(#arrow-rb)"></line>
-              <line x1="350" y1="50" x2="368" y2="50" stroke="var(--bronze)" stroke-width="1.5" marker-end="url(#arrow-rb)"></line>
-              <g><rect x="10" y="26" width="100" height="48" rx="6" fill="var(--bg-card)" stroke="var(--border)"></rect><text x="60" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text-dim)">3 Systems</text></g>
-              <g><rect x="130" y="26" width="100" height="48" rx="6" fill="var(--bg-card)" stroke="var(--border)"></rect><text x="180" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text-dim)">B → S → G</text></g>
-              <g><rect x="250" y="26" width="100" height="48" rx="6" fill="var(--bg-card)" stroke="var(--border)"></rect><text x="300" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text-dim)">Risk Score</text></g>
-              <g><rect x="370" y="26" width="100" height="48" rx="6" fill="var(--bronze-dim)" stroke="var(--bronze)"></rect><text x="420" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text)">Power BI</text></g>
-            </svg>
-          </div>
-
-          <p class="project-tile-highlight">Cut the reporting cycle from 4 days to 15 minutes with a live Power BI dashboard.</p>
-
-          <div class="project-tile-links">
-            <!-- TODO: replace with direct repo link -->
-            <a href="https://github.com/Jhanvisoni0" target="_blank" rel="noopener">GitHub ↗</a>
-            <a href="project-retail-banking.html" class="project-tile-cta">Case study →</a>
-          </div>
-        </article>
-
-        <article class="project-tile">
-          <div class="project-tile-head">
-            <div class="project-icon-badge project-icon-badge-gold" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><polyline points="4,17 10,10 14,13 20,5"/><polyline points="15,5 20,5 20,10"/></svg>
-            </div>
-            <h3>Real Assets Investment Intelligence Platform</h3>
-          </div>
-          <p class="project-tile-teaser">Investment analytics tracking a simulated $10K portfolio to an 86% return.</p>
-
-          <div class="project-diagram project-diagram-compact">
-            <svg viewBox="0 0 480 100" class="project-diagram-svg" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pipeline: Yahoo Finance and FRED APIs, through Bronze Silver Gold, into ML models, to an executive dashboard">
-              <defs>
-                <marker id="arrow-ra" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                  <path d="M0,0 L10,5 L0,10 z" fill="var(--gold)"></path>
-                </marker>
-              </defs>
-              <line x1="110" y1="50" x2="128" y2="50" stroke="var(--gold)" stroke-width="1.5" marker-end="url(#arrow-ra)"></line>
-              <line x1="230" y1="50" x2="248" y2="50" stroke="var(--gold)" stroke-width="1.5" marker-end="url(#arrow-ra)"></line>
-              <line x1="350" y1="50" x2="368" y2="50" stroke="var(--gold)" stroke-width="1.5" marker-end="url(#arrow-ra)"></line>
-              <g><rect x="10" y="26" width="100" height="48" rx="6" fill="var(--bg-card)" stroke="var(--border)"></rect><text x="60" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text-dim)">Yahoo+FRED</text></g>
-              <g><rect x="130" y="26" width="100" height="48" rx="6" fill="var(--bg-card)" stroke="var(--border)"></rect><text x="180" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text-dim)">B → S → G</text></g>
-              <g><rect x="250" y="26" width="100" height="48" rx="6" fill="var(--bg-card)" stroke="var(--border)"></rect><text x="300" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text-dim)">ML Models</text></g>
-              <g><rect x="370" y="26" width="100" height="48" rx="6" fill="var(--gold-dim)" stroke="var(--gold)"></rect><text x="420" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--text)">Dashboard</text></g>
-            </svg>
-          </div>
-
-          <p class="project-tile-highlight">Auto-flags 1,131 market anomalies via Isolation Forest, tracked in MLflow.</p>
-
-          <div class="project-tile-links">
-            <!-- TODO: replace with direct repo link -->
-            <a href="https://github.com/Jhanvisoni0" target="_blank" rel="noopener">GitHub ↗</a>
-            <a href="project-real-assets.html" class="project-tile-cta">Case study →</a>
-          </div>
-        </article>
-
-      </div>
+      <article class="station" id="st-assets" data-line="eng" data-x="1400" data-y="150" data-label="up" data-name="Real Assets" data-sub="Project · +86% simulated">
+        <p class="st-meta"><span class="st-kind">Project</span><span class="st-when">Personal project</span></p>
+        <h3 class="st-title">Real Assets Investment Intelligence</h3>
+        <p class="st-role">Databricks analytics platform</p>
+        <p class="st-sum">Tracks 15 real assets (REITs, infrastructure, gold, oil) across six years, computes risk metrics daily, flags market stress automatically and forecasts 90 days ahead.</p>
+        <ul class="st-points">
+          <li>Ingests 22,635 rows of market data and macro indicators (yfinance, FRED) into Delta Lake on Unity Catalog through a Bronze → Silver → Gold pipeline.</li>
+          <li>PySpark window functions compute returns, rolling volatility, Sharpe ratio, max drawdown and S&amp;P 500 correlation; a simulated $10K portfolio grew to $18,645 (86%).</li>
+          <li>Isolation Forest flagged 1,131 stress events and Prophet forecasts 90-day returns, all tracked in MLflow.</li>
+          <li>Joining Fed Funds Rate data showed REITs returning 23.26% a year in low-rate periods versus −8.17% during rate transitions.</li>
+        </ul>
+        <dl class="st-metrics"><div><dt>86%</dt><dd>simulated portfolio return</dd></div><div><dt>1,131</dt><dd>anomalies flagged</dd></div><div><dt>22,635</dt><dd>rows ingested</dd></div></dl>
+        <p class="st-tags"><span>Databricks</span><span>PySpark</span><span>Delta Lake</span><span>MLflow</span><span>Prophet</span><span>Unity Catalog</span></p>
+        <p class="st-links"><a href="project-real-assets.html">Full case study →</a><a href="https://github.com/Jhanvisoni0" target="_blank" rel="noopener">GitHub ↗</a></p>
+      </article>
     </div>
 
-    <div class="stats-band">
-      <p class="stats-label">Impact across these platforms</p>
-      <div class="stats-grid">
-        <div class="stat">
-          <span class="stat-number">40%</span>
-          <span class="stat-desc">Faster query execution via partition pruning &amp; Z-ordering</span>
-          <span class="stat-source">MSCI · production</span>
-        </div>
-        <div class="stat">
-          <span class="stat-number">100%</span>
-          <span class="stat-desc">Retrieval accuracy on RAG evaluation set</span>
-        </div>
-        <div class="stat">
-          <span class="stat-number">4d → 15m</span>
-          <span class="stat-desc">Reporting cycle time, Retail Banking platform</span>
-        </div>
-        <div class="stat">
-          <span class="stat-number">86%</span>
-          <span class="stat-desc">Simulated portfolio return over 6 years</span>
-        </div>
-      </div>
+    <div class="lgroup" data-line="ai">
+      <h3 class="lg-title"><i>A</i>AI &amp; Writing line</h3>
+
+      <article class="station" id="st-rag" data-line="ai" data-x="1300" data-y="320" data-label="down" data-link="eng" data-name="RAG Platform" data-sub="Flagship · 100% retrieval">
+        <p class="st-meta"><span class="st-kind">Flagship project</span><span class="st-when">Personal project · live demo</span></p>
+        <h3 class="st-title">Financial News Intelligence RAG Platform</h3>
+        <p class="st-role">GenAI on Azure Databricks</p>
+        <p class="st-sum">A research assistant that reads SEC filings and financial news and answers with citations — and says so plainly when the data can't support an answer.</p>
+        <ul class="st-points">
+          <li>100% retrieval accuracy on a 15-question evaluation set; every answer traceable to its source.</li>
+          <li>Found and fixed inline-XBRL markup silently corrupting filing text, restoring risk-keyword detection from 0%.</li>
+          <li>Citation-grounded generation with LLM-as-judge evaluation; deliberately unanswerable questions confirm it refuses instead of hallucinating.</li>
+          <li>Moved embeddings from local inference to an API to fix a memory-limited deployment: a public demo with no ongoing infrastructure.</li>
+        </ul>
+        <dl class="st-metrics"><div><dt>100%</dt><dd>retrieval accuracy</dd></div><div><dt>15</dt><dd>evaluation questions</dd></div><div><dt>5</dt><dd>public companies</dd></div><div><dt>15+</dt><dd>unit tests in CI</dd></div></dl>
+        <p class="st-note">The live demo asks visitors for their own OpenAI API key, and may take ~30 seconds to wake up.</p>
+        <p class="st-tags"><span>Python</span><span>Azure Databricks</span><span>Delta Lake</span><span>OpenAI</span><span>ChromaDB</span><span>MLflow</span><span>Terraform</span><span>GitHub Actions</span></p>
+        <p class="st-links"><a href="project-financial-rag.html">Full case study →</a><a href="https://financial-news-intelligence-rag-spfkf8yfjgbvxuzqiozyth.streamlit.app/" target="_blank" rel="noopener">Live demo ↗</a><a href="https://github.com/Jhanvisoni0/financial-news-intelligence-rag" target="_blank" rel="noopener">GitHub ↗</a></p>
+      </article>
+
+      <article class="station" id="st-post-realization" data-line="ai" data-x="1560" data-y="320" data-label="up" data-name="Databricks, rethought" data-sub="Post · 2026">
+        <p class="st-meta"><span class="st-kind">Post</span><span class="st-when">2026</span></p>
+        <h3 class="st-title">What Building a Banking Platform Taught Me About Databricks</h3>
+        <p class="st-sum">I thought Databricks was managed Spark. Building a real platform showed me it replaces the pile of tools instead of joining it.</p>
+        <p class="st-links"><a href="blog-databricks-realization.html">Read the post →</a></p>
+      </article>
+
+      <article class="station" id="st-post-ltap" data-line="ai" data-x="1740" data-y="320" data-label="down" data-name="LTAP explained" data-sub="Post · 2026">
+        <p class="st-meta"><span class="st-kind">Post</span><span class="st-when">2026</span></p>
+        <h3 class="st-title">LTAP: 45 Years of Transactional/Analytical Split, Solved?</h3>
+        <p class="st-sum">What Databricks' LTAP announcement actually is, explained with a restaurant, a courier and one shared whiteboard.</p>
+        <p class="st-links"><a href="blog-ltap.html">Read the post →</a></p>
+      </article>
+
+      <article class="station" id="st-post-rt" data-line="ai" data-x="1920" data-y="320" data-label="up" data-name="Lakehouse//RT" data-sub="Post · 2026">
+        <p class="st-meta"><span class="st-kind">Post</span><span class="st-when">2026</span></p>
+        <h3 class="st-title">Lakehouse//RT: When "Real-Time Lakehouse" Stopped Being Marketing Speak</h3>
+        <p class="st-sum">10ms latency, up to 16x faster, no copies and no separate serving layer — how it works and why it matters.</p>
+        <p class="st-links"><a href="blog-lakehouse-rt.html">Read the post →</a></p>
+      </article>
+
+      <article class="station" id="st-post-layers" data-line="ai" data-x="2100" data-y="320" data-label="down" data-name="AI in every layer" data-sub="Post · 2026">
+        <p class="st-meta"><span class="st-kind">Post</span><span class="st-when">2026</span></p>
+        <h3 class="st-title">AI Isn't Sitting on Top of Databricks Anymore</h3>
+        <p class="st-sum">AI/BI Genie, Genie Ontology, Agent Bricks and Unity AI Gateway: AI woven into every layer of the platform. Context closer to data, governance closer to AI.</p>
+        <p class="st-links"><a href="blog-databricks-ai-layers.html">Read the post →</a></p>
+      </article>
+
+      <article class="station" id="st-chatbot" data-line="ai" data-x="2280" data-y="320" data-label="up" data-state="building" data-name="LLM Chatbot" data-sub="In progress">
+        <p class="st-meta"><span class="st-kind">In progress</span><span class="st-when">Under construction</span></p>
+        <h3 class="st-title">LLM Chatbot</h3>
+        <p class="st-sum">Conversational orchestration, retrieval and evaluation — going deeper on production AI systems.</p>
+        <p class="st-note">Not shipped yet. This stretch of track is dashed on purpose.</p>
+      </article>
     </div>
 
-    <a href="#bronze" class="section-bridge">
-      <span>These are self-directed platforms. See what shipped in production at MSCI &amp; Techved →</span>
-    </a>
+    <div class="lgroup" data-line="lrn">
+      <h3 class="lg-title"><i>L</i>Learning line</h3>
+
+      <article class="station" id="st-ba" data-line="lrn" data-x="200" data-y="490" data-label="down" data-name="B.A. Psychology" data-sub="Univ. of Mumbai · 2017–20">
+        <p class="st-meta"><span class="st-kind">Education</span><span class="st-when">Jul 2017 – May 2020</span></p>
+        <h3 class="st-title">B.A. Psychology</h3>
+        <p class="st-role">University of Mumbai, India</p>
+      </article>
+
+      <article class="station" id="st-ms" data-line="lrn" data-x="900" data-y="490" data-label="down" data-name="M.S. MIS" data-sub="UH Clear Lake · 2024–26">
+        <p class="st-meta"><span class="st-kind">Education</span><span class="st-when">Aug 2024 – May 2026</span></p>
+        <h3 class="st-title">M.S. Management Information Systems</h3>
+        <p class="st-role">University of Houston Clear Lake, TX</p>
+      </article>
+
+      <article class="station" id="st-cert-fund" data-line="lrn" data-x="1250" data-y="490" data-label="down" data-name="Databricks Fundamentals" data-sub="Credential">
+        <p class="st-meta"><span class="st-kind">Credential</span><span class="st-when">Verifiable</span></p>
+        <h3 class="st-title">Databricks Fundamentals</h3>
+        <p class="st-links"><a href="https://credentials.databricks.com/c94e4aed-7f92-49dc-98fb-2a4e784ddee0" target="_blank" rel="noopener">Verify credential ↗</a></p>
+      </article>
+
+      <article class="station" id="st-cert-aws" data-line="lrn" data-x="1550" data-y="490" data-label="down" data-name="AWS Cloud Practitioner" data-sub="Credential">
+        <p class="st-meta"><span class="st-kind">Credential</span><span class="st-when">Verifiable</span></p>
+        <h3 class="st-title">AWS Cloud Practitioner</h3>
+        <p class="st-links"><a href="https://www.credly.com/badges/a01ecd6c-46ab-45b5-8eb7-16ce52265665/linked_in_profile" target="_blank" rel="noopener">Verify credential ↗</a></p>
+      </article>
+
+      <article class="station" id="st-cert-azure" data-line="lrn" data-x="1850" data-y="490" data-label="down" data-name="Azure Databricks DE" data-sub="Associate · credential">
+        <p class="st-meta"><span class="st-kind">Credential</span><span class="st-when">Verifiable</span></p>
+        <h3 class="st-title">Azure Databricks Data Engineer Associate</h3>
+        <p class="st-links"><a href="https://learn.microsoft.com/en-in/users/jhanvisoni-0857/credentials/c6d1f3ed6f9d9ac6" target="_blank" rel="noopener">Verify credential ↗</a></p>
+      </article>
+    </div>
+
   </div>
 </section>
 
-<!-- ============ ARCHITECTURE :: SYSTEM DESIGN ============ -->
-<section class="layer architecture" id="architecture">
-  <div class="container">
-    <div class="layer-head">
-      <span class="layer-tag layer-tag-arch">02 · SYSTEM DESIGN</span>
-      <h2 class="layer-title">Medallion Architecture in Practice <span class="layer-sub">// the pattern behind every platform I build</span></h2>
-      <p class="layer-desc">Pattern used across: Financial News RAG Platform, Retail Banking Analytics Platform, Real Assets Investment Intelligence Platform.</p>
-    </div>
+<div hidden>
+  <article class="station" id="st-contact" data-line="all" data-x="2560" data-y="320" data-label="right" data-big="1" data-name="Terminus" data-sub="Let's build something">
+    <p class="st-meta"><span class="st-kind">Terminus</span><span class="st-when">All lines end here</span></p>
+    <h3 class="st-title">Let's build something</h3>
+    <p class="st-sum">Open to full-time AI/LLM Engineering, GenAI Data Engineering and Analytics Engineering roles — immediately available. Based in Houston, TX.</p>
+    <p class="st-links"><a href="mailto:jhanvisoni0@gmail.com">jhanvisoni0@gmail.com</a><a href="https://linkedin.com/in/jhanvisonii/" target="_blank" rel="noopener">LinkedIn ↗</a><a href="https://github.com/Jhanvisoni0" target="_blank" rel="noopener">GitHub ↗</a></p>
+  </article>
+</div>
 
-    <div class="pipeline">
-      <div class="pipeline-step">
-        <div class="pipeline-icon">01</div>
-        <h4>Raw Sources</h4>
-        <p>APIs, streaming events, and source databases — ingested as-is via ADF, Auto Loader, and Kafka.</p>
-      </div>
-      <div class="pipeline-arrow">→</div>
-      <div class="pipeline-step step-bronze">
-        <div class="pipeline-icon">02</div>
-        <h4>Bronze Layer</h4>
-        <p>Immutable raw ingestion into Delta Lake — full history retained, schema captured as-is.</p>
-      </div>
-      <div class="pipeline-arrow">→</div>
-      <div class="pipeline-step step-silver">
-        <div class="pipeline-icon">03</div>
-        <h4>Silver Layer</h4>
-        <p>Cleaned, deduplicated, conformed — validated against data quality rules, SCD Type 1/2 applied.</p>
-      </div>
-      <div class="pipeline-arrow">→</div>
-      <div class="pipeline-step step-gold">
-        <div class="pipeline-icon">04</div>
-        <h4>Gold Layer</h4>
-        <p>Aggregated, business-ready star-schema tables — optimized via partitioning and Z-ordering.</p>
-      </div>
-      <div class="pipeline-arrow">→</div>
-      <div class="pipeline-step">
-        <div class="pipeline-icon">05</div>
-        <h4>Consumption</h4>
-        <p>Power BI dashboards, ML models, executive reporting — access governed by Unity Catalog RBAC.</p>
-      </div>
-    </div>
-
-    <h3 class="principles-title">Core Principles</h3>
-    <div class="principles-grid">
-      <div class="principle">
-        <span class="principle-no">01</span>
-        <h4>Schema Enforcement &amp; Data Quality</h4>
-        <p>Automated frameworks catch schema mismatches, nulls, and duplicates before they reach end users — monitoring 100+ feeds in production.</p>
-      </div>
-      <div class="principle">
-        <span class="principle-no">02</span>
-        <h4>Incremental, Scalable Processing</h4>
-        <p>Auto Loader and Delta Live Tables handle incremental ingestion without reprocessing full history.</p>
-      </div>
-      <div class="principle">
-        <span class="principle-no">03</span>
-        <h4>Governance, Lineage &amp; Security</h4>
-        <p>Unity Catalog enforces table-level RBAC, Key Vault secures credentials, and every table's lineage stays traceable.</p>
-      </div>
-    </div>
+<!-- ======================= TECHNICAL TOOLKIT ======================= -->
+<section class="kit wrap" id="toolkit" aria-label="Technical toolkit">
+  <div class="sec-head">
+    <p class="kicker">Rolling stock</p>
+    <h2>Technical Toolkit</h2>
+  </div>
+  <div class="kit-table">
+    <div class="kit-row"><span class="kit-code">T.01</span><h3>GenAI &amp; LLM systems</h3><p>Retrieval-Augmented Generation (RAG) · Large Language Models · OpenAI API · Vector search · Prompt engineering · LLM-as-judge evaluation</p></div>
+    <div class="kit-row"><span class="kit-code">T.02</span><h3>Languages</h3><p>Python · SQL · PySpark · Java</p></div>
+    <div class="kit-row"><span class="kit-code">T.03</span><h3>Orchestration &amp; engineering</h3><p>Azure Data Factory · Apache Airflow · Databricks Workflows · Auto Loader · Delta Live Tables · dbt · Apache Kafka</p></div>
+    <div class="kit-row"><span class="kit-code">T.04</span><h3>Cloud &amp; lakehouse</h3><p>ADLS Gen2 · Azure SQL · Synapse · Key Vault · Microsoft Fabric · Databricks · AWS</p></div>
+    <div class="kit-row"><span class="kit-code">T.05</span><h3>DevOps &amp; IaC</h3><p>Azure DevOps · CI/CD · Terraform · GitHub Actions · Git</p></div>
+    <div class="kit-row"><span class="kit-code">T.06</span><h3>Modeling &amp; architecture</h3><p>Medallion Architecture · Delta Lake · Star schema · Dimensional modeling · SCD Type 1/2</p></div>
+    <div class="kit-row"><span class="kit-code">T.07</span><h3>BI &amp; analytics</h3><p>Power BI · Tableau · SQL Server · Oracle · Jupyter</p></div>
   </div>
 </section>
 
-<!-- ============ BRONZE :: EXPERIENCE ============ -->
-<section class="layer bronze" id="bronze">
-  <div class="container">
-    <div class="layer-head">
-      <span class="layer-tag layer-tag-bronze">03 · BRONZE LAYER</span>
-      <h2 class="layer-title">Experience <span class="layer-sub">// raw signal: where I've been</span></h2>
-      <p class="layer-desc">Financial services and consulting, 3.5+ years, one throughline: turning messy multi-source data into something people — and now AI systems — can trust. The same schema validation, anomaly detection, and audit-trail discipline built here is what makes an AI system safe to ground answers in.</p>
-    </div>
-
-    <div class="timeline">
-      <div class="timeline-item">
-        <div class="timeline-marker"></div>
-        <div class="timeline-content">
-          <div class="timeline-header">
-            <h3>Data Engineer / Data Analyst</h3>
-            <span class="timeline-date">Aug 2022 – Jul 2024</span>
-          </div>
-          <p class="timeline-org">Morgan Stanley Capital International (MSCI) — Mumbai, India</p>
-          <ul class="timeline-bullets">
-            <li>Reduced average query execution time by 40% via partition pruning, predicate pushdown, and Z-ordering across equity and Real Assets reporting pipelines.</li>
-            <li>Lifted reporting accuracy by 20% by building automated data quality frameworks monitoring 100+ feeds — schema mismatch detection, null checks, duplicate alerts, audit logging.</li>
-            <li>Migrated 20+ legacy SQL workflows to PySpark on Azure Databricks; designed star-schema fact/dimension tables and SCD Type 1 &amp; 2 models used as source of truth by quant, risk, and product teams.</li>
-            <li>Architected ETL/ELT pipelines on Azure (ADLS Gen2, Azure SQL, ADF); provisioned infra via Terraform, deployed through Azure DevOps CI/CD with automated validation gates.</li>
-            <li>Built self-serve Power BI semantic models for stakeholder KPIs; mentored junior analysts on Databricks and Delta Lake best practices.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="timeline-item">
-        <div class="timeline-marker"></div>
-        <div class="timeline-content">
-          <div class="timeline-header">
-            <h3>Senior Data Analyst</h3>
-            <span class="timeline-date">Jan 2021 – Jul 2022</span>
-          </div>
-          <p class="timeline-org">Techved Consultancy — Mumbai, India</p>
-          <ul class="timeline-bullets">
-            <li>Built SQL and Python data pipelines, dimensional models, and Power BI/Tableau dashboards across 6+ client engagements, replacing manual reporting with real-time operational visibility.</li>
-            <li>Contributed to $300K+ in client expansion revenue by delivering proof-of-concept data models and dashboards; promoted from Associate to Senior Associate within 11 months.</li>
-            <li>Conducted deep-dive analysis using Advanced Excel and SQL, validating data accuracy ahead of stakeholder-facing presentations.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="edu-certs">
-      <div class="edu-col">
-        <h4 class="col-label">// education</h4>
-        <div class="edu-item">
-          <p class="edu-degree">M.S. Management Information Systems</p>
-          <p class="edu-school">University of Houston Clear Lake, TX · Aug 2024 – May 2026</p>
-        </div>
-        <div class="edu-item">
-          <p class="edu-degree">B.A. Psychology</p>
-          <p class="edu-school">University of Mumbai, India · Jul 2017 – May 2020</p>
-        </div>
-      </div>
-      <div class="edu-col">
-        <h4 class="col-label">// certifications</h4>
-        <a href="https://learn.microsoft.com/en-in/users/jhanvisoni-0857/credentials/c6d1f3ed6f9d9ac6" target="_blank" rel="noopener" class="cert-item">
-          <span>Azure Databricks Data Engineer Associate</span>
-          <span class="cert-verify">Verify ↗</span>
-        </a>
-        <a href="https://www.credly.com/badges/a01ecd6c-46ab-45b5-8eb7-16ce52265665/linked_in_profile" target="_blank" rel="noopener" class="cert-item">
-          <span>AWS Cloud Practitioner</span>
-          <span class="cert-verify">Verify ↗</span>
-        </a>
-        <a href="https://credentials.databricks.com/c94e4aed-7f92-49dc-98fb-2a4e784ddee0" target="_blank" rel="noopener" class="cert-item">
-          <span>Databricks Fundamentals</span>
-          <span class="cert-verify">Verify ↗</span>
-        </a>
-      </div>
-    </div>
+<!-- ======================= TERMINUS / CONTACT ======================= -->
+<section class="terminus" id="contact" aria-label="Contact">
+  <div class="wrap">
+    <p class="kicker">Terminus · all lines end here</p>
+    <h2>Let's build<br>something.</h2>
+    <p class="term-sub">Open to full-time AI/LLM Engineering, GenAI Data Engineering and Analytics Engineering roles — immediately available.</p>
+    <p class="term-links">
+      <a href="mailto:jhanvisoni0@gmail.com">jhanvisoni0@gmail.com</a>
+      <a href="https://linkedin.com/in/jhanvisonii/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      <a href="https://github.com/Jhanvisoni0" target="_blank" rel="noopener">GitHub ↗</a>
+    </p>
   </div>
 </section>
 
-<!-- ============ SILVER :: SKILLS ============ -->
-<section class="layer silver" id="silver">
-  <div class="container">
-    <div class="layer-head">
-      <span class="layer-tag layer-tag-silver">04 · SILVER LAYER</span>
-      <h2 class="layer-title">Technical Toolkit <span class="layer-sub">// cleaned, deduplicated, schema-enforced</span></h2>
-      <p class="layer-desc">Seven working disciplines, carried from raw ingestion to shipped system.</p>
-    </div>
-
-    <div class="skills-grid">
-      <div class="skill-card skill-card-featured">
-        <p class="skill-card-tag">T.01 · 6 tools</p>
-        <h4>GenAI &amp; LLM Systems</h4>
-        <div class="chip-row">
-          <span class="chip">Retrieval-Augmented Generation (RAG)</span><span class="chip">Large Language Models (LLM)</span><span class="chip">OpenAI API</span><span class="chip">Vector Search</span><span class="chip">Prompt Engineering</span><span class="chip">LLM-as-judge Evaluation</span>
-        </div>
-      </div>
-      <div class="skill-card">
-        <p class="skill-card-tag">T.02 · 4 tools</p>
-        <h4>Languages</h4>
-        <div class="chip-row">
-          <span class="chip">Python</span><span class="chip">SQL</span><span class="chip">PySpark</span><span class="chip">Java</span>
-        </div>
-      </div>
-      <div class="skill-card">
-        <p class="skill-card-tag">T.03 · 7 tools</p>
-        <h4>Orchestration &amp; Engineering</h4>
-        <div class="chip-row">
-          <span class="chip">Azure Data Factory</span><span class="chip">Apache Airflow</span><span class="chip">Databricks Workflows</span><span class="chip">Auto Loader</span><span class="chip">Delta Live Tables</span><span class="chip">dbt</span><span class="chip">Apache Kafka</span>
-        </div>
-      </div>
-      <div class="skill-card">
-        <p class="skill-card-tag">T.04 · 7 tools</p>
-        <h4>Cloud &amp; Lakehouse</h4>
-        <div class="chip-row">
-          <span class="chip">ADLS Gen2</span><span class="chip">Azure SQL</span><span class="chip">Synapse</span><span class="chip">Key Vault</span><span class="chip">Microsoft Fabric</span><span class="chip">Databricks</span><span class="chip">AWS</span>
-        </div>
-      </div>
-      <div class="skill-card">
-        <p class="skill-card-tag">T.05 · 5 tools</p>
-        <h4>DevOps &amp; IaC</h4>
-        <div class="chip-row">
-          <span class="chip">Azure DevOps</span><span class="chip">CI/CD</span><span class="chip">Terraform</span><span class="chip">GitHub Actions</span><span class="chip">Git</span>
-        </div>
-      </div>
-      <div class="skill-card">
-        <p class="skill-card-tag">T.06 · 5 tools</p>
-        <h4>Modeling &amp; Architecture</h4>
-        <div class="chip-row">
-          <span class="chip">Medallion Architecture</span><span class="chip">Delta Lake</span><span class="chip">Star Schema</span><span class="chip">Dimensional Modeling</span><span class="chip">SCD Type 1/2</span>
-        </div>
-      </div>
-      <div class="skill-card">
-        <p class="skill-card-tag">T.07 · 5 tools</p>
-        <h4>BI &amp; Analytics</h4>
-        <div class="chip-row">
-          <span class="chip">Power BI</span><span class="chip">Tableau</span><span class="chip">SQL Server</span><span class="chip">Oracle</span><span class="chip">Jupyter</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ CDC :: LATEST WRITING (Blog) ============ -->
-<section class="layer cdc" id="cdc">
-  <div class="container">
-    <div class="layer-head">
-      <span class="layer-tag layer-tag-cdc">05 · CHANGE DATA CAPTURE</span>
-      <h2 class="layer-title">Latest Writing <span class="layer-sub">// streaming updates, one post at a time</span></h2>
-      <p class="layer-desc">Notes on pipelines, platforms, and lessons learned in production.</p>
-      <p class="blog-scroll-hint">// scroll or use the arrows →</p>
-    </div>
-
-    <div class="blog-scroll-wrap">
-      <button class="blog-scroll-btn blog-scroll-prev" id="blogPrev" aria-label="Scroll to previous posts">←</button>
-      <div class="blog-grid" id="blogGrid">
-        <a href="blog-databricks-realization.html" class="blog-card">
-          <span class="blog-date">May 2026</span>
-          <h4>What Building a Banking Platform Taught Me About Databricks</h4>
-          <p>My mental model was "managed Spark." Then I built a real platform and it clicked: Databricks replaces the pile, it doesn't join it.</p>
-          <span class="blog-read">Read post →</span>
-        </a>
-        <a href="blog-ltap.html" class="blog-card">
-          <span class="blog-date">Jun 2026</span>
-          <h4>LTAP: 45 Years of Transactional/Analytical Split, Solved?</h4>
-          <p>Databricks says it cracked the transactional-vs-analytical divide. Here's what LTAP actually is, in plain terms.</p>
-          <span class="blog-read">Read post →</span>
-        </a>
-        <a href="blog-lakehouse-rt.html" class="blog-card">
-          <span class="blog-date">Jul 2026</span>
-          <h4>Lakehouse//RT: When "Real-Time Lakehouse" Stopped Being Marketing Speak</h4>
-          <p>10ms latency, 16x faster, zero reconfiguration — no copies, no separate serving layer. Here's how it works.</p>
-          <span class="blog-read">Read post →</span>
-        </a>
-        <a href="blog-databricks-ai-layers.html" class="blog-card">
-          <span class="blog-date">Aug 2026</span>
-          <h4>AI Isn't Sitting on Top of Databricks Anymore</h4>
-          <p>AI/BI Genie, Genie Ontology, Agent Bricks, Unity AI Gateway — how AI is being woven into every layer of the platform.</p>
-          <span class="blog-read">Read post →</span>
-        </a>
-      </div>
-      <button class="blog-scroll-btn blog-scroll-next" id="blogNext" aria-label="Scroll to more posts">→</button>
-      <div class="blog-scroll-fade blog-scroll-fade-left" aria-hidden="true"></div>
-      <div class="blog-scroll-fade blog-scroll-fade-right" aria-hidden="true"></div>
-    </div>
-    <!-- Dates above are approximate — update to match when you actually published each post. -->
-  </div>
-</section>
-
-<!-- ============ CONTACT ============ -->
-<section class="contact" id="contact">
-  <div class="container contact-inner">
-    <span class="layer-tag layer-tag-cdc">06 · CONTACT</span>
-    <p class="contact-closer">DATAREFINED.<span class="accent-cyan-text">VALUESHIPPED.</span></p>
-    <h2 class="contact-title">Let's build something.</h2>
-    <p class="contact-sub">Open to full-time AI/LLM Engineering, GenAI Data Engineering, or Analytics Engineering roles — immediately available.</p>
-    <div class="contact-links">
-      <a href="mailto:jhanvisoni0@gmail.com" class="contact-link">
-        <span class="contact-label">email</span>
-        <span class="contact-value">jhanvisoni0@gmail.com</span>
-      </a>
-      <a href="https://linkedin.com/in/jhanvisonii/" target="_blank" rel="noopener" class="contact-link">
-        <span class="contact-label">linkedin</span>
-        <span class="contact-value">/in/jhanvisonii</span>
-      </a>
-      <a href="https://github.com/Jhanvisoni0" target="_blank" rel="noopener" class="contact-link">
-        <span class="contact-label">github</span>
-        <span class="contact-value">/Jhanvisoni0</span>
-      </a>
-    </div>
-  </div>
-</section>
+</main>
 
 <footer class="footer">
-  <div class="container footer-inner">
+  <div class="wrap footer-inner">
     <span>© 2026 Jhanvi Soni</span>
-    <span class="footer-dim">Built with HTML / CSS / JS · Deployed on GitHub Pages</span>
+    <span class="footer-dim">Hand-drawn map · HTML / CSS / JS · GitHub Pages</span>
   </div>
 </footer>
 
-<script src="script.js?v=5"></script>
+<!-- Station details drawer (map view) -->
+<aside class="drawer" id="drawer" role="dialog" aria-label="Station details" tabindex="-1">
+  <div class="dr-top">
+    <div class="dr-line"><span class="badge" id="drBadge">E</span><span id="drLine">Engineering line</span></div>
+    <button type="button" class="icon-btn" id="drClose" aria-label="Close details">✕</button>
+  </div>
+  <div class="dr-body" id="drBody"></div>
+  <div class="dr-foot">
+    <button type="button" class="dr-nav" id="drPrev"></button>
+    <button type="button" class="dr-nav next" id="drNext"></button>
+  </div>
+</aside>
+
+<script src="script.js?v=10"></script>
 </body>
 </html>
