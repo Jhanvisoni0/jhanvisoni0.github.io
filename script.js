@@ -12,6 +12,7 @@
   function store(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
   var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   var coarse = !!(window.matchMedia && window.matchMedia('(hover: none)').matches);
+  var pendingMark = null, onStationOpened = null, onStationClosed = null, askApi = null;
   var LINES = { eng: 'Engineering line', ai: 'AI & Writing line', lrn: 'Learning line', all: 'Terminus' };
   var BADGE = { eng: 'E', ai: 'A', lrn: 'L', all: '★' };
 
@@ -82,16 +83,16 @@
   var ask = $('.board-ask');
   if (ask) {
     var TEASERS = [
-      ['The XBRL bug that silently zeroed my keyword detection', 'st-rag'],
-      ['How Z-ordering cut query time 40% at MSCI', 'st-msci'],
-      ['4 days of bank reporting down to 15 minutes. How?', 'st-banking'],
-      ['A chatbot that says "I don\'t know" instead of guessing', 'st-rag'],
-      ['Why Databricks isn\'t just managed Spark', 'st-post-realization'],
-      ['45 years of databases, one restaurant whiteboard', 'st-post-ltap'],
-      ['REITs: +23% in low-rate years, \u22128% when rates shift', 'st-assets']
+      ['The XBRL bug that silently zeroed my keyword detection', 'st-rag', 'XBRL'],
+      ['How Z-ordering cut query time 40% at MSCI', 'st-msci', 'Z-ordering'],
+      ['4 days of bank reporting down to 15 minutes. How?', 'st-banking', '15 minutes'],
+      ['A chatbot that says "I don\'t know" instead of guessing', 'st-rag', 'unanswerable'],
+      ['Why Databricks isn\'t just managed Spark', 'st-post-realization', 'managed Spark'],
+      ['45 years of databases, one restaurant whiteboard', 'st-post-ltap', 'restaurant'],
+      ['REITs: +23% in low-rate years, \u22128% when rates shift', 'st-assets', 'REITs returning']
     ];
     var askV = $('.ask-v', ask), askGo = $('.ask-go', ask), askFlip = $('.ask-flip', ask), askLive = $('.ask-live', ask);
-    var askI = 0, askTimer = null, askPaused = false;
+    var askI = 0, askTimer = null, askPaused = false, askHold = false;
     function showAsk(i, user) {
       askI = (i + TEASERS.length) % TEASERS.length;
       var t = TEASERS[askI];
@@ -99,6 +100,7 @@
       askGo.setAttribute('href', '#' + t[1]);
       if (reduce) askV.textContent = t[0]; else scramble(askV, 0);
       if (user) askLive.textContent = 'Next question: ' + t[0];
+      if (askApi && askApi.onChange) askApi.onChange();
     }
     function stopAuto() { if (askTimer) { clearInterval(askTimer); askTimer = null; } }
     askFlip.addEventListener('click', function () {
@@ -110,9 +112,10 @@
     ask.addEventListener('mouseleave', function () { askPaused = false; });
     ask.addEventListener('focusin', function () { askPaused = true; });
     ask.addEventListener('focusout', function () { askPaused = false; });
+    askApi = { teasers: TEASERS, cur: function () { return askI; }, show: showAsk, stopAuto: stopAuto, hold: function (v) { askHold = v; }, onChange: null };
     if (!reduce) {
       askTimer = setInterval(function () {
-        if (!askPaused && !doc.hidden) showAsk(askI + 1, false);
+        if (!askPaused && !askHold && !doc.hidden) showAsk(askI + 1, false);
       }, 6500);
     }
   }
@@ -338,6 +341,7 @@
     centerOn(s.x, true);
     bringMapIntoView(s.y);
     setHash(id);
+    if (onStationOpened) onStationOpened();
     if (fromClick || doc.activeElement === doc.body) {
       setTimeout(function () { drawer.focus({ preventScroll: true }); }, 60);
     }
@@ -348,6 +352,7 @@
     Object.keys(btns).forEach(function (k) { btns[k].classList.remove('is-active'); });
     current = null;
     setHash('map');
+    if (onStationClosed) onStationClosed();
     if (restore && lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
   }
   $('#drClose').addEventListener('click', function () { closeDrawer(true); });
@@ -392,4 +397,223 @@
   }
   window.addEventListener('hashchange', fromHash);
   window.addEventListener('load', function () { updateProgress(); fromHash(); });
+
+  /* ---------------- Pip: a little guide that hovers around and points at the answer ---------------- */
+  (function pipInit() {
+    if (!askApi) return;
+    var S = 84, W0 = 76;
+    var quiet = false;
+    try { quiet = sessionStorage.getItem('pipQuiet') === '1'; } catch (e) {}
+    var T = askApi.teasers;
+    var el = doc.createElement('div');
+    el.className = 'pip';
+    el.setAttribute('data-side', 'r');
+    el.setAttribute('data-v', 'up');
+    el.innerHTML =
+      '<div class="pip-bubble" role="group" aria-label="A question from Pip">' +
+        '<button type="button" class="pip-x" aria-label="Stop the tips">✕</button>' +
+        '<p class="pip-k">Ask Jhanvi about…</p>' +
+        '<p class="pip-q"></p>' +
+        '<div class="pip-btns"><button type="button" class="pip-flip">Another ↻</button><a class="pip-go" href="#">Show me →</a></div>' +
+      '</div>' +
+      '<span class="pip-tag" aria-hidden="true">There it is.</span>' +
+      '<button type="button" class="pip-body" aria-expanded="false" aria-label="Pip, your guide. Open a question about Jhanvi\'s work.">' +
+        '<svg class="pip-svg" viewBox="0 0 76 84" width="76" height="84" aria-hidden="true" focusable="false">' +
+          '<line x1="38" y1="14" x2="38" y2="7" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>' +
+          '<circle class="pip-lamp" cx="38" cy="5" r="4.5" fill="#ff58b4"/>' +
+          '<rect x="6" y="14" width="64" height="56" rx="26" fill="#0a1022" stroke="currentColor" stroke-width="2.5"/>' +
+          '<rect x="13" y="26" width="50" height="28" rx="14" fill="#f4f6fb"/>' +
+          '<g class="pip-look"><g class="pip-blink"><circle cx="28" cy="40" r="5" fill="#0a1022"/><circle cx="48" cy="40" r="5" fill="#0a1022"/><circle cx="29.6" cy="38.4" r="1.6" fill="#fff"/><circle cx="49.6" cy="38.4" r="1.6" fill="#fff"/></g></g>' +
+          '<circle cx="20" cy="49" r="3" fill="#ff58b4" opacity=".5"/><circle cx="56" cy="49" r="3" fill="#ff58b4" opacity=".5"/>' +
+          '<path d="M33 49 Q38 53 43 49" stroke="#0a1022" stroke-width="2" fill="none" stroke-linecap="round"/>' +
+          '<rect x="16" y="58" width="14" height="4" rx="2" fill="#5d8bff"/><rect x="31" y="58" width="14" height="4" rx="2" fill="#ff58b4"/><rect x="46" y="58" width="14" height="4" rx="2" fill="#2fe3b0"/>' +
+          '<circle cx="24" cy="75" r="6" fill="#ff58b4" stroke="#0a1022" stroke-width="2"/><circle cx="52" cy="75" r="6" fill="#2fe3b0" stroke="#0a1022" stroke-width="2"/>' +
+        '</svg>' +
+      '</button>';
+    doc.body.appendChild(el);
+
+    var body = $('.pip-body', el), bubble = $('.pip-bubble', el), qEl = $('.pip-q', el);
+    var goEl = $('.pip-go', el), flipEl = $('.pip-flip', el), xEl = $('.pip-x', el), look = $('.pip-look', el);
+    var open = false, guiding = false, anchorI = 0, hit = null, autoPops = 0, userTouched = false;
+    var timers = { close: null, guide: null, track: null, clear: null };
+
+    function W() { return doc.documentElement.clientWidth; }
+    function H() { return window.innerHeight; }
+    function drawerOpen() { return !!(drawer && drawer.classList.contains('open')); }
+    function place(x, y, side) {
+      el.style.transform = 'translate(' + Math.round(x) + 'px,' + Math.round(y) + 'px)';
+      el.setAttribute('data-side', side);
+      el.setAttribute('data-v', y < 230 ? 'down' : 'up');
+    }
+    function anchors() {
+      var w = W(), h = H(), narrow = w < 900;
+      var a = [[w - W0 - 14, h - S - 14, 'r'], [14, h - S - 14, 'l']];
+      if (!narrow) { a.push([w - W0 - 14, 78, 'r']); a.push([14, Math.round(h * 0.6), 'l']); }
+      if (drawerOpen() && !narrow) a = a.filter(function (p) { return p[2] === 'l'; });
+      return a;
+    }
+    function settle() {
+      var a = anchors();
+      anchorI = Math.min(anchorI, a.length - 1);
+      place(a[anchorI][0], a[anchorI][1], a[anchorI][2]);
+    }
+    function refreshAway() {
+      el.classList.toggle('away', !guiding && drawerOpen() && W() < 900);
+    }
+    function sync() {
+      var t = T[askApi.cur()];
+      qEl.textContent = t[0];
+      goEl.setAttribute('href', '#' + t[1]);
+    }
+    function setOpen(v, auto) {
+      if (v && (el.classList.contains('away') || guiding)) return;
+      open = v;
+      el.classList.toggle('open', v);
+      body.setAttribute('aria-expanded', String(v));
+      askApi.hold(v);
+      clearTimeout(timers.close);
+      if (v) {
+        sync();
+        if (auto) timers.close = setTimeout(function () { if (!el.matches(':hover') && !el.contains(doc.activeElement)) setOpen(false); }, 10000);
+      }
+    }
+    function hop() {
+      el.classList.remove('hop'); void el.offsetWidth; el.classList.add('hop');
+    }
+    function wander() {
+      if (open || guiding || el.classList.contains('away') || reduce) return;
+      var a = anchors(), n = anchorI;
+      if (a.length > 1) { do { n = Math.floor(Math.random() * a.length); } while (n === anchorI); }
+      anchorI = n;
+      place(a[n][0], a[n][1], a[n][2]);
+      el.classList.add('moving');
+      setTimeout(function () { el.classList.remove('moving'); }, 1500);
+    }
+
+    /* highlight + guide */
+    function clearMarks() {
+      $$('.hl-target').forEach(function (n) { n.classList.remove('hl-target'); });
+    }
+    function updateGuide() {
+      if (!guiding || !hit) return;
+      var r = hit.getBoundingClientRect(), w = W(), x, y, side;
+      if (r.bottom < 60 || r.top > H()) return;
+      if (w >= 900) {
+        if (drawerOpen()) { x = drawer.getBoundingClientRect().left - W0 - 12; side = 'r'; }
+        else { x = Math.max(8, r.left - W0 - 14); side = 'l'; }
+        y = r.top + r.height / 2 - S / 2;
+        look.style.transform = 'translate(3px,0)';
+      } else {
+        x = w - W0 - 10; y = r.top - S + 8; side = 'r';
+        look.style.transform = 'translate(0,3px)';
+      }
+      y = Math.min(Math.max(y, 72), H() - S - 8);
+      place(x, y, side);
+    }
+    function endGuide() {
+      if (!guiding) return;
+      guiding = false;
+      clearTimeout(timers.guide); clearTimeout(timers.track);
+      el.classList.remove('guiding', 'tracking');
+      look.style.transform = '';
+      timers.clear = setTimeout(clearMarks, 4000);
+      refreshAway();
+      settle();
+    }
+    function startGuide(node) {
+      hit = node; guiding = true;
+      setOpen(false);
+      el.classList.remove('away');
+      el.classList.add('guiding');
+      updateGuide();
+      clearTimeout(timers.track);
+      timers.track = setTimeout(function () { el.classList.add('tracking'); }, 1400);
+      clearTimeout(timers.guide);
+      timers.guide = setTimeout(endGuide, 12000);
+    }
+    function markIn(container, needle) {
+      clearTimeout(timers.clear); clearMarks();
+      var low = needle.toLowerCase();
+      var node = $$('li, .st-sum, .st-note, .st-metrics > div', container).filter(function (n) {
+        return n.textContent.toLowerCase().indexOf(low) > -1;
+      })[0];
+      if (!node) return;
+      var d = node.closest('details'); if (d) d.open = true;
+      node.classList.add('hl-target');
+      node.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+      setTimeout(function () { startGuide(node); }, reduce ? 60 : 550);
+    }
+    function goTo(i) {
+      var t = T[i];
+      setOpen(false);
+      endGuide();
+      if (root.getAttribute('data-view') === 'map') {
+        pendingMark = t[2];
+        openStation(t[1], false);
+      } else {
+        var a = doc.getElementById(t[1]);
+        if (!a) return;
+        a.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+        setTimeout(function () { markIn(a, t[2]); }, reduce ? 60 : 700);
+      }
+    }
+    onStationOpened = function () {
+      refreshAway();
+      if (!guiding) settle();
+      if (pendingMark) {
+        var n = pendingMark; pendingMark = null;
+        setTimeout(function () { markIn(drBody, n); }, 450);
+      }
+    };
+    onStationClosed = function () { endGuide(); clearMarks(); refreshAway(); settle(); };
+
+    /* interactions */
+    function touched() { userTouched = true; }
+    body.addEventListener('click', function () { touched(); hop(); setOpen(!open, false); });
+    xEl.addEventListener('click', function () {
+      touched(); quiet = true;
+      try { sessionStorage.setItem('pipQuiet', '1'); } catch (e) {}
+      setOpen(false); body.focus();
+    });
+    flipEl.addEventListener('click', function () {
+      touched(); askApi.stopAuto(); askApi.show(askApi.cur() + 1, true); hop();
+    });
+    function go(e) { e.preventDefault(); touched(); goTo(askApi.cur()); }
+    goEl.addEventListener('click', go);
+    var boardGo = $('.ask-go');
+    if (boardGo) boardGo.addEventListener('click', go);
+    askApi.onChange = function () { sync(); };
+    doc.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && open && !drawerOpen()) { setOpen(false); body.focus(); }
+    });
+    window.addEventListener('scroll', function () { if (guiding) updateGuide(); }, { passive: true });
+    drBody.addEventListener('scroll', function () { if (guiding) updateGuide(); }, { passive: true });
+    window.addEventListener('resize', function () { refreshAway(); if (guiding) updateGuide(); else settle(); });
+    /* eyes follow the pointer */
+    if (!coarse && !reduce) {
+      window.addEventListener('pointermove', function (e) {
+        if (guiding || e.pointerType === 'touch') return;
+        var r = body.getBoundingClientRect();
+        var dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+        var d = Math.sqrt(dx * dx + dy * dy) || 1, k = Math.min(1, d / 160);
+        look.style.transform = 'translate(' + (dx / d * 3.2 * k).toFixed(2) + 'px,' + (dy / d * 2.4 * k).toFixed(2) + 'px)';
+      }, { passive: true });
+    }
+    /* a bubble the viewer has not asked for appears at most a few times, then stays quiet */
+    function autoPop() {
+      if (quiet || userTouched || guiding || open || doc.hidden || drawerOpen() || autoPops >= 4) return false;
+      autoPops++; setOpen(true, true); hop(); return true;
+    }
+    settle();
+    sync();
+    setTimeout(function () { el.classList.add('in'); }, 900);
+    if (!reduce) {
+      setTimeout(autoPop, 4200);
+      var tick = setInterval(function () {
+        if (open || guiding) return;
+        wander();
+        if (!quiet && !userTouched && autoPops < 4) setTimeout(autoPop, 1700);
+      }, 14000);
+    }
+  })();
 })();

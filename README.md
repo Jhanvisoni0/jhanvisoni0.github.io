@@ -53,6 +53,10 @@ Tracks are drawn in `script.js` (search for `track(`).
 
 The last row of the departure board flips through curiosity hooks (the XBRL bug, the 40% query-time cut, etc.) and each has an Open button that jumps to the matching station. Edit the list in `script.js` (search for `TEASERS`): each entry is `[text, station id]`. It auto-flips until the visitor presses Flip, and pauses on hover.
 
+## Pip, the floating guide
+
+A small robot (built in `script.js`, styled at the bottom of `style.css`) drifts between screen corners, follows the cursor with its eyes, and every so often pops a bubble with one of the same teasers. **Show me** opens the right station and highlights the exact line that answers the question, with Pip hovering beside it. A few automatic pop-ups, then it goes quiet; the ✕ silences it for the session. Teasers are `[text, station id, phrase to highlight]` in the `TEASERS` list.
+
 ## Themes and views
 
 - Theme: follows the visitor's local time (light 7:00–18:59, dark otherwise) until they press the sun/moon button; the choice is saved in `localStorage`.
@@ -62,7 +66,7 @@ The last row of the departure board flips through curiosity hooks (the XBRL bug,
 ## Updating the site (cache-busting)
 
 GitHub Pages and browsers cache CSS/JS. When you change `style.css` or `script.js`, bump the
-version in every page (`style.css?v=24`, `script.js?v=12`), otherwise visitors may see the old look.
+version in every page (`style.css?v=25`, `script.js?v=13`), otherwise visitors may see the old look.
 
 ## Deploy on GitHub Pages
 
