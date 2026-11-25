@@ -57,7 +57,7 @@ The last row of the departure board flips through curiosity hooks (the XBRL bug,
 
 A small robot (built in `script.js`, styled at the bottom of `style.css`) drifts between screen corners, follows the cursor with its eyes, and every so often pops a bubble with one of the same teasers. **Show me** opens the right station and highlights the exact line that answers the question, with Pip hovering beside it. A few automatic pop-ups, then it goes quiet; the ✕ silences it for the session. Teasers are `[text, station id, phrase to highlight]` in the `TEASERS` list.
 
-If nobody touches the page for ~12 seconds, Pip plays **hide-and-seek** (peeks up from the bottom edge). Move the cursor near it and it bolts, so the visitor has to **catch it** (it tires after a few dashes so it's always winnable). Catching it throws confetti and unlocks a fresh question. The game runs at most twice per page load and never starts with reduced motion, an open panel, or after the ✕. The tuning numbers (12000 idle ms, 6 dashes, distances) are in the `/* idle game */` block of `script.js`.
+If nobody touches the page for ~14 seconds, Pip offers **a mind-reading trick** (once per page load; the bubble's "Mind-reading trick" button also starts it any time). The visitor thinks of a number from 1 to 31 and answers yes/no on five cards; Pip reveals the number, then explains it's binary (each card is one bit) and links to the MSCI partition-pruning line. The trick lives in the "the trick" block of `script.js`; styles are under `/* the trick */` in `style.css`.
 
 ## Themes and views
 
@@ -68,7 +68,7 @@ If nobody touches the page for ~12 seconds, Pip plays **hide-and-seek** (peeks u
 ## Updating the site (cache-busting)
 
 GitHub Pages and browsers cache CSS/JS. When you change `style.css` or `script.js`, bump the
-version in every page (`style.css?v=27`, `script.js?v=14`), otherwise visitors may see the old look.
+version in every page (`style.css?v=28`, `script.js?v=15`), otherwise visitors may see the old look.
 
 ## Deploy on GitHub Pages
 

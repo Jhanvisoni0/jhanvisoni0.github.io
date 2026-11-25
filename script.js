@@ -414,7 +414,7 @@
         '<button type="button" class="pip-x" aria-label="Stop the tips">✕</button>' +
         '<p class="pip-k">Ask Jhanvi about…</p>' +
         '<p class="pip-q"></p>' +
-        '<div class="pip-btns"><button type="button" class="pip-flip">Another ↻</button><a class="pip-go" href="#">Show me →</a><button type="button" class="pip-play">Play catch</button></div>' +
+        '<div class="pip-btns"><button type="button" class="pip-flip">Another ↻</button><a class="pip-go" href="#">Show me →</a><button type="button" class="pip-trick">Mind-reading trick</button><button type="button" class="pip-try">Try it</button><button type="button" class="pip-no">Not now</button></div>' +
       '</div>' +
       '<span class="pip-tag" aria-hidden="true">There it is.</span>' +
       '<span class="pip-say" aria-hidden="true"></span>' +
@@ -428,17 +428,15 @@
           '<circle cx="20" cy="49" r="3" fill="#ff58b4" opacity=".5"/><circle cx="56" cy="49" r="3" fill="#ff58b4" opacity=".5"/>' +
           '<path d="M33 49 Q38 53 43 49" stroke="#0a1022" stroke-width="2" fill="none" stroke-linecap="round"/>' +
           '<rect x="16" y="58" width="14" height="4" rx="2" fill="#5d8bff"/><rect x="31" y="58" width="14" height="4" rx="2" fill="#ff58b4"/><rect x="46" y="58" width="14" height="4" rx="2" fill="#2fe3b0"/>' +
-          '<path class="pip-sweat" d="M66 24 q4 6 0 10 q-4 -4 0 -10z" fill="#5dc8ff"/>' +
           '<circle cx="24" cy="75" r="6" fill="#ff58b4" stroke="#0a1022" stroke-width="2"/><circle cx="52" cy="75" r="6" fill="#2fe3b0" stroke="#0a1022" stroke-width="2"/>' +
         '</svg>' +
       '</button>';
     doc.body.appendChild(el);
 
     var body = $('.pip-body', el), bubble = $('.pip-bubble', el), qEl = $('.pip-q', el);
-    var kEl = $('.pip-k', el), sayEl = $('.pip-say', el), playEl = $('.pip-play', el), goEl = $('.pip-go', el), flipEl = $('.pip-flip', el), xEl = $('.pip-x', el), look = $('.pip-look', el);
-    var game = null, lastAct = Date.now(), lastMove = 0, moves = 0, plays = 0, ptr = { x: -999, y: -999 };
-    var caughtN = 0; try { caughtN = +sessionStorage.getItem('pipCaught') || 0; } catch (e) {}
-    var open = false, guiding = false, anchorI = 0, hit = null, autoPops = 0, userTouched = false;
+    var kEl = $('.pip-k', el), sayEl = $('.pip-say', el), trickBtn = $('.pip-trick', el), goEl = $('.pip-go', el), flipEl = $('.pip-flip', el), xEl = $('.pip-x', el), look = $('.pip-look', el);
+    var lastAct = Date.now(), tricking = false;
+        var open = false, guiding = false, anchorI = 0, hit = null, autoPops = 0, userTouched = false;
     var timers = { close: null, guide: null, track: null, clear: null, peek: null, tired: null, zip: null, say: null, chase: null };
 
     function W() { return doc.documentElement.clientWidth; }
@@ -465,18 +463,19 @@
       el.classList.toggle('away', !guiding && drawerOpen() && W() < 900);
     }
     function sync() {
+      if (el.hasAttribute('data-offer')) return;
       var t = T[askApi.cur()];
       qEl.textContent = t[0];
       goEl.setAttribute('href', '#' + t[1]);
     }
     function setOpen(v, auto) {
-      if (v && (el.classList.contains('away') || guiding)) return;
+      if (v && (el.classList.contains('away') || guiding || tricking)) return;
       open = v;
       el.classList.toggle('open', v);
       body.setAttribute('aria-expanded', String(v));
       askApi.hold(v);
       clearTimeout(timers.close);
-      if (!v) kEl.textContent = 'Ask Jhanvi about\u2026';
+      if (!v) { kEl.textContent = 'Ask Jhanvi about\u2026'; if (el.hasAttribute('data-offer')) { el.removeAttribute('data-offer'); sync(); } }
       if (v) {
         sync();
         if (auto) timers.close = setTimeout(function () { if (!el.matches(':hover') && !el.contains(doc.activeElement)) setOpen(false); }, 10000);
@@ -486,7 +485,7 @@
       el.classList.remove('hop'); void el.offsetWidth; el.classList.add('hop');
     }
     function wander() {
-      if (open || guiding || game || el.classList.contains('away') || reduce) return;
+      if (open || guiding || tricking || el.classList.contains('away') || reduce) return;
       var a = anchors(), n = anchorI;
       if (a.length > 1) { do { n = Math.floor(Math.random() * a.length); } while (n === anchorI); }
       anchorI = n;
@@ -548,10 +547,10 @@
       node.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
       setTimeout(function () { startGuide(node); }, reduce ? 60 : 550);
     }
-    function goTo(i) {
-      var t = T[i];
+    function goTo(i) { goToStation(T[i][1], T[i][2]); }
+    function goToStation(id, needle) {
+      var t = [null, id, needle];
       setOpen(false);
-      endGame();
       endGuide();
       if (root.getAttribute('data-view') === 'map') {
         pendingMark = t[2];
@@ -564,7 +563,6 @@
       }
     }
     onStationOpened = function () {
-      if (game) endGame();
       refreshAway();
       if (!guiding) settle();
       if (pendingMark) {
@@ -577,8 +575,6 @@
     /* interactions */
     function touched() { userTouched = true; }
     body.addEventListener('click', function () {
-      if (game === 'peek') { startChase('Found me! Now catch me!'); return; }
-      if (game === 'chase' || game === 'tired') { caught(); return; }
       touched(); hop(); setOpen(!open, false);
     });
     xEl.addEventListener('click', function () {
@@ -612,40 +608,17 @@
     }
     /* a bubble the viewer has not asked for appears at most a few times, then stays quiet */
     function autoPop() {
-      if (game || quiet || userTouched || guiding || open || doc.hidden || drawerOpen() || autoPops >= 4) return false;
+      if (tricking || quiet || userTouched || guiding || open || doc.hidden || drawerOpen() || autoPops >= 4) return false;
       autoPops++; setOpen(true, true); hop(); return true;
     }
 
-    /* ---- idle game: hide-and-seek, then catch-me ---- */
+
+    /* ---- the trick: Pip "reads your mind" (a 5-card binary guessing trick) ---- */
     function say(text, ms) {
       sayEl.textContent = text;
       el.classList.add('saying');
       clearTimeout(timers.say);
-      timers.say = setTimeout(function () { el.classList.remove('saying'); }, ms || 1400);
-    }
-    function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
-    function near(x, y, d) {
-      var r = body.getBoundingClientRect();
-      var dx = x - (r.left + r.width / 2), dy = y - (r.top + r.height / 2);
-      return Math.sqrt(dx * dx + dy * dy) < d;
-    }
-    function zipTo(s) {
-      el.classList.add('zip');
-      place(s[0], s[1], s[0] < W() / 2 ? 'l' : 'r');
-      clearTimeout(timers.zip);
-      timers.zip = setTimeout(function () { el.classList.remove('zip'); }, 460);
-      lastMove = Date.now();
-    }
-    function randSpot() {
-      var w = W(), h = H();
-      var maxX = w - W0 - 14 - (drawerOpen() && w >= 900 ? 470 : 0);
-      var x, y, k = 0;
-      do {
-        x = 14 + Math.random() * Math.max(10, maxX - 14);
-        y = 80 + Math.random() * Math.max(10, h - S - 94);
-        k++;
-      } while (k < 14 && (near(x + W0 / 2, y + S / 2, 120) || Math.hypot(x + W0 / 2 - ptr.x, y + S / 2 - ptr.y) < 230));
-      return [x, y];
+      timers.say = setTimeout(function () { el.classList.remove('saying'); }, ms || 1500);
     }
     function confetti() {
       var r = body.getBoundingClientRect(), cx = r.left + 38, cy = r.top + 42;
@@ -666,97 +639,163 @@
         })(d, a, dist);
       }
     }
-    function clearGameTimers() {
-      clearTimeout(timers.peek); clearTimeout(timers.tired); clearInterval(timers.chase); timers.chase = null;
+
+    var trick = null, tBody = null, tCard = null, tStep = 0, tSum = 0, tReturn = null, offered = false;
+    var QUIPS = ['Hmm…', 'Interesting…', 'I can feel it…', 'Almost there…'];
+
+    function buildTrick() {
+      trick = doc.createElement('div');
+      trick.className = 'trick';
+      trick.hidden = true;
+      trick.innerHTML =
+        '<div class="trick-back"></div>' +
+        '<div class="trick-card" role="dialog" aria-modal="true" aria-labelledby="trickT" tabindex="-1">' +
+          '<button type="button" class="trick-x" aria-label="Close the trick">✕</button>' +
+          '<p class="trick-k" id="trickT">Pip reads your mind</p>' +
+          '<div class="trick-body"></div>' +
+        '</div>';
+      doc.body.appendChild(trick);
+      tBody = $('.trick-body', trick);
+      tCard = $('.trick-card', trick);
+      $('.trick-x', trick).addEventListener('click', closeTrick);
+      $('.trick-back', trick).addEventListener('click', closeTrick);
+      trick.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') { e.stopPropagation(); closeTrick(); return; }
+        if (e.key !== 'Tab') return;
+        var f = $$('button', tCard).filter(function (b) { return !b.disabled && b.offsetParent; });
+        if (!f.length) return;
+        var first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && (doc.activeElement === first || doc.activeElement === tCard)) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && doc.activeElement === last) { e.preventDefault(); first.focus(); }
+      });
+      tBody.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-act]');
+        if (!b) return;
+        var act = b.getAttribute('data-act');
+        if (act === 'start') { tStep = 0; tSum = 0; renderCard(); }
+        else if (act === 'yes' || act === 'no') { if (act === 'yes') tSum += (1 << tStep); tStep++; if (tStep < 5) { say(QUIPS[tStep - 1], 1200); renderCard(); } else reveal(); }
+        else if (act === 'again') renderIntro();
+        else if (act === 'close') closeTrick();
+        else if (act === 'how') {
+          var ex = $('.trick-explain', tBody);
+          ex.hidden = !ex.hidden;
+          b.setAttribute('aria-expanded', String(!ex.hidden));
+          b.textContent = ex.hidden ? 'How did I do that?' : 'Hide the explanation';
+        } else if (act === 'see') {
+          closeTrick();
+          goToStation('st-msci', 'partition pruning');
+        }
+      });
     }
-    function endGame() {
-      if (!game) return;
-      clearGameTimers();
-      game = null;
-      el.classList.remove('peeking', 'tired', 'zip', 'saying');
-      look.style.transform = '';
-      lastAct = Date.now();
-      settle();
+    function pipBeside() {
+      if (!tricking) return;
+      var r = tCard.getBoundingClientRect(), w = W(), x, y, side;
+      if (w - r.right > W0 + 24) { x = r.right + 14; y = r.top + 24; side = 'l'; look.style.transform = 'translate(-3px,0)'; }
+      else if (r.left > W0 + 24) { x = r.left - W0 - 14; y = r.top + 24; side = 'r'; look.style.transform = 'translate(3px,0)'; }
+      else { x = r.right - W0 - 6; y = Math.max(70, r.top - S + 8); side = 'r'; look.style.transform = 'translate(0,3px)'; }
+      place(x, y, side);
     }
-    function startPeek() {
-      game = 'peek'; plays++;
-      setOpen(false);
-      el.classList.add('peeking');
-      var x = 40 + Math.random() * Math.max(10, W() - W0 - 80);
-      place(x, H() - 52, 'l');
-      look.style.transform = 'translate(0,-2px)';
-      setTimeout(function () { if (game === 'peek') say('Psst… find me!', 3000); }, 1500);
-      timers.peek = setTimeout(function () { if (game === 'peek') endGame(); }, 10000);
+    function setBody(html, focusSel) {
+      tBody.innerHTML = html;
+      var f = focusSel ? $(focusSel, tBody) : null;
+      (f || tCard).focus({ preventScroll: true });
+      setTimeout(pipBeside, 30);
     }
-    function startChase(msg) {
-      clearGameTimers();
-      game = 'chase'; moves = 0;
-      setOpen(false);
-      el.classList.remove('peeking', 'tired');
-      look.style.transform = '';
-      zipTo(randSpot());
-      say(msg || 'Catch me if you can!', 1600);
-      timers.chase = setInterval(function () {
-        if (game === 'chase' && Date.now() - lastMove > 1900) dodge();
-      }, 600);
+    function renderIntro() {
+      tStep = 0; tSum = 0;
+      el.classList.remove('trick-think');
+      setBody(
+        '<p class="trick-lead">Think of any number from <b>1 to 31</b>. Keep it secret.</p>' +
+        '<p class="trick-sub">I’ll show you five cards. Just tell me if your number is on each one, and I’ll read your mind.</p>' +
+        '<div class="trick-btns"><button type="button" class="trick-primary" data-act="start">I’ve got one</button></div>',
+        '.trick-primary');
+      say('Think of a number…', 2200);
     }
-    function dodge() {
-      if (game !== 'chase') return;
-      moves++;
-      if (moves >= 6) { tire(); return; }
-      zipTo(randSpot());
-      say(pick(['Too slow!', 'Nope!', 'Over here!', 'Whoosh!']), 900);
+    function renderCard() {
+      var nums = [];
+      for (var n = 1; n <= 31; n++) if (n & (1 << tStep)) nums.push(n);
+      var dots = '';
+      for (var i = 0; i < 5; i++) dots += '<i class="' + (i < tStep ? 'done' : i === tStep ? 'now' : '') + '"></i>';
+      setBody(
+        '<div class="trick-prog" aria-hidden="true">' + dots + '</div>' +
+        '<p class="trick-lead">Card ' + (tStep + 1) + ' of 5. Is your number on it?</p>' +
+        '<ul class="trick-grid" aria-label="Numbers on card ' + (tStep + 1) + '">' + nums.map(function (n) { return '<li>' + n + '</li>'; }).join('') + '</ul>' +
+        '<div class="trick-btns"><button type="button" class="trick-primary" data-act="yes">Yes</button><button type="button" class="trick-alt" data-act="no">No</button></div>',
+        '.trick-primary');
     }
-    function tire() {
-      game = 'tired';
-      clearInterval(timers.chase); timers.chase = null;
-      el.classList.add('tired');
-      say('Phew… okay, you got me?', 3200);
-      timers.tired = setTimeout(function () {
-        say('Ha! I win this round.', 2200);
-        setTimeout(endGame, 2300);
-      }, 5200);
-    }
-    function caught() {
-      clearGameTimers();
-      game = 'won';
-      el.classList.remove('tired');
-      confetti(); hop();
-      caughtN++;
-      try { sessionStorage.setItem('pipCaught', String(caughtN)); } catch (e) {}
-      say('Caught!', 1200);
+    function reveal() {
+      el.classList.add('trick-think');
+      setBody('<p class="trick-lead" aria-live="polite">Reading your mind<span class="trick-dots"><i>.</i><i>.</i><i>.</i></span></p>', null);
+      say('Hold still…', 1300);
       setTimeout(function () {
-        game = null;
-        el.classList.remove('peeking', 'zip', 'saying');
-        lastAct = Date.now();
-        askApi.show(askApi.cur() + 1, true);
-        kEl.textContent = 'You caught me' + (caughtN > 1 ? ' ×' + caughtN : '') + '! Try this one:';
-        sync();
-        setOpen(true, false);
-      }, 900);
+        if (!tricking) return;
+        el.classList.remove('trick-think');
+        if (tSum === 0) {
+          say('Hmm?', 1800);
+          setBody(
+            '<p class="trick-lead">You said no to every card, so I get zero. I asked for 1 to 31!</p>' +
+            '<div class="trick-btns"><button type="button" class="trick-primary" data-act="again">Try again</button><button type="button" class="trick-alt" data-act="close">Close</button></div>',
+            '.trick-primary');
+          return;
+        }
+        say('Got it!', 1600); confetti(); hop();
+        setBody(
+          '<p class="trick-sub">Your number is</p>' +
+          '<p class="trick-answer" aria-live="polite">' + tSum + '</p>' +
+          '<div class="trick-btns"><button type="button" class="trick-primary" data-act="how" aria-expanded="false">How did I do that?</button><button type="button" class="trick-alt" data-act="again">Again</button></div>' +
+          '<div class="trick-explain" hidden>' +
+            '<p>No mind-reading, just binary. Card 1 holds every number with the 1s place switched on, card 2 the 2s place, then 4, 8 and 16. Your five yes/no answers spelled your number in binary, so I added up the first number of each card you said yes to.</p>' +
+            '<p>It’s the same instinct as partition pruning: every question rules out half of the options, so you never have to look at the rest.</p>' +
+            '<button type="button" class="trick-link" data-act="see">See where I used it →</button>' +
+          '</div>',
+          '.trick-primary');
+      }, reduce ? 200 : 1500);
     }
-    playEl.addEventListener('click', function () { touched(); setOpen(false); startChase('Okay, catch me!'); });
-    function activity(e) {
-      if (e.type === 'pointermove') { ptr.x = e.clientX; ptr.y = e.clientY; }
-      if (game === 'peek') {
-        if (e.type === 'pointermove' && near(e.clientX, e.clientY, 150)) { startChase('Found me! Now catch me!'); return; }
-        if (e.type === 'scroll' || e.type === 'keydown' || e.type === 'wheel') { endGame(); }
-        return;
-      }
-      if (game === 'chase') {
-        if (e.type === 'pointermove' && Date.now() - lastMove > 480 && near(e.clientX, e.clientY, 135)) setTimeout(dodge, 190);
-        return;
-      }
-      if (game) return;
-      lastAct = Date.now();
+    function openTrick() {
+      if (tricking) return;
+      if (!trick) buildTrick();
+      tricking = true;
+      tReturn = doc.activeElement;
+      setOpen(false);
+      endGuide();
+      el.classList.remove('away');
+      el.classList.add('trick-on', 'zip');
+      trick.hidden = false;
+      renderIntro();
+      setTimeout(function () { el.classList.remove('zip'); }, 500);
+      window.addEventListener('resize', pipBeside);
     }
+    function closeTrick() {
+      if (!tricking) return;
+      tricking = false;
+      trick.hidden = true;
+      el.classList.remove('trick-on', 'trick-think', 'saying');
+      look.style.transform = '';
+      window.removeEventListener('resize', pipBeside);
+      settle();
+      if (tReturn && tReturn.focus && doc.contains(tReturn)) tReturn.focus({ preventScroll: true }); else body.focus({ preventScroll: true });
+    }
+
+    /* the offer: Pip suggests the trick once, when the page has been still for a while */
+    function offerTrick() {
+      offered = true;
+      el.setAttribute('data-offer', '1');
+      kEl.textContent = 'A little trick';
+      qEl.textContent = 'Think of a number from 1 to 31. I can read your mind.';
+      setOpen(true, false);
+      hop();
+    }
+    trickBtn.addEventListener('click', function () { touched(); openTrick(); });
+    $('.pip-try', el).addEventListener('click', function () { touched(); openTrick(); });
+    $('.pip-no', el).addEventListener('click', function () { setOpen(false); });
+    function activity() { lastAct = Date.now(); }
     ['pointermove', 'pointerdown', 'keydown', 'wheel', 'scroll', 'touchstart'].forEach(function (t) {
       window.addEventListener(t, activity, { passive: true });
     });
     if (!reduce) {
       setInterval(function () {
-        if (game || quiet || guiding || open || doc.hidden || drawerOpen() || plays >= 2) return;
-        if (Date.now() - lastAct > 12000) startPeek();
+        if (offered || quiet || userTouched || tricking || guiding || open || doc.hidden || drawerOpen()) return;
+        if (Date.now() - lastAct > 14000) offerTrick();
       }, 1000);
     }
 
@@ -766,7 +805,7 @@
     if (!reduce) {
       setTimeout(autoPop, 4200);
       var tick = setInterval(function () {
-        if (open || guiding || game) return;
+        if (open || guiding || tricking) return;
         wander();
         if (!quiet && !userTouched && autoPops < 4) setTimeout(autoPop, 1700);
       }, 14000);

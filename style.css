@@ -439,16 +439,55 @@ html[data-view="map"] .list{ display:none; }
   .pip-svg,.pip-blink,.pip-lamp,.hl-target{ animation:none !important; }
 }
 
-/* Pip's idle game */
-.pip.zip{ transition:transform .34s cubic-bezier(.2,.9,.3,1), opacity .5s; }
-.pip.peeking .pip-svg{ animation:none; }
-.pip-sweat{ opacity:0; }
-.pip.tired .pip-sweat{ opacity:1; animation:pipsweat 1.2s ease-in infinite; }
-.pip.tired .pip-svg{ animation:pipbob 6s ease-in-out infinite; }
-@keyframes pipsweat{ 0%{ transform:translateY(-3px); opacity:0; } 30%{ opacity:1; } 100%{ transform:translateY(9px); opacity:0; } }
+/* Pip's speech + confetti */
 .pip-say{ position:absolute; left:50%; bottom:calc(100% - 4px); transform:translateX(-50%) scale(.85); white-space:nowrap; padding:6px 13px; border-radius:999px; background:var(--panel); color:var(--ink); border:2px solid var(--ink); font:700 13.5px var(--f-body); box-shadow:3px 3px 0 var(--ai); opacity:0; pointer-events:none; transition:opacity .15s, transform .15s; }
 .pip.saying .pip-say{ opacity:1; transform:translateX(-50%); }
 .pip[data-v="down"] .pip-say{ bottom:auto; top:calc(100% - 4px); }
-.pip-play{ font:600 13px var(--f-body); padding:6px 13px; border-radius:999px; cursor:pointer; border:1.5px dashed var(--ink3); background:transparent; color:var(--ink2); }
-.pip-play:hover{ border-style:solid; color:var(--ink); border-color:var(--ink); }
-.pip-conf{ position:fixed; width:9px; height:9px; border-radius:2px; z-index:70; pointer-events:none; }
+.pip.zip{ transition:transform .5s cubic-bezier(.2,.9,.3,1), opacity .5s; }
+.pip-conf{ position:fixed; width:9px; height:9px; border-radius:2px; z-index:99; pointer-events:none; }
+.pip-trick{ font:600 13px var(--f-body); padding:6px 13px; border-radius:999px; cursor:pointer; border:1.5px dashed var(--ink3); background:transparent; color:var(--ink2); }
+.pip-trick:hover{ border-style:solid; color:var(--ink); border-color:var(--ink); }
+.pip-try,.pip-no{ display:none; font:600 13px var(--f-body); padding:6px 14px; border-radius:999px; cursor:pointer; }
+.pip-try{ border:1.5px solid var(--ink); background:var(--ink); color:var(--bg); }
+.pip-no{ border:1.5px solid var(--ink3); background:transparent; color:var(--ink2); }
+.pip[data-offer] .pip-flip,.pip[data-offer] .pip-go,.pip[data-offer] .pip-trick{ display:none; }
+.pip[data-offer] .pip-try,.pip[data-offer] .pip-no{ display:inline-block; }
+
+/* the trick */
+.pip.trick-on{ z-index:95; }
+.pip.trick-on .pip-bubble{ display:none; }
+.pip.trick-think .pip-svg{ animation:pipfly .35s ease-in-out infinite; }
+.trick{ position:fixed; inset:0; z-index:90; display:grid; place-items:center; padding:16px; }
+.trick[hidden]{ display:none; }
+.trick-back{ position:absolute; inset:0; background:rgba(8,12,24,.58); animation:trickfade .25s ease-out; }
+.trick-card{ position:relative; width:min(430px,100%); max-height:calc(100vh - 32px); overflow:auto; padding:26px 26px 24px; background:var(--panel); color:var(--ink); border:2px solid var(--ink); border-radius:18px; box-shadow:8px 8px 0 var(--ai); animation:trickpop .3s cubic-bezier(.2,.9,.3,1.2); }
+.trick-card:focus{ outline:none; }
+.trick-k{ margin:0 0 14px; font:600 12px var(--f-body); letter-spacing:.1em; text-transform:uppercase; color:var(--ai-ink); }
+.trick-x{ position:absolute; top:14px; right:14px; width:32px; height:32px; border-radius:50%; border:0; background:none; color:var(--ink3); font-size:15px; cursor:pointer; }
+.trick-x:hover{ background:var(--rule); color:var(--ink); }
+.trick-lead{ margin:0 0 8px; font:700 clamp(21px,5vw,26px)/1.2 var(--f-head); letter-spacing:-.015em; }
+.trick-sub{ margin:0 0 18px; color:var(--ink2); font-size:16px; line-height:1.5; }
+.trick-btns{ display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+.trick-primary,.trick-alt{ font:600 16px var(--f-body); padding:11px 24px; border-radius:999px; cursor:pointer; border:2px solid var(--ink); }
+.trick-primary{ background:var(--ink); color:var(--bg); }
+.trick-alt{ background:transparent; color:var(--ink); }
+.trick-primary:hover{ background:var(--ai); border-color:var(--ai); color:#fff; }
+.trick-alt:hover{ background:var(--rule); }
+.trick-card :focus-visible{ outline:3px solid var(--ai); outline-offset:3px; }
+.trick-prog{ display:flex; gap:6px; margin:0 0 14px; }
+.trick-prog i{ flex:1; height:6px; border-radius:3px; background:var(--rule); }
+.trick-prog i.done{ background:var(--ink); }
+.trick-prog i.now{ background:var(--ai); }
+.trick-grid{ list-style:none; margin:16px 0 4px; padding:0; display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+.trick-grid li{ display:grid; place-items:center; height:52px; border-radius:10px; background:var(--bg); border:1.5px solid var(--rule); font:700 22px var(--f-head); font-variant-numeric:tabular-nums; }
+.trick-answer{ margin:0 0 4px; font:800 clamp(84px,24vw,120px)/1 var(--f-head); letter-spacing:-.04em; color:var(--ai-ink); animation:trickpop .5s cubic-bezier(.2,.9,.3,1.4); }
+.trick-explain{ margin-top:18px; padding-top:16px; border-top:1px solid var(--rule); }
+.trick-explain[hidden]{ display:none; }
+.trick-explain p{ margin:0 0 12px; color:var(--ink2); font-size:15.5px; line-height:1.55; }
+.trick-link{ font:600 15px var(--f-body); background:none; border:0; padding:0; color:var(--ai-ink); text-decoration:underline; text-underline-offset:4px; text-decoration-thickness:2px; cursor:pointer; }
+.trick-dots i{ font-style:normal; animation:trickdot 1s infinite; }
+.trick-dots i:nth-child(2){ animation-delay:.2s; } .trick-dots i:nth-child(3){ animation-delay:.4s; }
+@keyframes trickfade{ from{ opacity:0; } }
+@keyframes trickpop{ from{ opacity:0; transform:scale(.92) translateY(10px); } }
+@keyframes trickdot{ 0%,100%{ opacity:.2; } 50%{ opacity:1; } }
+@media (prefers-reduced-motion:reduce){ .trick-back,.trick-card,.trick-answer,.trick-dots i{ animation:none !important; } }
