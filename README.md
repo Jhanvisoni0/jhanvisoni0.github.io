@@ -66,7 +66,7 @@ A small robot (built in `script.js`, styled at the bottom of `style.css`) drifts
 ## Updating the site (cache-busting)
 
 GitHub Pages and browsers cache CSS/JS. When you change `style.css` or `script.js`, bump the
-version in every page (`style.css?v=25`, `script.js?v=13`), otherwise visitors may see the old look.
+version in every page (`style.css?v=26`, `script.js?v=13`), otherwise visitors may see the old look.
 
 ## Deploy on GitHub Pages
 
