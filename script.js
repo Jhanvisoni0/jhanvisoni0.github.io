@@ -33,6 +33,21 @@
     store('theme', next);
   });
 
+
+  /* ---------------- collapsible highlights (points, note, tags) ---------------- */
+  $$('.station').forEach(function (a) {
+    var parts = $$('.st-points, .st-note, .st-tags', a);
+    if (!parts.length) return;
+    var d = doc.createElement('details');
+    d.className = 'st-more';
+    var sm = doc.createElement('summary');
+    sm.textContent = $('.st-points', a) ? 'Highlights & stack' : 'More';
+    d.appendChild(sm);
+    var links = $('.st-links', a);
+    a.insertBefore(d, links || null);
+    parts.forEach(function (p) { d.appendChild(p); });
+  });
+
   /* ---------------- board scramble ---------------- */
   var GLYPHS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   function scramble(el, delay) {
@@ -266,6 +281,7 @@
     clone.removeAttribute('id');
     clone.className = 'station-detail';
     $$('[id]', clone).forEach(function (n) { n.removeAttribute('id'); });
+    $$('details', clone).forEach(function (d) { d.open = true; });
     drBody.innerHTML = '';
     drBody.appendChild(clone);
     drBody.scrollTop = 0;

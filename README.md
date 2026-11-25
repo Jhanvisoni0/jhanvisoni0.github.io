@@ -58,7 +58,7 @@ Tracks are drawn in `script.js` (search for `track(`).
 ## Updating the site (cache-busting)
 
 GitHub Pages and browsers cache CSS/JS. When you change `style.css` or `script.js`, bump the
-version in every page (`style.css?v=21`, `script.js?v=10`), otherwise visitors may see the old look.
+version in every page (`style.css?v=22`, `script.js?v=11`), otherwise visitors may see the old look.
 
 ## Deploy on GitHub Pages
 
