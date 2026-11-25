@@ -14,7 +14,7 @@ All lines end at the terminus: contact.
 - `style.css` — design tokens (light/dark + line colours) at the top, then map, drawer, list and article styles
 - `script.js` — theme toggle, Map/List toggle, departure-board animation, map builder, drawer, deep links
 - `blog-*.html`, `project-*.html` — the four posts and three case studies (share the article styles)
-- `assets/` — profile photo, favicons, blog diagrams
+- `assets/` — profile photo, favicons, blog diagrams, and `assets/fonts/` (the site's fonts, hosted here so nothing loads from Google)
 - `googlebca756fa1ded5ad0.html` — Google Search Console verification. **Keep it at the repo root.**
 
 No build step. Open `index.html` in a browser to preview.
@@ -44,6 +44,11 @@ Tracks are drawn in `script.js` (search for `track(`).
 2. Set its `data-x` / `data-y` so it sits on that line's track (y = 150 Engineering, 320 AI, 490 Learning), clear of neighbouring labels.
 3. For a new post or case study, copy an existing `blog-*.html` / `project-*.html` and add a link inside the article.
 
+## Look and feel
+
+- Fonts: Bricolage Grotesque (headings), Instrument Sans (text), DM Mono (labels). All three are open-source (SIL OFL).
+- Colours: line colours and both themes are CSS variables at the top of `style.css` — change them there and everything follows.
+
 ## Themes and views
 
 - Theme: follows the visitor's local time (light 7:00–18:59, dark otherwise) until they press the sun/moon button; the choice is saved in `localStorage`.
@@ -53,7 +58,7 @@ Tracks are drawn in `script.js` (search for `track(`).
 ## Updating the site (cache-busting)
 
 GitHub Pages and browsers cache CSS/JS. When you change `style.css` or `script.js`, bump the
-version in every page (`style.css?v=20`, `script.js?v=10`), otherwise visitors may see the old look.
+version in every page (`style.css?v=21`, `script.js?v=10`), otherwise visitors may see the old look.
 
 ## Deploy on GitHub Pages
 
