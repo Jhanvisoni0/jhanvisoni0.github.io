@@ -49,6 +49,88 @@
     parts.forEach(function (p) { d.appendChild(p); });
   });
 
+  /* ---------------- split-flap board: letters flip tile by tile, like an old station board ---------------- */
+  var FLAP = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  function flapSet(el, text, delay, hold) {
+    var up = text.toUpperCase();
+    var prev = el._shown || '';
+    el._text = text; el._shown = up;
+    var run = el._run = (el._run || 0) + 1;
+    var wrap = doc.createElement('span');
+    wrap.className = 'fl'; wrap.setAttribute('aria-hidden', 'true');
+    var sr = doc.createElement('span'); sr.className = 'sr'; sr.textContent = text;
+    var cells = [], idx = 0;
+    up.split(' ').forEach(function (w, wi) {
+      if (wi) wrap.appendChild(doc.createTextNode(' '));
+      var word = doc.createElement('span'); word.className = 'fw';
+      for (var k = 0; k < w.length; k++, idx++) {
+        var c = doc.createElement('i'); c.className = 'fc';
+        var g = doc.createElement('b'); c.appendChild(g);
+        var to = w.charAt(k), from = prev.charAt(idx) || ' ';
+        g.textContent = to === from ? to : from.trim() ? from : '';
+        word.appendChild(c);
+        if (to !== from) cells.push({ g: g, to: to, from: from, i: idx, left: 0 });
+      }
+      idx++;
+      wrap.appendChild(word);
+    });
+    el.textContent = '';
+    el.appendChild(sr); el.appendChild(wrap);
+    if (hold) { el._shown = ''; return; }
+    if (!cells.length) return;
+    cells.forEach(function (c) {
+      var t = FLAP.indexOf(c.to);
+      c.left = 4 + ((c.i * 5 + 3) % 8);
+      c.seq = [];
+      for (var n = c.left; n > 0; n--) c.seq.push(t > -1 ? FLAP.charAt(((t - n) % 36 + 36) % 36) : FLAP.charAt((c.i * 7 + n * 3) % 26));
+      c.seq.push(c.to);
+      c.at = (delay || 0) + c.i * 22;
+    });
+    var t0 = Date.now();
+    (function tick() {
+      if (el._run !== run) return;
+      var now = Date.now() - t0, live = false;
+      cells.forEach(function (c) {
+        if (!c.seq.length) return;
+        live = true;
+        if (now < c.at) return;
+        c.at = now + 42;
+        var ch = c.seq.shift();
+        c.g.textContent = ch === ' ' ? '' : ch;
+        if (c.g.animate) c.g.animate([{ transform: 'scaleY(.12)' }, { transform: 'scaleY(1)' }], { duration: 60, easing: 'ease-out' });
+      });
+      if (live) setTimeout(tick, 21);
+    })();
+  }
+  var boardEls = $$('.board-row > .b-k, .board-row > .b-v, .board-row > .b-s').filter(function (n) { return !n.classList.contains('ask-actions'); });
+  boardEls.forEach(function (n) { n._final = n.getAttribute('data-text') || n.textContent.trim(); });
+  var boardInView = false, boardHover = false;
+  (function boardInit() {
+    var board = $('.board');
+    if (!board || !boardEls.length) return;
+    if (reduce) { boardInView = true; return; }
+    boardEls.forEach(function (n) { flapSet(n, n._final, 0, true); });
+    var started = false;
+    function start() {
+      if (started) return; started = true;
+      $$('.board-row', board).forEach(function (r, ri) {
+        $$('.b-k, .b-v, .b-s', r).forEach(function (n, ci) {
+          if (!n.classList.contains('ask-actions')) flapSet(n, n._final, 120 + ri * 260 + ci * 110);
+        });
+      });
+    }
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) {
+        boardInView = es[0].isIntersecting;
+        if (boardInView) start();
+      }, { threshold: 0.35 }).observe(board);
+    } else { boardInView = true; start(); }
+    board.addEventListener('mouseenter', function () { boardHover = true; });
+    board.addEventListener('mouseleave', function () { boardHover = false; });
+    board.addEventListener('focusin', function () { boardHover = true; });
+    board.addEventListener('focusout', function () { boardHover = false; });
+  })();
+
   /* ---------------- "Ask me": step through a few questions ---------------- */
   var ask = $('.board-ask');
   if (ask) {
@@ -62,16 +144,22 @@
       ['REITs: +23% vs −8% by rate regime', 'st-assets', 'REITs returning']
     ];
     var askV = $('.ask-v', ask), askGo = $('.ask-go', ask), askNext = $('.ask-flip', ask), askLive = $('.ask-live', ask);
-    var askI = 0;
+    var askI = 0, askUser = false;
     function showAsk(i, user) {
       askI = (i + TEASERS.length) % TEASERS.length;
       var t = TEASERS[askI];
-      askV.textContent = t[0];
+      if (user) askUser = true;
+      if (reduce) askV.textContent = t[0]; else flapSet(askV, t[0], 0);
       askGo.setAttribute('href', '#' + t[1]);
       if (user) askLive.textContent = 'Next question: ' + t[0];
       if (askApi && askApi.onChange) askApi.onChange();
     }
     askNext.addEventListener('click', function () { showAsk(askI + 1, true); });
+    /* like a real board, the question changes by itself now and then, until the visitor takes over */
+    if (!reduce) setInterval(function () {
+      if (askUser || doc.hidden || !boardInView || boardHover) return;
+      showAsk(askI + 1, false);
+    }, 9000);
     askApi = { teasers: TEASERS, cur: function () { return askI; }, show: showAsk, stopAuto: function () {}, hold: function () {}, onChange: null };
   }
 
@@ -379,6 +467,7 @@
     centerOn(s.x, true);
     bringMapIntoView(s.y);
     setHash(id);
+    stamps.add(id);
     if (onStationOpened) onStationOpened();
     if (fromClick || doc.activeElement === doc.body) {
       setTimeout(function () { drawer.focus({ preventScroll: true }); }, 60);
@@ -436,7 +525,34 @@
   window.addEventListener('hashchange', fromHash);
   window.addEventListener('load', function () { updateProgress(); fromHash(); });
 
-  /* ---------------- Dot: a little guide that hovers around and points at the answer ---------------- */
+  /* ---------------- stamp passport: every station you visit gets a stamp ---------------- */
+  var stamps = (function () {
+    var got = {}, subs = [], ids = $$('article.station[id^="st-"]').map(function (a) { return a.id; });
+    try { got = JSON.parse(localStorage.getItem('stamps') || '{}') || {}; } catch (e) { got = {}; }
+    function save() { try { localStorage.setItem('stamps', JSON.stringify(got)); } catch (e) {} }
+    return {
+      total: ids.length,
+      count: function () { return ids.filter(function (i) { return got[i]; }).length; },
+      has: function (id) { return !!got[id]; },
+      add: function (id) { if (ids.indexOf(id) < 0 || got[id]) return; got[id] = 1; save(); subs.forEach(function (f) { f(id); }); },
+      clear: function () { got = {}; save(); subs.forEach(function (f) { f(null); }); },
+      on: function (f) { subs.push(f); }
+    };
+  })();
+  (function dwell() {  /* list view: a station counts once it has sat mid-screen for a moment */
+    if (!('IntersectionObserver' in window)) return;
+    var timers = {};
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        var id = e.target.id;
+        if (e.isIntersecting) { if (!timers[id]) timers[id] = setTimeout(function () { stamps.add(id); }, 1100); }
+        else { clearTimeout(timers[id]); timers[id] = 0; }
+      });
+    }, { rootMargin: '-32% 0px -32% 0px', threshold: 0 });
+    $$('article.station[id^="st-"]').forEach(function (a) { io.observe(a); });
+  })();
+
+  /* ---------------- the Conductor: a ticket-office guide (Dot with a cap) ---------------- */
   (function pipInit() {  /* Dot sits still in the corner and only reacts when you click it */
     if (!askApi) return;
     var S = 84, W0 = 76;
@@ -448,14 +564,16 @@
     el.setAttribute('data-side', 'r');
     el.setAttribute('data-v', 'up');
     el.innerHTML =
-      '<div class="pip-bubble" role="dialog" aria-label="Chat with Dot">' +
-        '<div class="pc-head"><span class="pc-av" aria-hidden="true"></span><div class="pc-who"><b>Dot</b><small>Answers come from this site</small></div><button type="button" class="pip-x" aria-label="Close chat">✕</button></div>' +
-        '<div class="pc-log" aria-live="polite"></div>' +
-        '<div class="pc-chips"></div>' +
+      '<div class="pip-bubble" role="dialog" aria-label="Conductor menu">' +
+        '<div class="cd">' +
+          '<div class="cd-head"><span class="cd-av" aria-hidden="true"></span><div class="cd-who"><b>Conductor</b><small>All aboard</small></div><button type="button" class="pip-x" aria-label="Close the menu">✕</button></div>' +
+          '<div class="cd-view"></div>' +
+          '<button type="button" class="cd-pass" data-act="passport"></button>' +
+        '</div>' +
       '</div>' +
       '<span class="pip-tag" aria-hidden="true">There it is.</span>' +
       '<span class="pip-say" aria-hidden="true"></span>' +
-      '<button type="button" class="pip-body" aria-expanded="false" aria-label="Dot, your guide. Open a question about Jhanvi\'s work.">' +
+      '<button type="button" class="pip-body" aria-expanded="false" aria-label="The conductor. Open the station menu: guided rides, tricks and your stamp passport.">' +
         '<svg class="pip-svg" viewBox="0 0 76 84" width="76" height="84" aria-hidden="true" focusable="false">' +
           '<defs><radialGradient id="dotGrad" cx="35%" cy="28%" r="85%"><stop class="g1" offset="0"/><stop class="g2" offset="1"/></radialGradient></defs>' +
           '<ellipse cx="38" cy="79" rx="22" ry="3" fill="#000" opacity=".16"/>' +
@@ -472,13 +590,14 @@
             '<g class="pip-m m-wink"><path class="se" d="M21 38 Q27 44 33 38" fill="none" stroke-width="3.6" stroke-linecap="round"/><ellipse class="fe" cx="49" cy="37" rx="3.8" ry="4.8"/><circle class="gl" cx="50.4" cy="35.2" r="1.4"/><path class="se" d="M30 52 Q39 62 48 51" fill="none" stroke-width="3.4" stroke-linecap="round"/><circle class="bl" cx="17.5" cy="49" r="5"/><circle class="bl" cx="58.5" cy="49" r="5"/></g>' +
             '<g class="pip-m m-think"><ellipse class="fe" cx="27" cy="35" rx="3.8" ry="4.8"/><ellipse class="fe" cx="49" cy="35" rx="3.8" ry="4.8"/><circle class="gl" cx="28.4" cy="33.2" r="1.4"/><circle class="gl" cx="50.4" cy="33.2" r="1.4"/><path class="se" d="M21 28 L33 30.5" fill="none" stroke-width="3" stroke-linecap="round"/><path class="se" d="M43 30.5 L55 28" fill="none" stroke-width="3" stroke-linecap="round"/><path class="se" d="M30 57 Q34 52.5 38 57 T46 57" fill="none" stroke-width="3.2" stroke-linecap="round"/></g>' +
           '</g>' +
+          '<g class="pip-cap" transform="rotate(-6 38 14)"><path d="M20 15 L22.5 0.5 Q38 -5 53.5 0.5 L56 15 Q38 20.5 20 15Z" fill="#2a3763"/><path d="M20.2 11.2 Q38 16.8 55.8 11.2 L56 15 Q38 20.5 20 15Z" fill="#f2b632"/><path d="M27 16.5 Q38 23 49 16.5 L47.5 20.5 Q38 26.5 28.5 20.5Z" fill="#1b2445"/><circle cx="38" cy="14.6" r="3.1" fill="#ffe9a8" stroke="#c98a14" stroke-width="1"/><path d="M22.5 0.5 Q38 -5 53.5 0.5" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="1.2"/></g>' +
         '</svg>' +
       '</button>';
     doc.body.appendChild(el);
 
     var body = $('.pip-body', el), bubble = $('.pip-bubble', el), logEl = $('.pc-log', el), chipsEl = $('.pc-chips', el);
     var sayEl = $('.pip-say', el), xEl = $('.pip-x', el), look = $('.pip-look', el);
-    var lastAct = Date.now(), tricking = false;
+    var lastAct = Date.now(), tricking = false, typing = false, tour = null;
         var open = false, guiding = false, anchorI = 0, hit = null, autoPops = 0, userTouched = false;
     var timers = { close: null, guide: null, track: null, clear: null, peek: null, tired: null, zip: null, say: null, chase: null };
 
@@ -492,7 +611,7 @@
     }
     function anchors() {
       var w = W(), h = H(), narrow = w < 900;
-      var a = [[w - W0 - 14, h - S - 14, 'r'], [14, h - S - 14, 'l']];
+      var a = [[w - W0 - 14, h - S - 14, 'r'], [14, h - S - 14 - (tour ? 100 : 0), 'l']];
       if (!narrow) { a.push([w - W0 - 14, 78, 'r']); a.push([14, Math.round(h * 0.6), 'l']); }
       if (drawerOpen() && !narrow) a = a.filter(function (p) { return p[2] === 'l'; });
       return a;
@@ -513,7 +632,7 @@
       body.setAttribute('aria-expanded', String(v));
       askApi.hold(v);
       clearTimeout(timers.close);
-      if (v) { ensureGreeting(); }
+      if (v) { showView('home'); }
     }
     var happyUntil = 0;
     function hop() {
@@ -572,6 +691,7 @@
       timers.guide = setTimeout(endGuide, 12000);
     }
     function markIn(container, needle) {
+      if (!needle) return;
       clearTimeout(timers.clear); clearMarks();
       var low = needle.toLowerCase();
       var node = $$('li, .st-sum, .st-note, .st-metrics > div', container).filter(function (n) {
@@ -651,8 +771,27 @@
       }
     }
 
-    var trick = null, tBody = null, tCard = null, tStep = 0, tSum = 0, tReturn = null, offered = false;
+    /* ---- tickets: three little tricks and games, all drawn as train tickets ---- */
+    var trick = null, tBody = null, tCard = null, tNo = null, tTitle = null, tKind = 'number', tStep = 0, tSum = 0, tReturn = null;
     var QUIPS = ['Hmm…', 'Interesting…', 'I can feel it…', 'Almost there…'];
+    var TICKETS = {
+      number: ['Ticket 01', 'Read my mind'],
+      quiz: ['Ticket 03', 'Whose work is this?'],
+      platform: ['Ticket 05', 'The secret platform']
+    };
+    var STN = $$('article.station[id^="st-"]').map(function (a) {
+      return { id: a.id, line: a.getAttribute('data-line'), name: a.getAttribute('data-name'), sub: a.getAttribute('data-sub') };
+    });
+    function stn(id) { return STN.filter(function (s) { return s.id === id; })[0] || { id: id, name: id, line: 'all', sub: '' }; }
+    function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+    function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+    function findLine(id, needle) {
+      var a = doc.getElementById(id);
+      if (!a) return '';
+      var low = needle.toLowerCase();
+      var node = $$('li, .st-sum, .st-note, .st-metrics > div', a).filter(function (n) { return n.textContent.toLowerCase().indexOf(low) > -1; })[0];
+      return node ? node.textContent.replace(/\s+/g, ' ').trim() : '';
+    }
 
     function buildTrick() {
       trick = doc.createElement('div');
@@ -661,13 +800,13 @@
       trick.innerHTML =
         '<div class="trick-back"></div>' +
         '<div class="trick-card" role="dialog" aria-modal="true" aria-labelledby="trickT" tabindex="-1">' +
-          '<button type="button" class="trick-x" aria-label="Close the trick">✕</button>' +
-          '<p class="trick-k" id="trickT">Dot reads your mind</p>' +
+          '<div class="trick-head"><span class="trick-no"></span><p class="trick-k" id="trickT"></p><button type="button" class="trick-x" aria-label="Close this ticket">✕</button></div>' +
           '<div class="trick-body"></div>' +
         '</div>';
       doc.body.appendChild(trick);
       tBody = $('.trick-body', trick);
       tCard = $('.trick-card', trick);
+      tNo = $('.trick-no', trick); tTitle = $('.trick-k', trick);
       $('.trick-x', trick).addEventListener('click', closeTrick);
       $('.trick-back', trick).addEventListener('click', closeTrick);
       trick.addEventListener('keydown', function (e) {
@@ -683,8 +822,11 @@
         var b = e.target.closest('[data-act]');
         if (!b) return;
         var act = b.getAttribute('data-act');
-        if (act === 'start') { tStep = 0; tSum = 0; renderCard(); }
+        if (act === 'start') { if (tKind === 'platform') dealStart(); else { tStep = 0; tSum = 0; renderCard(); } }
         else if (act === 'yes' || act === 'no') { if (act === 'yes') tSum += (1 << tStep); tStep++; if (tStep < 5) { say(QUIPS[tStep - 1], 1200); renderCard(); } else reveal(); }
+        else if (act === 'pick') platPick(+b.getAttribute('data-col'));
+        else if (act === 'qpick') quizPick(b);
+        else if (act === 'qnext') renderQuiz();
         else if (act === 'again') renderIntro();
         else if (act === 'close') closeTrick();
         else if (act === 'how') {
@@ -692,10 +834,8 @@
           ex.hidden = !ex.hidden;
           b.setAttribute('aria-expanded', String(!ex.hidden));
           b.textContent = ex.hidden ? 'How did I do that?' : 'Hide the explanation';
-        } else if (act === 'see') {
-          closeTrick();
-          goToStation('st-msci', 'partition pruning');
-        }
+        } else if (act === 'see') { closeTrick(); goToStation('st-msci', 'partition pruning'); }
+        else if (act === 'gotostn') { var id = b.getAttribute('data-id'), nd = b.getAttribute('data-needle'); closeTrick(); goToStation(id, nd); }
       });
     }
     function pipBeside() {
@@ -712,9 +852,24 @@
       (f || tCard).focus({ preventScroll: true });
       setTimeout(pipBeside, 30);
     }
+    function holes(n, done) {
+      var d = '';
+      for (var i = 0; i < n; i++) d += '<i class="' + (i < done ? 'done' : i === done ? 'now' : '') + '"></i>';
+      return '<div class="trick-prog" aria-hidden="true">' + d + '</div>';
+    }
     function renderIntro() {
       tStep = 0; tSum = 0;
       el.classList.remove('trick-think');
+      if (tKind === 'quiz') { renderQuiz(); return; }
+      if (tKind === 'platform') {
+        setBody(
+          '<p class="trick-lead">Think of one station on the map.</p>' +
+          '<p class="trick-sub">I’ll lay out fifteen stations on three platforms. Tell me which platform yours is on, three times, and I’ll find it.</p>' +
+          '<div class="trick-btns"><button type="button" class="trick-primary" data-act="start">I’ve got one</button></div>',
+          '.trick-primary');
+        say('Pick a station…', 2200);
+        return;
+      }
       setBody(
         '<p class="trick-lead">Think of any number from <b>1 to 31</b>. Keep it secret.</p>' +
         '<p class="trick-sub">I’ll show you five cards. Just tell me if your number is on each one, and I’ll read your mind.</p>' +
@@ -725,22 +880,25 @@
     function renderCard() {
       var nums = [];
       for (var n = 1; n <= 31; n++) if (n & (1 << tStep)) nums.push(n);
-      var dots = '';
-      for (var i = 0; i < 5; i++) dots += '<i class="' + (i < tStep ? 'done' : i === tStep ? 'now' : '') + '"></i>';
       setBody(
-        '<div class="trick-prog" aria-hidden="true">' + dots + '</div>' +
+        holes(5, tStep) +
         '<p class="trick-lead">Card ' + (tStep + 1) + ' of 5. Is your number on it?</p>' +
         '<ul class="trick-grid" aria-label="Numbers on card ' + (tStep + 1) + '">' + nums.map(function (n) { return '<li>' + n + '</li>'; }).join('') + '</ul>' +
         '<div class="trick-btns"><button type="button" class="trick-primary" data-act="yes">Yes</button><button type="button" class="trick-alt" data-act="no">No</button></div>',
         '.trick-primary');
     }
-    function reveal() {
+    function thinking(then) {
       el.classList.add('trick-think');
       setBody('<p class="trick-lead" aria-live="polite">Reading your mind<span class="trick-dots"><i>.</i><i>.</i><i>.</i></span></p>', null);
       say('Hold still…', 1300);
       setTimeout(function () {
         if (!tricking) return;
         el.classList.remove('trick-think');
+        then();
+      }, reduce ? 200 : 1500);
+    }
+    function reveal() {
+      thinking(function () {
         if (tSum === 0) {
           say('Hmm?', 1800);
           setBody(
@@ -760,11 +918,94 @@
             '<button type="button" class="trick-link" data-act="see">See where I used it →</button>' +
           '</div>',
           '.trick-primary');
-      }, reduce ? 200 : 1500);
+      });
     }
-    function openTrick() {
+
+    /* the secret platform: 15 stations, three platforms, three answers */
+    var pStack = [], pRound = 0, pCols = [];
+    function deal3(stack) { var c = [[], [], []]; stack.forEach(function (x, i) { c[i % 3].push(x); }); return c; }
+    function dealStart() {
+      pStack = shuffle(STN.filter(function (s) { return s.id !== 'st-contact'; }));
+      pRound = 0; pCols = deal3(pStack);
+      renderPlat();
+    }
+    function renderPlat() {
+      setBody(
+        holes(3, pRound) +
+        '<p class="trick-lead">Round ' + (pRound + 1) + ' of 3. Which platform is your station on?</p>' +
+        '<div class="plat-row">' + pCols.map(function (c, j) {
+          return '<button type="button" class="plat" data-act="pick" data-col="' + j + '"><b>Platform ' + (j + 1) + '</b>' +
+            c.map(function (s) { return '<span data-line="' + s.line + '">' + esc(s.name) + '</span>'; }).join('') + '</button>';
+        }).join('') + '</div>',
+        '.plat');
+    }
+    function platPick(j) {
+      var o = [0, 1, 2].filter(function (k) { return k !== j; });
+      pStack = pCols[o[0]].concat(pCols[j], pCols[o[1]]);
+      pRound++;
+      if (pRound < 3) { pCols = deal3(pStack); say(QUIPS[pRound - 1], 1100); renderPlat(); return; }
+      thinking(function () {
+        var s = pStack[7];
+        say('Got it!', 1600); confetti(); hop();
+        setBody(
+          '<p class="trick-sub">Your station is</p>' +
+          '<p class="trick-stn" data-line="' + s.line + '" aria-live="polite">' + esc(s.name) + '</p>' +
+          '<div class="trick-btns"><button type="button" class="trick-primary" data-act="gotostn" data-id="' + s.id + '">Take me there</button><button type="button" class="trick-alt" data-act="how" aria-expanded="false">How did I do that?</button><button type="button" class="trick-alt" data-act="again">Again</button></div>' +
+          '<div class="trick-explain" hidden>' +
+            '<p>Each time you point at a platform, I stack that platform in the middle of the pile, and the middle is where your station drifts. After three rounds there is only one place it can be: the eighth of the fifteen.</p>' +
+            '<p>Same idea as a binary search: every answer throws away most of the options, so three questions are enough for fifteen stations.</p>' +
+          '</div>',
+          '.trick-primary');
+      });
+    }
+
+    /* whose work is this: read a line from the site, pick the station */
+    var QUIZ = [
+      ['st-msci', 'Lifted reporting accuracy'], ['st-msci', 'Migrated 20+ legacy'],
+      ['st-techved', 'Promoted from Associate'], ['st-banking', 'Cut the reporting cycle'],
+      ['st-assets', 'simulated $10K'], ['st-rag', 'Found and fixed inline-XBRL']
+    ];
+    var qLast = -1, qRight = 0, qTotal = 0, qCur = null;
+    function renderQuiz() {
+      var i, text = '', tries = 0;
+      do { i = Math.floor(Math.random() * QUIZ.length); tries++; text = findLine(QUIZ[i][0], QUIZ[i][1]); } while ((i === qLast || !text) && tries < 20);
+      if (!text) { setBody('<p class="trick-lead">I couldn’t find a line to quiz you on.</p><div class="trick-btns"><button type="button" class="trick-primary" data-act="close">Close</button></div>', '.trick-primary'); return; }
+      qLast = i;
+      var ans = QUIZ[i][0];
+      var pool = shuffle(['st-techved', 'st-msci', 'st-banking', 'st-assets', 'st-rag'].filter(function (x) { return x !== ans; }));
+      var opts = shuffle([ans, pool[0], pool[1]]);
+      qCur = { ans: ans, needle: QUIZ[i][1] };
+      setBody(
+        '<p class="trick-sub">Which station is this line from?</p>' +
+        '<blockquote class="trick-fact">' + esc(text) + '</blockquote>' +
+        '<div class="quiz-opts">' + opts.map(function (id) {
+          return '<button type="button" class="quiz-o" data-act="qpick" data-id="' + id + '" data-line="' + stn(id).line + '"><b>' + esc(stn(id).name) + '</b><small>' + esc(stn(id).sub) + '</small></button>';
+        }).join('') + '</div>' +
+        '<div class="quiz-res" aria-live="polite"></div>',
+        '.quiz-o');
+    }
+    function quizPick(b) {
+      if (!qCur || qCur.done) return;
+      qCur.done = true;
+      var id = b.getAttribute('data-id'), ok = id === qCur.ans;
+      qTotal++; if (ok) qRight++;
+      $$('.quiz-o', tBody).forEach(function (o) {
+        o.disabled = true;
+        if (o.getAttribute('data-id') === qCur.ans) o.classList.add('right');
+        else if (o === b) o.classList.add('wrong');
+      });
+      if (ok) { say('Nice!', 1300); confetti(); hop(); } else say('So close!', 1300);
+      $('.quiz-res', tBody).innerHTML =
+        '<p class="quiz-msg"><b>' + (ok ? 'Right.' : 'Not quite.') + '</b> That one is from ' + esc(stn(qCur.ans).name) + '. Score so far: ' + qRight + ' of ' + qTotal + '.</p>' +
+        '<div class="trick-btns"><button type="button" class="trick-primary" data-act="qnext">Another one</button><button type="button" class="trick-alt" data-act="gotostn" data-id="' + qCur.ans + '" data-needle="' + esc(qCur.needle) + '">Show me where</button></div>';
+      var nx = $('.trick-primary', tBody); if (nx) nx.focus({ preventScroll: true });
+    }
+
+    function openTrick(kind) {
       if (tricking) return;
       if (!trick) buildTrick();
+      tKind = kind || 'number';
+      tNo.textContent = TICKETS[tKind][0]; tTitle.textContent = TICKETS[tKind][1];
       tricking = true;
       tReturn = doc.activeElement;
       setOpen(false);
@@ -787,78 +1028,189 @@
       if (tReturn && tReturn.focus && doc.contains(tReturn)) tReturn.focus({ preventScroll: true }); else body.focus({ preventScroll: true });
     }
 
-
-    /* ---- the chat: pick a question, Dot answers with the matching line from this site ---- */
-    var greeted = false, typing = false, asked = {};
-    function addMsg(kind, text) {
-      var m = doc.createElement('div');
-      m.className = 'pc-msg pc-' + kind;
-      m.textContent = text;
-      logEl.appendChild(m);
-      logEl.scrollTop = logEl.scrollHeight;
-      return m;
-    }
-    function lineFor(i) {
-      var a = doc.getElementById(T[i][1]);
-      if (!a) return '';
-      var low = T[i][2].toLowerCase();
-      var node = $$('li, .st-sum, .st-note, .st-metrics > div', a).filter(function (n) {
-        return n.textContent.toLowerCase().indexOf(low) > -1;
-      })[0];
-      return node ? node.textContent.replace(/\s+/g, ' ').trim() : '';
-    }
-    function renderChips() {
-      chipsEl.innerHTML = '';
-      var n = 0;
-      T.forEach(function (t, i) {
-        if (asked[i] || n >= 4) return;
-        n++;
-        var b = doc.createElement('button');
-        b.type = 'button'; b.className = 'pc-chip'; b.setAttribute('data-i', i); b.textContent = t[0];
-        chipsEl.appendChild(b);
+    /* ---- guided rides: a ticket picks the stops, the bar at the bottom walks you through them ---- */
+    var TOURS = {
+      recruiter: { label: 'Recruiter', blurb: 'The two-minute version', stops: [
+        ['st-msci', 'Lifted reporting accuracy', 'Two years running production pipelines at MSCI.'],
+        ['st-techved', 'Promoted from Associate', 'Where it started: analytics consulting for six-plus clients.'],
+        ['st-rag', '100% retrieval', 'The flagship: a research assistant that cites its sources.'],
+        ['st-cert-azure', null, 'Credentials you can verify yourself.'],
+        ['st-contact', null, 'Available immediately, based in Houston.']
+      ] },
+      manager: { label: 'Hiring manager', blurb: 'How I build and what changed', stops: [
+        ['st-msci', 'Cut average query time', 'A measurable win on a production lakehouse.'],
+        ['st-banking', 'Cut the reporting cycle', 'A full pipeline from raw data to a live dashboard.'],
+        ['st-rag', 'Found and fixed inline-XBRL', 'A bug that silently broke the data, and how it was found.'],
+        ['st-contact', null, 'If this looks like a fit, say hello.']
+      ] },
+      engineer: { label: 'Fellow engineer', blurb: 'The technical details', stops: [
+        ['st-msci', 'Migrated 20+ legacy', 'SQL to PySpark, with data-quality checks on 100+ feeds.'],
+        ['st-banking', 'Ingests 50K', 'ADF, Auto Loader, a Medallion pipeline and scheduled Workflows.'],
+        ['st-assets', 'PySpark window functions', 'Rolling volatility, Sharpe ratio and drawdown in PySpark.'],
+        ['st-rag', 'Citation-grounded generation', 'Retrieval, citations and LLM-as-judge evaluation.'],
+        ['#toolkit', null, 'The full technical toolkit.']
+      ] },
+      reader: { label: 'Just reading', blurb: 'The writing', stops: [
+        ['st-post-realization', 'managed Spark', 'What building a platform taught me about Databricks.'],
+        ['st-post-ltap', 'restaurant', 'LTAP, explained with a restaurant.'],
+        ['st-post-rt', '10ms latency', 'What a real-time lakehouse means in practice.'],
+        ['st-post-layers', 'AI/BI Genie', 'AI in every layer of the platform.'],
+        ['st-chatbot', 'conversational assistant', 'And what I am building next.']
+      ] }
+    };
+    var tourEl = null;
+    function buildTour() {
+      tourEl = doc.createElement('div');
+      tourEl.className = 'tour';
+      tourEl.hidden = true;
+      tourEl.setAttribute('role', 'region');
+      tourEl.setAttribute('aria-label', 'Guided ride');
+      tourEl.innerHTML =
+        '<div class="tour-txt"><small class="tour-k"></small><b class="tour-t"></b><span class="tour-d"></span></div>' +
+        '<div class="tour-btns"><button type="button" class="tour-b" data-t="prev">Back</button><button type="button" class="tour-b tour-next" data-t="next">Next stop →</button><button type="button" class="tour-b tour-end" data-t="end" aria-label="End the ride">✕</button></div>';
+      doc.body.appendChild(tourEl);
+      tourEl.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-t]');
+        if (!b) return;
+        var t = b.getAttribute('data-t');
+        if (t === 'end') endTour();
+        else if (t === 'prev') tourGo(tour.i - 1);
+        else if (t === 'next') tourGo(tour.i + 1);
+        else if (t === 'pass') { endTour(); setOpen(true); showView('passport'); }
       });
-      var tb = doc.createElement('button');
-      tb.type = 'button'; tb.className = 'pc-chip pc-chip-trick'; tb.setAttribute('data-act', 'trick'); tb.textContent = 'Read my mind';
-      chipsEl.appendChild(tb);
     }
-    function ensureGreeting() {
-      if (greeted) return;
-      greeted = true;
-      addMsg('bot', "Hi, I'm Dot. Pick a question and I'll pull the answer from Jhanvi's work.");
-      renderChips();
+    function tourGo(i) {
+      var stops = tour.def.stops;
+      if (i < 0) i = 0;
+      tour.i = i;
+      var k = $('.tour-k', tourEl), t = $('.tour-t', tourEl), d = $('.tour-d', tourEl), btns = $('.tour-btns', tourEl);
+      var next = $('.tour-next', tourEl), prev = $('[data-t="prev"]', tourEl);
+      tourEl.hidden = false;
+      el.classList.add('touring');
+      if (i >= stops.length) {
+        k.textContent = tour.def.label + ' ticket · arrived';
+        t.textContent = 'End of the line';
+        d.textContent = stamps.count() + ' of ' + stamps.total + ' stamps in your passport.';
+        next.textContent = 'Passport'; next.setAttribute('data-t', 'pass');
+        prev.disabled = false;
+        endGuide();
+        return;
+      }
+      var st = stops[i], isSec = st[0].charAt(0) === '#';
+      k.textContent = tour.def.label + ' ticket · stop ' + (i + 1) + ' of ' + stops.length;
+      t.textContent = isSec ? 'Technical toolkit' : stn(st[0]).name;
+      d.textContent = st[2];
+      next.textContent = i === stops.length - 1 ? 'Finish' : 'Next stop →';
+      next.setAttribute('data-t', 'next');
+      prev.disabled = i === 0;
+      if (isSec) {
+        endGuide();
+        if (drawerOpen()) closeDrawer(false);
+        var sec = $(st[0]);
+        if (sec) sec.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+      } else goToStation(st[0], st[1]);
+      settle();
     }
-    function ask(i) {
-      if (typing) return;
-      asked[i] = true;
-      addMsg('me', T[i][0]);
-      chipsEl.style.display = 'none';
-      typing = true; mood();
-      var t = addMsg('bot', '');
-      t.className += ' pc-typing'; t.innerHTML = '<i></i><i></i><i></i>';
-      setTimeout(function () {
-        typing = false;
-        var line = lineFor(i);
-        t.className = 'pc-msg pc-bot'; t.textContent = line || 'That one is on the map. Open it from the list.';
-        var act = doc.createElement('div');
-        act.className = 'pc-act';
-        var show = doc.createElement('button');
-        show.type = 'button'; show.className = 'pc-show'; show.setAttribute('data-i', i); show.textContent = 'Show me where';
-        act.appendChild(show);
-        t.appendChild(act);
-        logEl.scrollTop = logEl.scrollHeight;
-        if (Object.keys(asked).length >= T.length) asked = {};
-        renderChips(); chipsEl.style.display = '';
-        hop();
-      }, reduce ? 150 : 900);
+    function startTour(key) {
+      if (!tourEl) buildTour();
+      tour = { key: key, def: TOURS[key], i: 0 };
+      setOpen(false);
+      say('Next stop!', 1200);
+      tourGo(0);
+    }
+    function endTour() {
+      if (!tour) return;
+      tour = null;
+      tourEl.hidden = true;
+      el.classList.remove('touring');
+      endGuide(); settle();
+    }
+
+    /* ---- the menu: ticket rows, no typing ---- */
+    var viewEl = $('.cd-view', el), passEl = $('.cd-pass', el), view = 'home', lastPlay = '', clearArmed = false;
+    var ABBR = { 'st-techved': 'TECH', 'st-msci': 'MSCI', 'st-banking': 'BANK', 'st-assets': 'REAL', 'st-rag': 'RAG', 'st-post-realization': 'DBX', 'st-post-ltap': 'LTAP', 'st-post-rt': 'RT', 'st-post-layers': 'AI', 'st-chatbot': 'BOT', 'st-ba': 'BA', 'st-ms': 'MS', 'st-cert-fund': 'FUND', 'st-cert-aws': 'AWS', 'st-cert-azure': 'AZ', 'st-contact': 'HI' };
+    var LINE_NAME = { eng: 'Engineering line', ai: 'AI & Writing line', lrn: 'Learning line', all: 'Contact' };
+    function row(act, code, title, sub, extra) {
+      return '<button type="button" class="cd-row" data-act="' + act + '"' + (extra || '') + '><i>' + code + '</i><span><b>' + title + '</b><small>' + sub + '</small></span><em aria-hidden="true">→</em></button>';
+    }
+    function passBtn() {
+      var n = stamps.count(), t = stamps.total || 1;
+      passEl.innerHTML = '<span>Passport</span><b>' + n + ' of ' + stamps.total + ' stamps</b><i class="cd-bar"><u style="width:' + Math.round(n / t * 100) + '%"></u></i>';
+      passEl.setAttribute('aria-label', 'Passport, ' + n + ' of ' + stamps.total + ' stamps. Open it.');
+    }
+    function viewHtml(v) {
+      var n = stamps.count(), back = '<button type="button" class="cd-back" data-act="home">← Back</button>';
+      if (v === 'ride') {
+        return back + '<p class="cd-lead">Who is riding today?</p>' + Object.keys(TOURS).map(function (k) {
+          return row('tour', TOURS[k].stops.length, TOURS[k].label, TOURS[k].blurb, ' data-k="' + k + '"');
+        }).join('');
+      }
+      if (v === 'board') {
+        return back + '<p class="cd-lead">Where to?</p>' + ['eng', 'ai', 'lrn', 'all'].map(function (l) {
+          var items = STN.filter(function (s) { return s.line === l; });
+          if (!items.length) return '';
+          return '<p class="cd-line" data-line="' + l + '"><i>' + (BADGE[l] || '') + '</i>' + LINE_NAME[l] + '</p><ul class="cd-stops">' + items.map(function (s) {
+            return '<li><button type="button" class="cd-stop" data-act="go" data-id="' + s.id + '" data-line="' + s.line + '"><span>' + esc(s.name) + '<small>' + esc(s.sub) + '</small></span><u>' + (stamps.has(s.id) ? '✓' : '') + '</u></button></li>';
+          }).join('') + '</ul>';
+        }).join('');
+      }
+      if (v === 'passport') {
+        var done = n >= stamps.total && stamps.total > 0;
+        return back + '<p class="cd-lead">Your passport</p><p class="cd-note">' + n + ' of ' + stamps.total + ' stamps. Visit a station to collect its stamp.</p>' +
+          '<div class="cd-stamps">' + STN.map(function (s, i) {
+            var got = stamps.has(s.id);
+            return '<button type="button" class="cd-stamp' + (got ? ' got' : '') + '" data-act="go" data-id="' + s.id + '" data-line="' + s.line + '" style="--r:' + ((i % 3) * 5 - 5) + 'deg" aria-label="' + esc(s.name) + (got ? ', stamped' : ', not visited yet') + '"><span>' + (got ? ABBR[s.id] || '' : '') + '</span></button>';
+          }).join('') + '</div>' +
+          '<ul class="cd-miles"><li class="' + (n >= 5 ? 'on' : '') + '"><b>5 stamps</b>' + (n >= 5 ? '<button type="button" class="cd-mini" data-act="platform">Play the secret platform</button>' : '<span>Unlocks a secret trick</span>') + '</li>' +
+          '<li class="' + (done ? 'on' : '') + '"><b>All ' + stamps.total + '</b><span>' + (done ? 'Station Master. You have seen everything.' : 'Become Station Master') + '</span></li></ul>' +
+          (n ? '<button type="button" class="cd-clear" data-act="clear">' + (clearArmed ? 'Press again to clear' : 'Clear my stamps') + '</button>' : '');
+      }
+      return '<p class="cd-lead">Welcome aboard. Pick a ticket.</p>' +
+        row('ride', '01', 'Take a guided ride', 'I walk you through the highlights') +
+        row('board', '02', 'Where to?', 'Jump to any station') +
+        row('surprise', '03', 'Surprise me', 'A trick or a quiz, picked for you') +
+        row('trick', '04', 'Read my mind', 'Think of a number from 1 to 31') +
+        (n >= 5 ? row('platform', '05', 'The secret platform', 'Unlocked. Think of a station') :
+          '<div class="cd-row cd-lock"><i>05</i><span><b>The secret platform</b><small>Collect 5 stamps to unlock (' + n + ' of 5)</small></span><em class="cd-tag">locked</em></div>');
+    }
+    function showView(v, quiet) {
+      view = v;
+      if (v !== 'passport') clearArmed = false;
+      viewEl.innerHTML = viewHtml(v);
+      passBtn();
+      if (!quiet) { var f = $('button', viewEl); if (f) f.focus({ preventScroll: true }); }
+    }
+    function surprise() {
+      var pool = ['number', 'quiz'];
+      if (stamps.count() >= 5) pool.push('platform');
+      pool = pool.filter(function (k) { return k !== lastPlay; });
+      lastPlay = pool[Math.floor(Math.random() * pool.length)];
+      say('Surprise!', 1200);
+      openTrick(lastPlay);
     }
     bubble.addEventListener('click', function (e) {
-      var c = e.target.closest('.pc-chip, .pc-show');
-      if (!c) return;
+      var b = e.target.closest('[data-act]');
+      if (!b) return;
       touched();
-      if (c.classList.contains('pc-show')) { goTo(+c.getAttribute('data-i')); return; }
-      if (c.getAttribute('data-act') === 'trick') { openTrick(); return; }
-      ask(+c.getAttribute('data-i'));
+      var act = b.getAttribute('data-act');
+      if (act === 'home' || act === 'ride' || act === 'board' || act === 'passport') showView(act);
+      else if (act === 'surprise') surprise();
+      else if (act === 'trick') openTrick('number');
+      else if (act === 'platform') openTrick('platform');
+      else if (act === 'tour') startTour(b.getAttribute('data-k'));
+      else if (act === 'go') goToStation(b.getAttribute('data-id'), null);
+      else if (act === 'clear') { if (!clearArmed) { clearArmed = true; showView('passport', true); } else { clearArmed = false; stamps.clear(); } }
     });
+    stamps.on(function (id) {
+      if (view === 'home' || view === 'passport' || view === 'board') showView(view, true); else passBtn();
+      if (!id) return;
+      var n = stamps.count();
+      hop();
+      say('Stamped: ' + stn(id).name, 1800);
+      if (n === 5) setTimeout(function () { say('Secret platform unlocked!', 2400); confetti(); }, 1900);
+      else if (n === stamps.total) setTimeout(function () { say('Station Master!', 2600); confetti(); }, 1900);
+    });
+    showView('home', true);
 
     /* ---- reactions: the face follows what you hover ---- */
     var react = '', saidHi = 0;
