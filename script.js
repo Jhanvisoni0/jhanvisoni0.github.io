@@ -97,6 +97,7 @@
       askI = (i + TEASERS.length) % TEASERS.length;
       var t = TEASERS[askI];
       askV.textContent = t[0];
+      if (!reduce) { askV.classList.remove('swap'); void askV.offsetWidth; askV.classList.add('swap'); }
       askGo.setAttribute('href', '#' + t[1]);
       if (user) askLive.textContent = 'Next question: ' + t[0];
       if (askApi && askApi.onChange) askApi.onChange();
@@ -104,6 +105,57 @@
     askNext.addEventListener('click', function () { showAsk(askI + 1, true); });
     askApi = { teasers: TEASERS, cur: function () { return askI; }, show: showAsk, stopAuto: function () {}, hold: function () {}, onChange: null };
   }
+
+  /* ---------------- route progress under the top bar ---------------- */
+  (function routeInit() {
+    var bar = $('.bar');
+    if (!bar) return;
+    var r = doc.createElement('div');
+    r.className = 'route';
+    r.setAttribute('aria-hidden', 'true');
+    r.innerHTML = '<i class="route-fill"></i><b class="route-train"></b>';
+    var ticks = [];
+    ['#toolkit', '#contact'].forEach(function (sel) {
+      if (!$(sel)) return;
+      var t = doc.createElement('s'); t.setAttribute('data-sel', sel); r.appendChild(t); ticks.push(t);
+    });
+    bar.appendChild(r);
+    var fill = $('.route-fill', r), train = $('.route-train', r), raf = 0;
+    function update() {
+      raf = 0;
+      var max = doc.documentElement.scrollHeight - window.innerHeight;
+      if (max <= 0) { r.style.visibility = 'hidden'; return; }
+      r.style.visibility = '';
+      var p = Math.min(1, Math.max(0, window.scrollY / max));
+      fill.style.clipPath = 'inset(0 ' + (100 - p * 100).toFixed(2) + '% 0 0)';
+      train.style.left = 'calc(' + (p * 100).toFixed(2) + '% - ' + (p * 24).toFixed(1) + 'px)';
+      ticks.forEach(function (t) {
+        var sec = $(t.getAttribute('data-sel'));
+        if (!sec || !sec.offsetParent) { t.style.display = 'none'; return; }
+        t.style.display = '';
+        var f = Math.min(0.97, Math.max(0.03, (sec.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.45) / max));
+        t.style.left = (f * 100).toFixed(2) + '%';
+        t.classList.toggle('on', p >= f);
+      });
+    }
+    function req() { if (!raf) raf = requestAnimationFrame(update); }
+    window.addEventListener('scroll', req, { passive: true });
+    window.addEventListener('resize', req);
+    window.addEventListener('load', req);
+    if (window.MutationObserver) new MutationObserver(req).observe(doc.documentElement, { attributes: true, attributeFilter: ['data-view'] });
+    update();
+  })();
+
+  /* ---------------- things arrive as you scroll: rules draw in, list stops light up ---------------- */
+  (function arriveInit() {
+    var targets = $$('.list-head, .sec-head, .lgroup .station');
+    if (!targets.length) return;
+    if (!('IntersectionObserver' in window) || reduce) { targets.forEach(function (t) { t.classList.add('in'); }); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.05 });
+    targets.forEach(function (t) { io.observe(t); });
+  })();
 
   /* ---------------- map ---------------- */
   var canvas = $('#mapCanvas');
@@ -158,6 +210,26 @@
   track('ai', 'M1300 150V320H2280', 'draw', true);
   track('ai', 'M2280 320H2560', 'dashed', false);
   canvas.insertBefore(svg, canvas.firstChild);
+
+  /* small trains ride each line, slowly */
+  if (!reduce) {
+    [['eng', 'M120 150H2390L2560 320', 48, 2.8], ['lrn', 'M120 490H2390L2560 320', 54, 6.4], ['ai', 'M1300 150V320H2280', 26, 4.6]].forEach(function (t) {
+      var wrap = doc.createElementNS(NS, 'g');
+      wrap.setAttribute('class', 'train'); wrap.setAttribute('data-line', t[0]);
+      var cars = '';
+      [-44, -15, 14].forEach(function (x) {
+        cars += '<rect x="' + x + '" y="-8" width="27" height="16" rx="4"/>' +
+          '<rect class="win" x="' + (x + 4) + '" y="-4" width="5" height="5" rx="1"/><rect class="win" x="' + (x + 11) + '" y="-4" width="5" height="5" rx="1"/><rect class="win" x="' + (x + 18) + '" y="-4" width="5" height="5" rx="1"/>';
+      });
+      var inner = doc.createElementNS(NS, 'g');
+      inner.innerHTML = cars +
+        '<animateMotion dur="' + t[2] + 's" begin="' + t[3] + 's" repeatCount="indefinite" rotate="auto" path="' + t[1] + '"/>' +
+        '<animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.03;0.97;1" dur="' + t[2] + 's" begin="' + t[3] + 's" repeatCount="indefinite"/>';
+      inner.setAttribute('opacity', '0');
+      wrap.appendChild(inner);
+      svg.appendChild(wrap);
+    });
+  }
 
   function put(tag, cls, x, y, text, line) {
     var d = doc.createElement(tag);
@@ -252,6 +324,19 @@
       if (first) centerOn(first.x, true);
     }
   }
+  /* hovering a line badge previews that line; clicking it keeps the focus */
+  legend.forEach(function (l) {
+    l.addEventListener('mouseenter', function () {
+      if (coarse || frame.getAttribute('data-focus')) return;
+      frame.setAttribute('data-focus', l.getAttribute('data-line')); frame._preview = true;
+    });
+    l.addEventListener('mouseleave', function () {
+      if (frame._preview) { frame.setAttribute('data-focus', ''); frame._preview = false; }
+    });
+    l.addEventListener('click', function () {
+      if (frame._preview) { frame.setAttribute('data-focus', ''); frame._preview = false; }
+    });
+  });
   legend.forEach(function (l) {
     l.addEventListener('click', function () {
       var line = l.getAttribute('data-line');
@@ -383,7 +468,7 @@
   window.addEventListener('load', function () { updateProgress(); fromHash(); });
 
   /* ---------------- Dot: a little guide that hovers around and points at the answer ---------------- */
-  (function pipInit() {
+  (function pipInit() {  /* Dot sits still in the corner and only reacts when you click it */
     if (!askApi) return;
     var S = 84, W0 = 76;
     var quiet = false;
@@ -589,25 +674,6 @@
     window.addEventListener('scroll', function () { if (guiding) updateGuide(); }, { passive: true });
     drBody.addEventListener('scroll', function () { if (guiding) updateGuide(); }, { passive: true });
     window.addEventListener('resize', function () { refreshAway(); if (guiding) updateGuide(); else settle(); });
-    /* eyes follow the pointer */
-    if (!coarse && !reduce) {
-      window.addEventListener('pointermove', function (e) {
-        if (guiding || e.pointerType === 'touch') return;
-        var r = body.getBoundingClientRect();
-        var dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
-        var d = Math.sqrt(dx * dx + dy * dy) || 1, k = Math.min(1, d / 160);
-        look.style.transform = 'translate(' + (dx / d * 3.2 * k).toFixed(2) + 'px,' + (dy / d * 2.4 * k).toFixed(2) + 'px)';
-      }, { passive: true });
-    }
-    /* a bubble the viewer has not asked for appears at most a few times, then stays quiet */
-    function autoPop() {
-      if (tricking || quiet || userTouched || guiding || open || doc.hidden || drawerOpen() || autoPops >= 3) return false;
-      var ar = ask && ask.getBoundingClientRect();
-      if (ar && ar.bottom > 0 && ar.top < H()) return false; /* the board already offers the questions; do not cover it */
-      autoPops++; setOpen(true, true); hop(); return true;
-    }
-
-
     /* ---- the trick: Dot "reads your mind" (a 5-card binary guessing trick) ---- */
     function say(text, ms) {
       sayEl.textContent = text;
@@ -788,7 +854,6 @@
       else if (tricking) m = el.classList.contains('trick-think') ? 'think' : 'hello';
       else if (guiding) m = 'wink';
       else if (open) m = 'hello';
-      else if (!reduce && now - lastAct > 9000) m = 'sleepy';
       if (m !== curMood) { curMood = m; el.setAttribute('data-mood', m); }
     }
     el.setAttribute('data-mood', 'calm');
@@ -800,23 +865,8 @@
     ['pointermove', 'pointerdown', 'keydown', 'wheel', 'scroll', 'touchstart'].forEach(function (t) {
       window.addEventListener(t, activity, { passive: true });
     });
-    if (!reduce) {
-      setInterval(function () {
-        if (offered || quiet || userTouched || tricking || guiding || open || doc.hidden || drawerOpen()) return;
-        if (Date.now() - lastAct > 14000) offerTrick();
-      }, 1000);
-    }
-
     settle();
     sync();
     setTimeout(function () { el.classList.add('in'); }, 900);
-    if (!reduce) {
-      setTimeout(autoPop, 4200);
-      var tick = setInterval(function () {
-        if (open || guiding || tricking) return;
-        wander();
-        if (!quiet && !userTouched && autoPops < 3) setTimeout(autoPop, 1700);
-      }, 14000);
-    }
   })();
 })();

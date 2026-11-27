@@ -55,9 +55,16 @@ The last row of the departure board flips through curiosity hooks (the XBRL bug,
 
 ## Dot, the emoticon guide
 
-A small flat emoticon (drawn as SVG inside `script.js`, styled at the bottom of `style.css`) whose face and colors change with the moment: calm, hello while a bubble is open, wink while pointing at an answer, thinking and happy during the trick, sleepy when nothing has happened for a while. It drifts between screen corners and follows the cursor with its eyes. It pops a question bubble a few times, but never while the departures board is on screen. **Show me** opens the right station and outlines the exact line that answers the question, with Dot beside it. The ✕ silences it for the session. Teasers are `[text, station id, phrase to highlight]` in the `TEASERS` list.
+A small flat emoticon (drawn as SVG inside `script.js`, styled at the bottom of `style.css`) sits in the bottom-right corner on screens 900px and wider. It never moves or pops up by itself. Click it to open a question bubble; **Show me** opens the right station and outlines the exact line that answers it. Its face changes with the moment: calm, hello while a bubble is open, wink while pointing at an answer, thinking and happy during the trick. The ✕ silences it for the session. Teasers are `[text, station id, phrase to highlight]` in the `TEASERS` list. The bubble also offers a mind-reading trick (think of 1 to 31, answer five yes/no cards, Dot reveals the number and explains the binary).
 
-If nobody touches the page for about 14 seconds, Dot offers **a mind-reading trick** once per page load (the bubble's "Mind-reading trick" button starts it any time). The visitor thinks of a number from 1 to 31 and answers yes/no on five cards; Dot reveals it, explains it is binary, and links to the MSCI partition-pruning line.
+## Micro-interactions
+
+- A thin route line under the top bar fills as you scroll, with a small train riding its end and two stops (Technical Toolkit, Contact). It is created in `routeInit()` and also runs on the case-study pages.
+- Three small trains ride the map lines slowly (`animateMotion` in the map block). Hovering a legend badge previews that line.
+- Station dots send out a ring on hover, and again when you open one.
+- The "Ask me" row flips like a board when you press Next.
+- Section rules draw in as you scroll, and in List view each stop sits on a rail and lights up when you reach it.
+- Everything above is switched off for visitors who ask their device for reduced motion.
 
 ## Themes and views
 
@@ -68,7 +75,7 @@ If nobody touches the page for about 14 seconds, Dot offers **a mind-reading tri
 ## Updating the site (cache-busting)
 
 GitHub Pages and browsers cache CSS/JS. When you change `style.css` or `script.js`, bump the
-version in every page (`style.css?v=31`, `script.js?v=18`), otherwise visitors may see the old look.
+version in every page (`style.css?v=32`, `script.js?v=19`), otherwise visitors may see the old look.
 
 ## Deploy on GitHub Pages
 
