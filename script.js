@@ -49,36 +49,6 @@
     parts.forEach(function (p) { d.appendChild(p); });
   });
 
-  /* ---------------- board scramble ---------------- */
-  var GLYPHS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  function scramble(el, delay) {
-    var finalText = el.getAttribute('data-text') || el.textContent;
-    var dur = 300 + Math.min(finalText.length, 40) * 6;
-    var t0 = null;
-    var run = el._run = (el._run || 0) + 1;
-    function frame(ts) {
-      if (el._run !== run) return;
-      if (t0 === null) t0 = ts;
-      var p = (ts - t0) / dur;
-      if (p >= 1) { el.textContent = finalText; return; }
-      var out = '';
-      var cut = Math.floor(finalText.length * p);
-      for (var i = 0; i < finalText.length; i++) {
-        var ch = finalText.charAt(i);
-        out += (i < cut || ch === ' ') ? ch : GLYPHS.charAt(Math.floor(Math.random() * GLYPHS.length));
-      }
-      el.textContent = out;
-      setTimeout(function () { requestAnimationFrame(frame); }, 34);
-    }
-    setTimeout(function () { requestAnimationFrame(frame); }, delay);
-  }
-  if (!reduce) {
-    /* only the first row flips, and it settles in well under a second */
-    var firstRow = $('.board-row');
-    if (firstRow) $$('.flip', firstRow).forEach(function (el, c) { scramble(el, 100 + c * 60); });
-  }
-
-
   /* ---------------- "Ask me": step through a few questions ---------------- */
   var ask = $('.board-ask');
   if (ask) {
@@ -97,7 +67,6 @@
       askI = (i + TEASERS.length) % TEASERS.length;
       var t = TEASERS[askI];
       askV.textContent = t[0];
-      if (!reduce) { askV.classList.remove('swap'); void askV.offsetWidth; askV.classList.add('swap'); }
       askGo.setAttribute('href', '#' + t[1]);
       if (user) askLive.textContent = 'Next question: ' + t[0];
       if (askApi && askApi.onChange) askApi.onChange();
@@ -479,38 +448,36 @@
     el.setAttribute('data-side', 'r');
     el.setAttribute('data-v', 'up');
     el.innerHTML =
-      '<div class="pip-bubble" role="group" aria-label="A question from Dot">' +
-        '<button type="button" class="pip-x" aria-label="Stop the tips">✕</button>' +
-        '<p class="pip-k">Ask Jhanvi about…</p>' +
-        '<p class="pip-q"></p>' +
-        '<div class="pip-btns"><button type="button" class="pip-flip">Another ↻</button><a class="pip-go" href="#">Show me →</a><button type="button" class="pip-trick">Mind-reading trick</button><button type="button" class="pip-try">Try it</button><button type="button" class="pip-no">Not now</button></div>' +
+      '<div class="pip-bubble" role="dialog" aria-label="Chat with Dot">' +
+        '<div class="pc-head"><span class="pc-av" aria-hidden="true"></span><div class="pc-who"><b>Dot</b><small>Answers come from this site</small></div><button type="button" class="pip-x" aria-label="Close chat">✕</button></div>' +
+        '<div class="pc-log" aria-live="polite"></div>' +
+        '<div class="pc-chips"></div>' +
       '</div>' +
       '<span class="pip-tag" aria-hidden="true">There it is.</span>' +
       '<span class="pip-say" aria-hidden="true"></span>' +
       '<button type="button" class="pip-body" aria-expanded="false" aria-label="Dot, your guide. Open a question about Jhanvi\'s work.">' +
         '<svg class="pip-svg" viewBox="0 0 76 84" width="76" height="84" aria-hidden="true" focusable="false">' +
-          '<rect class="pip-tile" x="1" y="7" width="74" height="74" rx="6"/>' +
-          '<circle class="pip-face" cx="38" cy="44" r="30"/>' +
+          '<defs><radialGradient id="dotGrad" cx="35%" cy="28%" r="85%"><stop class="g1" offset="0"/><stop class="g2" offset="1"/></radialGradient></defs>' +
+          '<ellipse cx="38" cy="79" rx="22" ry="3" fill="#000" opacity=".16"/>' +
+          '<circle cx="38" cy="40" r="33" fill="url(#dotGrad)"/>' +
+          '<circle cx="38" cy="40" r="32.2" fill="none" stroke="#000" stroke-opacity=".1" stroke-width="1.6"/>' +
+          '<ellipse cx="27" cy="19" rx="15" ry="7" fill="#fff" opacity=".34" transform="rotate(-22 27 19)"/>' +
           '<g class="pip-look">' +
-            /* calm: two dot eyes, a flat mouth */
-            '<g class="pip-m m-calm"><g class="pip-blink"><circle class="f1" cx="27" cy="40" r="4.4"/><circle class="f1" cx="49" cy="40" r="4.4"/></g><rect class="f1" x="31" y="57" width="14" height="3.6"/></g>' +
-            /* hello: ringed eyes, small round mouth */
-            '<g class="pip-m m-hello"><circle class="s2" cx="27" cy="38" r="7.5" fill="none" stroke-width="3.4"/><circle class="s2" cx="49" cy="38" r="7.5" fill="none" stroke-width="3.4"/><circle class="f1" cx="28.5" cy="38" r="3"/><circle class="f1" cx="50.5" cy="38" r="3"/><circle class="s1" cx="38" cy="58" r="4" fill="none" stroke-width="3.2"/></g>' +
-            /* happy: arched eyes, wide smile */
-            '<g class="pip-m m-happy"><path class="s1" d="M20 42 A7 7 0 0 1 34 42" fill="none" stroke-width="4"/><path class="s1" d="M42 42 A7 7 0 0 1 56 42" fill="none" stroke-width="4"/><path class="s1" d="M28 54 Q38 66 48 54" fill="none" stroke-width="4" stroke-linecap="round"/></g>' +
-            /* think: eyes up, zigzag mouth */
-            '<g class="pip-m m-think"><circle class="f1" cx="27" cy="36" r="4.4"/><circle class="f1" cx="49" cy="36" r="4.4"/><path class="s1" d="M25 60 L31.5 53 L38 60 L44.5 53 L51 60" fill="none" stroke-width="3.4"/></g>' +
-            /* wink: one bar eye, one arched eye, small smile */
-            '<g class="pip-m m-wink"><rect class="f1" x="20" y="38" width="14" height="4"/><path class="s2" d="M42 43 A7 7 0 0 1 56 43" fill="none" stroke-width="4"/><path class="s1" d="M31 55 Q38 61 45 55" fill="none" stroke-width="3.4" stroke-linecap="round"/></g>' +
-            /* sleepy: heavy lids over dots, tiny mouth */
-            '<g class="pip-m m-sleepy"><circle class="f2" cx="27" cy="42" r="4.6"/><circle class="f2" cx="49" cy="42" r="4.6"/><rect class="f1" x="19" y="34" width="16" height="4" transform="rotate(-8 27 36)"/><rect class="f1" x="41" y="34" width="16" height="4" transform="rotate(8 49 36)"/><rect class="f1" x="34" y="58" width="8" height="3.4"/></g>' +
+            '<g class="pip-m m-calm"><g class="pip-blink"><ellipse class="fe" cx="27" cy="37" rx="3.8" ry="4.8"/><ellipse class="fe" cx="49" cy="37" rx="3.8" ry="4.8"/><circle class="gl" cx="28.4" cy="35.2" r="1.4"/><circle class="gl" cx="50.4" cy="35.2" r="1.4"/></g><path class="se" d="M31 53 Q38 59 45 53" fill="none" stroke-width="3.2" stroke-linecap="round"/><circle class="bl" cx="17.5" cy="49" r="5"/><circle class="bl" cx="58.5" cy="49" r="5"/></g>' +
+            '<g class="pip-m m-hello"><ellipse class="fe" cx="27" cy="37" rx="3.8" ry="4.8"/><ellipse class="fe" cx="49" cy="37" rx="3.8" ry="4.8"/><circle class="gl" cx="28.4" cy="35.2" r="1.4"/><circle class="gl" cx="50.4" cy="35.2" r="1.4"/><path class="fe" d="M29 50 Q38 67 47 50 Z"/><path class="tg" d="M33.5 59 Q38 54.5 42.5 59 Q38 64 33.5 59Z"/><circle class="bl" cx="17.5" cy="49" r="5"/><circle class="bl" cx="58.5" cy="49" r="5"/></g>' +
+            '<g class="pip-m m-happy"><path class="se" d="M20 40 Q27 31 34 40" fill="none" stroke-width="3.8" stroke-linecap="round"/><path class="se" d="M42 40 Q49 31 56 40" fill="none" stroke-width="3.8" stroke-linecap="round"/><path class="fe" d="M26 49 Q38 68 50 49 Z"/><path class="tg" d="M31.5 59.5 Q38 53.5 44.5 59.5 Q38 65.5 31.5 59.5Z"/><circle class="bl" cx="17.5" cy="49" r="5"/><circle class="bl" cx="58.5" cy="49" r="5"/></g>' +
+            '<g class="pip-m m-wow"><ellipse class="fe" cx="27" cy="37" rx="4.6" ry="6.2"/><ellipse class="fe" cx="49" cy="37" rx="4.6" ry="6.2"/><circle class="gl" cx="28.4" cy="34.6" r="1.4"/><circle class="gl" cx="50.4" cy="34.6" r="1.4"/><path class="se" d="M20 26 Q27 21 34 26" fill="none" stroke-width="3" stroke-linecap="round"/><path class="se" d="M42 26 Q49 21 56 26" fill="none" stroke-width="3" stroke-linecap="round"/><ellipse class="fe" cx="38" cy="58" rx="4.8" ry="6.6"/></g>' +
+            '<g class="pip-m m-curious"><ellipse class="fe" cx="27" cy="37" rx="3.8" ry="4.8"/><ellipse class="fe" cx="49" cy="37" rx="3.8" ry="4.8"/><circle class="gl" cx="28.4" cy="35.2" r="1.4"/><circle class="gl" cx="50.4" cy="35.2" r="1.4"/><path class="se" d="M20 27 Q27 21 34 25" fill="none" stroke-width="3" stroke-linecap="round"/><path class="se" d="M43 29 L56 28" fill="none" stroke-width="3" stroke-linecap="round"/><path class="se" d="M32 56 Q40 57 47 52" fill="none" stroke-width="3.2" stroke-linecap="round"/></g>' +
+            '<g class="pip-m m-love"><path class="hrt" d="M27 44 C20 39 19 32 24 31 C26 30.5 27 32 27 33 C27 32 28 30.5 30 31 C35 32 34 39 27 44Z"/><path class="hrt" d="M49 44 C42 39 41 32 46 31 C48 30.5 49 32 49 33 C49 32 50 30.5 52 31 C57 32 56 39 49 44Z"/><path class="fe" d="M28 50 Q38 66 48 50 Q38 55 28 50Z"/><circle class="bl" cx="17.5" cy="50" r="5.5" style="opacity:.5"/><circle class="bl" cx="58.5" cy="50" r="5.5" style="opacity:.5"/></g>' +
+            '<g class="pip-m m-wink"><path class="se" d="M21 38 Q27 44 33 38" fill="none" stroke-width="3.6" stroke-linecap="round"/><ellipse class="fe" cx="49" cy="37" rx="3.8" ry="4.8"/><circle class="gl" cx="50.4" cy="35.2" r="1.4"/><path class="se" d="M30 52 Q39 62 48 51" fill="none" stroke-width="3.4" stroke-linecap="round"/><circle class="bl" cx="17.5" cy="49" r="5"/><circle class="bl" cx="58.5" cy="49" r="5"/></g>' +
+            '<g class="pip-m m-think"><ellipse class="fe" cx="27" cy="35" rx="3.8" ry="4.8"/><ellipse class="fe" cx="49" cy="35" rx="3.8" ry="4.8"/><circle class="gl" cx="28.4" cy="33.2" r="1.4"/><circle class="gl" cx="50.4" cy="33.2" r="1.4"/><path class="se" d="M21 28 L33 30.5" fill="none" stroke-width="3" stroke-linecap="round"/><path class="se" d="M43 30.5 L55 28" fill="none" stroke-width="3" stroke-linecap="round"/><path class="se" d="M30 57 Q34 52.5 38 57 T46 57" fill="none" stroke-width="3.2" stroke-linecap="round"/></g>' +
           '</g>' +
         '</svg>' +
       '</button>';
     doc.body.appendChild(el);
 
-    var body = $('.pip-body', el), bubble = $('.pip-bubble', el), qEl = $('.pip-q', el);
-    var kEl = $('.pip-k', el), sayEl = $('.pip-say', el), trickBtn = $('.pip-trick', el), goEl = $('.pip-go', el), flipEl = $('.pip-flip', el), xEl = $('.pip-x', el), look = $('.pip-look', el);
+    var body = $('.pip-body', el), bubble = $('.pip-bubble', el), logEl = $('.pc-log', el), chipsEl = $('.pc-chips', el);
+    var sayEl = $('.pip-say', el), xEl = $('.pip-x', el), look = $('.pip-look', el);
     var lastAct = Date.now(), tricking = false;
         var open = false, guiding = false, anchorI = 0, hit = null, autoPops = 0, userTouched = false;
     var timers = { close: null, guide: null, track: null, clear: null, peek: null, tired: null, zip: null, say: null, chase: null };
@@ -538,12 +505,7 @@
     function refreshAway() {
       el.classList.toggle('away', !guiding && drawerOpen() && W() < 900);
     }
-    function sync() {
-      if (el.hasAttribute('data-offer')) return;
-      var t = T[askApi.cur()];
-      qEl.textContent = t[0];
-      goEl.setAttribute('href', '#' + t[1]);
-    }
+    function sync() {}
     function setOpen(v, auto) {
       if (v && (el.classList.contains('away') || guiding || tricking)) return;
       open = v;
@@ -551,11 +513,7 @@
       body.setAttribute('aria-expanded', String(v));
       askApi.hold(v);
       clearTimeout(timers.close);
-      if (!v) { kEl.textContent = 'Ask Jhanvi about\u2026'; if (el.hasAttribute('data-offer')) { el.removeAttribute('data-offer'); sync(); } }
-      if (v) {
-        sync();
-        if (auto) timers.close = setTimeout(function () { if (!el.matches(':hover') && !el.contains(doc.activeElement)) setOpen(false); }, 10000);
-      }
+      if (v) { ensureGreeting(); }
     }
     var happyUntil = 0;
     function hop() {
@@ -655,16 +613,8 @@
     body.addEventListener('click', function () {
       touched(); hop(); setOpen(!open, false);
     });
-    xEl.addEventListener('click', function () {
-      touched(); quiet = true;
-      try { sessionStorage.setItem('pipQuiet', '1'); } catch (e) {}
-      setOpen(false); body.focus();
-    });
-    flipEl.addEventListener('click', function () {
-      touched(); askApi.stopAuto(); askApi.show(askApi.cur() + 1, true); hop();
-    });
+    xEl.addEventListener('click', function () { touched(); setOpen(false); body.focus(); });
     function go(e) { e.preventDefault(); touched(); goTo(askApi.cur()); }
-    goEl.addEventListener('click', go);
     var boardGo = $('.ask-go');
     if (boardGo) boardGo.addEventListener('click', go);
     askApi.onChange = function () { sync(); };
@@ -683,12 +633,12 @@
     }
     function confetti() {
       var r = body.getBoundingClientRect(), cx = r.left + 38, cy = r.top + 42;
-      var cols = ['#f0464e', '#2865a9', '#fad276', '#9ad7df'];
+      var cols = ['#ff7a59', '#4fc2dc', '#f6a82c', '#9d86f2', '#ff7aa5'];
       for (var i = 0; i < 18; i++) {
         var d = doc.createElement('i');
         d.className = 'pip-conf';
         d.style.left = cx + 'px'; d.style.top = cy + 'px';
-        d.style.background = cols[i % 4];
+        d.style.background = cols[i % 5];
         doc.body.appendChild(d);
         var a = Math.random() * Math.PI * 2, dist = 70 + Math.random() * 90;
         (function (n, ang, dd) {
@@ -837,14 +787,109 @@
       if (tReturn && tReturn.focus && doc.contains(tReturn)) tReturn.focus({ preventScroll: true }); else body.focus({ preventScroll: true });
     }
 
-    /* the offer: Dot suggests the trick once, when the page has been still for a while */
-    function offerTrick() {
-      offered = true;
-      el.setAttribute('data-offer', '1');
-      kEl.textContent = 'A little trick';
-      qEl.textContent = 'Think of a number from 1 to 31. I can read your mind.';
-      setOpen(true, false);
-      hop();
+
+    /* ---- the chat: pick a question, Dot answers with the matching line from this site ---- */
+    var greeted = false, typing = false, asked = {};
+    function addMsg(kind, text) {
+      var m = doc.createElement('div');
+      m.className = 'pc-msg pc-' + kind;
+      m.textContent = text;
+      logEl.appendChild(m);
+      logEl.scrollTop = logEl.scrollHeight;
+      return m;
+    }
+    function lineFor(i) {
+      var a = doc.getElementById(T[i][1]);
+      if (!a) return '';
+      var low = T[i][2].toLowerCase();
+      var node = $$('li, .st-sum, .st-note, .st-metrics > div', a).filter(function (n) {
+        return n.textContent.toLowerCase().indexOf(low) > -1;
+      })[0];
+      return node ? node.textContent.replace(/\s+/g, ' ').trim() : '';
+    }
+    function renderChips() {
+      chipsEl.innerHTML = '';
+      var n = 0;
+      T.forEach(function (t, i) {
+        if (asked[i] || n >= 4) return;
+        n++;
+        var b = doc.createElement('button');
+        b.type = 'button'; b.className = 'pc-chip'; b.setAttribute('data-i', i); b.textContent = t[0];
+        chipsEl.appendChild(b);
+      });
+      var tb = doc.createElement('button');
+      tb.type = 'button'; tb.className = 'pc-chip pc-chip-trick'; tb.setAttribute('data-act', 'trick'); tb.textContent = 'Read my mind';
+      chipsEl.appendChild(tb);
+    }
+    function ensureGreeting() {
+      if (greeted) return;
+      greeted = true;
+      addMsg('bot', "Hi, I'm Dot. Pick a question and I'll pull the answer from Jhanvi's work.");
+      renderChips();
+    }
+    function ask(i) {
+      if (typing) return;
+      asked[i] = true;
+      addMsg('me', T[i][0]);
+      chipsEl.style.display = 'none';
+      typing = true; mood();
+      var t = addMsg('bot', '');
+      t.className += ' pc-typing'; t.innerHTML = '<i></i><i></i><i></i>';
+      setTimeout(function () {
+        typing = false;
+        var line = lineFor(i);
+        t.className = 'pc-msg pc-bot'; t.textContent = line || 'That one is on the map. Open it from the list.';
+        var act = doc.createElement('div');
+        act.className = 'pc-act';
+        var show = doc.createElement('button');
+        show.type = 'button'; show.className = 'pc-show'; show.setAttribute('data-i', i); show.textContent = 'Show me where';
+        act.appendChild(show);
+        t.appendChild(act);
+        logEl.scrollTop = logEl.scrollHeight;
+        if (Object.keys(asked).length >= T.length) asked = {};
+        renderChips(); chipsEl.style.display = '';
+        hop();
+      }, reduce ? 150 : 900);
+    }
+    bubble.addEventListener('click', function (e) {
+      var c = e.target.closest('.pc-chip, .pc-show');
+      if (!c) return;
+      touched();
+      if (c.classList.contains('pc-show')) { goTo(+c.getAttribute('data-i')); return; }
+      if (c.getAttribute('data-act') === 'trick') { openTrick(); return; }
+      ask(+c.getAttribute('data-i'));
+    });
+
+    /* ---- reactions: the face follows what you hover ---- */
+    var react = '', saidHi = 0;
+    var REACT = [
+      ['.pip-body', 'love'],
+      ['.stn, .ask-flip, .ask-go', 'curious'],
+      ['.st-metrics, .board-row, .route', 'wow'],
+      ['a[href^="mailto"], .term-links a, .st-links a, .photo', 'happy'],
+      ['.lg, .seg, .icon-btn', 'wink'],
+      ['.kit-row, .st-points li', 'think']
+    ];
+    function reactFor(t) {
+      if (!t || !t.closest) return '';
+      for (var k = 0; k < REACT.length; k++) if (t.closest(REACT[k][0])) return REACT[k][1];
+      return '';
+    }
+    function gaze(t) {
+      if (!t || !t.getBoundingClientRect || !react || react === 'love') { look.style.transform = ''; return; }
+      var r = t.getBoundingClientRect(), b = body.getBoundingClientRect();
+      var dx = r.left + r.width / 2 - (b.left + b.width / 2), dy = r.top + r.height / 2 - (b.top + b.height / 2);
+      var d = Math.sqrt(dx * dx + dy * dy) || 1;
+      look.style.transform = 'translate(' + (dx / d * 2.6).toFixed(1) + 'px,' + (dy / d * 2).toFixed(1) + 'px)';
+    }
+    if (!coarse) {
+      doc.addEventListener('mouseover', function (e) {
+        var r = reactFor(e.target);
+        if (r === react) return;
+        react = r; gaze(e.target); mood();
+        if (r === 'love' && !open && Date.now() - saidHi > 20000) { saidHi = Date.now(); say('Click me', 1400); }
+      }, { passive: true });
+      doc.addEventListener('mouseout', function (e) { if (!e.relatedTarget) { react = ''; look.style.transform = ''; mood(); } }, { passive: true });
     }
     /* mood: the face changes with what is going on */
     var curMood = '';
@@ -852,15 +897,14 @@
       var m = 'calm', now = Date.now();
       if (now < happyUntil) m = 'happy';
       else if (tricking) m = el.classList.contains('trick-think') ? 'think' : 'hello';
+      else if (typing) m = 'think';
       else if (guiding) m = 'wink';
       else if (open) m = 'hello';
+      else if (react) m = react;
       if (m !== curMood) { curMood = m; el.setAttribute('data-mood', m); }
     }
     el.setAttribute('data-mood', 'calm');
     setInterval(mood, 250);
-    trickBtn.addEventListener('click', function () { touched(); openTrick(); });
-    $('.pip-try', el).addEventListener('click', function () { touched(); openTrick(); });
-    $('.pip-no', el).addEventListener('click', function () { setOpen(false); });
     function activity() { lastAct = Date.now(); }
     ['pointermove', 'pointerdown', 'keydown', 'wheel', 'scroll', 'touchstart'].forEach(function (t) {
       window.addEventListener(t, activity, { passive: true });

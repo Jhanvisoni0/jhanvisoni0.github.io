@@ -51,18 +51,21 @@ Tracks are drawn in `script.js` (search for `track(`).
 
 ## The "Ask me" departure
 
-The last row of the departure board flips through curiosity hooks (the XBRL bug, the 40% query-time cut, etc.) and each has an Open button that jumps to the matching station. Edit the list in `script.js` (search for `TEASERS`): each entry is `[text, station id]`. It auto-flips until the visitor presses Flip, and pauses on hover.
+The last row of the departure board flips through curiosity hooks (the XBRL bug, the 40% query-time cut, etc.) and each has an Open button that jumps to the matching station. Edit the list in `script.js` (search for `TEASERS`): each entry is `[text, station id, phrase to find]`. The row changes when the visitor presses Next.
 
-## Dot, the emoticon guide
+## Dot, the chat guide
 
-A small flat emoticon (drawn as SVG inside `script.js`, styled at the bottom of `style.css`) sits in the bottom-right corner on screens 900px and wider. It never moves or pops up by itself. Click it to open a question bubble; **Show me** opens the right station and outlines the exact line that answers it. Its face changes with the moment: calm, hello while a bubble is open, wink while pointing at an answer, thinking and happy during the trick. The ✕ silences it for the session. Teasers are `[text, station id, phrase to highlight]` in the `TEASERS` list. The bubble also offers a mind-reading trick (think of 1 to 31, answer five yes/no cards, Dot reveals the number and explains the binary).
+A glossy round emoticon (SVG inside `script.js`, styled at the bottom of `style.css`) sits in the bottom-right corner on screens 900px and wider. It never moves or pops up by itself.
+
+- **Chat:** click Dot to open a small chat. Tapping a question shows a typing indicator, then Dot replies with the matching line taken straight from the station on this page, plus a **Show me where** button that opens the station and outlines that line. Questions live in the `TEASERS` list (`[text, station id, phrase to find]`). **Read my mind** starts the number trick (think of 1 to 31, answer five yes/no cards, Dot reveals it and explains the binary).
+- **Faces:** the colour and expression change with what you hover or do: love (hovering Dot), curious (stations, Next/Open buttons), wow (numbers, board rows), happy (email, links, photo), wink (line badges, Map/List), thinking (toolkit, bullet points, while it types) and hello while the chat is open. See `REACT` in `script.js` to change the mapping.
+- Hidden on phones, where the "Ask me" row on the board covers the same ground.
 
 ## Micro-interactions
 
 - A thin route line under the top bar fills as you scroll, with a small train riding its end and two stops (Technical Toolkit, Contact). It is created in `routeInit()` and also runs on the case-study pages.
 - Three small trains ride the map lines slowly (`animateMotion` in the map block). Hovering a legend badge previews that line.
 - Station dots send out a ring on hover, and again when you open one.
-- The "Ask me" row flips like a board when you press Next.
 - Section rules draw in as you scroll, and in List view each stop sits on a rail and lights up when you reach it.
 - Everything above is switched off for visitors who ask their device for reduced motion.
 
@@ -70,12 +73,12 @@ A small flat emoticon (drawn as SVG inside `script.js`, styled at the bottom of 
 
 - Theme: follows the visitor's local time (light 7:00–18:59, dark otherwise) until they press the sun/moon button; the choice is saved in `localStorage`.
 - View: Map by default on screens 900px and wider, List on phones; the Map/List switch is saved too.
-- `prefers-reduced-motion` turns off the track drawing, board scramble and smooth scrolling.
+- `prefers-reduced-motion` turns off the track drawing, moving trains, Dot's animations and smooth scrolling.
 
 ## Updating the site (cache-busting)
 
 GitHub Pages and browsers cache CSS/JS. When you change `style.css` or `script.js`, bump the
-version in every page (`style.css?v=32`, `script.js?v=19`), otherwise visitors may see the old look.
+version in every page (`style.css?v=33`, `script.js?v=20`), otherwise visitors may see the old look.
 
 ## Deploy on GitHub Pages
 
