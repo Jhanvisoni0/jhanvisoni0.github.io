@@ -1,4 +1,4 @@
-/* Jhanvi Soni — transit-map portfolio
+/* Jhanvi Soni: transit-map portfolio
    One source of truth: the <article class="station"> blocks in index.html.
    The list view shows them as-is; the map view builds stations from them and
    opens a copy in the drawer. Everything here no-ops on pages without a map. */
@@ -12,8 +12,7 @@
   function store(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
   var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   var coarse = !!(window.matchMedia && window.matchMedia('(hover: none)').matches);
-  var pendingMark = null, onStationOpened = null, onStationClosed = null, askApi = null;
-  var LINES = { eng: 'Engineering line', ai: 'AI & Writing line', lrn: 'Learning line', all: 'Terminus' };
+  var LINES = { eng: 'Engineering line', ai: 'AI & Writing line', lrn: 'Learning line', all: 'Contact' };
   var BADGE = { eng: 'E', ai: 'A', lrn: 'L', all: '★' };
 
   /* ---------------- theme ---------------- */
@@ -53,7 +52,7 @@
   var GLYPHS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   function scramble(el, delay) {
     var finalText = el.getAttribute('data-text') || el.textContent;
-    var dur = 650 + Math.min(finalText.length, 60) * 8;
+    var dur = 300 + Math.min(finalText.length, 40) * 6;
     var t0 = null;
     var run = el._run = (el._run || 0) + 1;
     function frame(ts) {
@@ -73,51 +72,33 @@
     setTimeout(function () { requestAnimationFrame(frame); }, delay);
   }
   if (!reduce) {
-    $$('.board-row').forEach(function (row, r) {
-      $$('.flip', row).forEach(function (el, c) { scramble(el, 250 + r * 220 + c * 60); });
-    });
+    /* only the first row flips, and it settles in well under a second */
+    var firstRow = $('.board-row');
+    if (firstRow) $$('.flip', firstRow).forEach(function (el, c) { scramble(el, 100 + c * 60); });
   }
 
 
-  /* ---------------- "Ask me": flip through teasers ---------------- */
+  /* ---------------- "Ask me": step through a few questions ---------------- */
   var ask = $('.board-ask');
   if (ask) {
     var TEASERS = [
-      ['The XBRL bug that silently zeroed my keyword detection', 'st-rag', 'XBRL'],
-      ['How Z-ordering cut query time 40% at MSCI', 'st-msci', 'Z-ordering'],
-      ['4 days of bank reporting down to 15 minutes. How?', 'st-banking', '15 minutes'],
-      ['A chatbot that says "I don\'t know" instead of guessing', 'st-rag', 'unanswerable'],
-      ['Why Databricks isn\'t just managed Spark', 'st-post-realization', 'managed Spark'],
-      ['45 years of databases, one restaurant whiteboard', 'st-post-ltap', 'restaurant'],
-      ['REITs: +23% in low-rate years, \u22128% when rates shift', 'st-assets', 'REITs returning']
+      ['The XBRL bug: 0% keyword detection', 'st-rag'],
+      ['Z-ordering: 40% faster queries', 'st-msci'],
+      ['4 days of reporting in 15 minutes', 'st-banking'],
+      ['A RAG bot that admits "I don\'t know"', 'st-rag'],
+      ['Databricks is not just managed Spark', 'st-post-realization'],
+      ['LTAP, explained with a restaurant', 'st-post-ltap'],
+      ['REITs: +23% vs \u22128% by rate regime', 'st-assets']
     ];
-    var askV = $('.ask-v', ask), askGo = $('.ask-go', ask), askFlip = $('.ask-flip', ask), askLive = $('.ask-live', ask);
-    var askI = 0, askTimer = null, askPaused = false, askHold = false;
-    function showAsk(i, user) {
-      askI = (i + TEASERS.length) % TEASERS.length;
+    var askV = $('.ask-v', ask), askGo = $('.ask-go', ask), askNext = $('.ask-flip', ask), askLive = $('.ask-live', ask);
+    var askI = 0;
+    askNext.addEventListener('click', function () {
+      askI = (askI + 1) % TEASERS.length;
       var t = TEASERS[askI];
-      askV.setAttribute('data-text', t[0]);
+      askV.textContent = t[0];
       askGo.setAttribute('href', '#' + t[1]);
-      if (reduce) askV.textContent = t[0]; else scramble(askV, 0);
-      if (user) askLive.textContent = 'Next question: ' + t[0];
-      if (askApi && askApi.onChange) askApi.onChange();
-    }
-    function stopAuto() { if (askTimer) { clearInterval(askTimer); askTimer = null; } }
-    askFlip.addEventListener('click', function () {
-      stopAuto();
-      askFlip.classList.add('used');
-      showAsk(askI + 1, true);
+      askLive.textContent = 'Next question: ' + t[0];
     });
-    ask.addEventListener('mouseenter', function () { askPaused = true; });
-    ask.addEventListener('mouseleave', function () { askPaused = false; });
-    ask.addEventListener('focusin', function () { askPaused = true; });
-    ask.addEventListener('focusout', function () { askPaused = false; });
-    askApi = { teasers: TEASERS, cur: function () { return askI; }, show: showAsk, stopAuto: stopAuto, hold: function (v) { askHold = v; }, onChange: null };
-    if (!reduce) {
-      askTimer = setInterval(function () {
-        if (!askPaused && !askHold && !doc.hidden) showAsk(askI + 1, false);
-      }, 6500);
-    }
   }
 
   /* ---------------- map ---------------- */
@@ -152,9 +133,8 @@
     };
   }).sort(function (a, b) { return a.x - b.x; });
 
-  $$('[data-count]').forEach(function (n) { n.textContent = articles.length; });
   var hint = $('#mapHint');
-  if (hint && coarse) hint.textContent = 'Swipe the map sideways · tap a station';
+  if (hint && coarse) hint.textContent = 'Swipe the map sideways. Tap a station for details.';
 
   /* tracks */
   var svg = doc.createElementNS(NS, 'svg');
@@ -215,7 +195,7 @@
     b.addEventListener('click', function () { openStation(s.id, true); });
   });
 
-  /* drag (mouse only — touch uses native scrolling) */
+  /* drag (mouse only, touch uses native scrolling) */
   var down = false, moved = false, sx = 0, sl = 0;
   scroller.addEventListener('pointerdown', function (e) {
     if (e.pointerType !== 'mouse' || e.button !== 0) return;
@@ -341,7 +321,6 @@
     centerOn(s.x, true);
     bringMapIntoView(s.y);
     setHash(id);
-    if (onStationOpened) onStationOpened();
     if (fromClick || doc.activeElement === doc.body) {
       setTimeout(function () { drawer.focus({ preventScroll: true }); }, 60);
     }
@@ -352,7 +331,6 @@
     Object.keys(btns).forEach(function (k) { btns[k].classList.remove('is-active'); });
     current = null;
     setHash('map');
-    if (onStationClosed) onStationClosed();
     if (restore && lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
   }
   $('#drClose').addEventListener('click', function () { closeDrawer(true); });
@@ -398,417 +376,4 @@
   window.addEventListener('hashchange', fromHash);
   window.addEventListener('load', function () { updateProgress(); fromHash(); });
 
-  /* ---------------- Pip: a little guide that hovers around and points at the answer ---------------- */
-  (function pipInit() {
-    if (!askApi) return;
-    var S = 84, W0 = 76;
-    var quiet = false;
-    try { quiet = sessionStorage.getItem('pipQuiet') === '1'; } catch (e) {}
-    var T = askApi.teasers;
-    var el = doc.createElement('div');
-    el.className = 'pip';
-    el.setAttribute('data-side', 'r');
-    el.setAttribute('data-v', 'up');
-    el.innerHTML =
-      '<div class="pip-bubble" role="group" aria-label="A question from Pip">' +
-        '<button type="button" class="pip-x" aria-label="Stop the tips">✕</button>' +
-        '<p class="pip-k">Ask Jhanvi about…</p>' +
-        '<p class="pip-q"></p>' +
-        '<div class="pip-btns"><button type="button" class="pip-flip">Another ↻</button><a class="pip-go" href="#">Show me →</a><button type="button" class="pip-trick">Mind-reading trick</button><button type="button" class="pip-try">Try it</button><button type="button" class="pip-no">Not now</button></div>' +
-      '</div>' +
-      '<span class="pip-tag" aria-hidden="true">There it is.</span>' +
-      '<span class="pip-say" aria-hidden="true"></span>' +
-      '<button type="button" class="pip-body" aria-expanded="false" aria-label="Pip, your guide. Open a question about Jhanvi\'s work.">' +
-        '<svg class="pip-svg" viewBox="0 0 76 84" width="76" height="84" aria-hidden="true" focusable="false">' +
-          '<line x1="38" y1="14" x2="38" y2="7" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>' +
-          '<circle class="pip-lamp" cx="38" cy="5" r="4.5" fill="#ff58b4"/>' +
-          '<rect x="6" y="14" width="64" height="56" rx="26" fill="#0a1022" stroke="currentColor" stroke-width="2.5"/>' +
-          '<rect x="13" y="26" width="50" height="28" rx="14" fill="#f4f6fb"/>' +
-          '<g class="pip-look"><g class="pip-blink"><circle cx="28" cy="40" r="5" fill="#0a1022"/><circle cx="48" cy="40" r="5" fill="#0a1022"/><circle cx="29.6" cy="38.4" r="1.6" fill="#fff"/><circle cx="49.6" cy="38.4" r="1.6" fill="#fff"/></g></g>' +
-          '<circle cx="20" cy="49" r="3" fill="#ff58b4" opacity=".5"/><circle cx="56" cy="49" r="3" fill="#ff58b4" opacity=".5"/>' +
-          '<path d="M33 49 Q38 53 43 49" stroke="#0a1022" stroke-width="2" fill="none" stroke-linecap="round"/>' +
-          '<rect x="16" y="58" width="14" height="4" rx="2" fill="#5d8bff"/><rect x="31" y="58" width="14" height="4" rx="2" fill="#ff58b4"/><rect x="46" y="58" width="14" height="4" rx="2" fill="#2fe3b0"/>' +
-          '<circle cx="24" cy="75" r="6" fill="#ff58b4" stroke="#0a1022" stroke-width="2"/><circle cx="52" cy="75" r="6" fill="#2fe3b0" stroke="#0a1022" stroke-width="2"/>' +
-        '</svg>' +
-      '</button>';
-    doc.body.appendChild(el);
-
-    var body = $('.pip-body', el), bubble = $('.pip-bubble', el), qEl = $('.pip-q', el);
-    var kEl = $('.pip-k', el), sayEl = $('.pip-say', el), trickBtn = $('.pip-trick', el), goEl = $('.pip-go', el), flipEl = $('.pip-flip', el), xEl = $('.pip-x', el), look = $('.pip-look', el);
-    var lastAct = Date.now(), tricking = false;
-        var open = false, guiding = false, anchorI = 0, hit = null, autoPops = 0, userTouched = false;
-    var timers = { close: null, guide: null, track: null, clear: null, peek: null, tired: null, zip: null, say: null, chase: null };
-
-    function W() { return doc.documentElement.clientWidth; }
-    function H() { return window.innerHeight; }
-    function drawerOpen() { return !!(drawer && drawer.classList.contains('open')); }
-    function place(x, y, side) {
-      el.style.transform = 'translate(' + Math.round(x) + 'px,' + Math.round(y) + 'px)';
-      el.setAttribute('data-side', side);
-      el.setAttribute('data-v', y < 230 ? 'down' : 'up');
-    }
-    function anchors() {
-      var w = W(), h = H(), narrow = w < 900;
-      var a = [[w - W0 - 14, h - S - 14, 'r'], [14, h - S - 14, 'l']];
-      if (!narrow) { a.push([w - W0 - 14, 78, 'r']); a.push([14, Math.round(h * 0.6), 'l']); }
-      if (drawerOpen() && !narrow) a = a.filter(function (p) { return p[2] === 'l'; });
-      return a;
-    }
-    function settle() {
-      var a = anchors();
-      anchorI = Math.min(anchorI, a.length - 1);
-      place(a[anchorI][0], a[anchorI][1], a[anchorI][2]);
-    }
-    function refreshAway() {
-      el.classList.toggle('away', !guiding && drawerOpen() && W() < 900);
-    }
-    function sync() {
-      if (el.hasAttribute('data-offer')) return;
-      var t = T[askApi.cur()];
-      qEl.textContent = t[0];
-      goEl.setAttribute('href', '#' + t[1]);
-    }
-    function setOpen(v, auto) {
-      if (v && (el.classList.contains('away') || guiding || tricking)) return;
-      open = v;
-      el.classList.toggle('open', v);
-      body.setAttribute('aria-expanded', String(v));
-      askApi.hold(v);
-      clearTimeout(timers.close);
-      if (!v) { kEl.textContent = 'Ask Jhanvi about\u2026'; if (el.hasAttribute('data-offer')) { el.removeAttribute('data-offer'); sync(); } }
-      if (v) {
-        sync();
-        if (auto) timers.close = setTimeout(function () { if (!el.matches(':hover') && !el.contains(doc.activeElement)) setOpen(false); }, 10000);
-      }
-    }
-    function hop() {
-      el.classList.remove('hop'); void el.offsetWidth; el.classList.add('hop');
-    }
-    function wander() {
-      if (open || guiding || tricking || el.classList.contains('away') || reduce) return;
-      var a = anchors(), n = anchorI;
-      if (a.length > 1) { do { n = Math.floor(Math.random() * a.length); } while (n === anchorI); }
-      anchorI = n;
-      place(a[n][0], a[n][1], a[n][2]);
-      el.classList.add('moving');
-      setTimeout(function () { el.classList.remove('moving'); }, 1500);
-    }
-
-    /* highlight + guide */
-    function clearMarks() {
-      $$('.hl-target').forEach(function (n) { n.classList.remove('hl-target'); });
-    }
-    function updateGuide() {
-      if (!guiding || !hit) return;
-      var r = hit.getBoundingClientRect(), w = W(), x, y, side;
-      if (r.bottom < 60 || r.top > H()) return;
-      if (w >= 900) {
-        if (drawerOpen()) { x = drawer.getBoundingClientRect().left - W0 - 12; side = 'r'; }
-        else { x = Math.max(8, r.left - W0 - 14); side = 'l'; }
-        y = r.top + r.height / 2 - S / 2;
-        look.style.transform = 'translate(3px,0)';
-      } else {
-        x = w - W0 - 10; y = r.top - S + 8; side = 'r';
-        look.style.transform = 'translate(0,3px)';
-      }
-      y = Math.min(Math.max(y, 72), H() - S - 8);
-      place(x, y, side);
-    }
-    function endGuide() {
-      if (!guiding) return;
-      guiding = false;
-      clearTimeout(timers.guide); clearTimeout(timers.track);
-      el.classList.remove('guiding', 'tracking');
-      look.style.transform = '';
-      timers.clear = setTimeout(clearMarks, 4000);
-      refreshAway();
-      settle();
-    }
-    function startGuide(node) {
-      hit = node; guiding = true;
-      setOpen(false);
-      el.classList.remove('away');
-      el.classList.add('guiding');
-      updateGuide();
-      clearTimeout(timers.track);
-      timers.track = setTimeout(function () { el.classList.add('tracking'); }, 1400);
-      clearTimeout(timers.guide);
-      timers.guide = setTimeout(endGuide, 12000);
-    }
-    function markIn(container, needle) {
-      clearTimeout(timers.clear); clearMarks();
-      var low = needle.toLowerCase();
-      var node = $$('li, .st-sum, .st-note, .st-metrics > div', container).filter(function (n) {
-        return n.textContent.toLowerCase().indexOf(low) > -1;
-      })[0];
-      if (!node) return;
-      var d = node.closest('details'); if (d) d.open = true;
-      node.classList.add('hl-target');
-      node.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
-      setTimeout(function () { startGuide(node); }, reduce ? 60 : 550);
-    }
-    function goTo(i) { goToStation(T[i][1], T[i][2]); }
-    function goToStation(id, needle) {
-      var t = [null, id, needle];
-      setOpen(false);
-      endGuide();
-      if (root.getAttribute('data-view') === 'map') {
-        pendingMark = t[2];
-        openStation(t[1], false);
-      } else {
-        var a = doc.getElementById(t[1]);
-        if (!a) return;
-        a.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
-        setTimeout(function () { markIn(a, t[2]); }, reduce ? 60 : 700);
-      }
-    }
-    onStationOpened = function () {
-      refreshAway();
-      if (!guiding) settle();
-      if (pendingMark) {
-        var n = pendingMark; pendingMark = null;
-        setTimeout(function () { markIn(drBody, n); }, 450);
-      }
-    };
-    onStationClosed = function () { endGuide(); clearMarks(); refreshAway(); settle(); };
-
-    /* interactions */
-    function touched() { userTouched = true; }
-    body.addEventListener('click', function () {
-      touched(); hop(); setOpen(!open, false);
-    });
-    xEl.addEventListener('click', function () {
-      touched(); quiet = true;
-      try { sessionStorage.setItem('pipQuiet', '1'); } catch (e) {}
-      setOpen(false); body.focus();
-    });
-    flipEl.addEventListener('click', function () {
-      touched(); askApi.stopAuto(); askApi.show(askApi.cur() + 1, true); hop();
-    });
-    function go(e) { e.preventDefault(); touched(); goTo(askApi.cur()); }
-    goEl.addEventListener('click', go);
-    var boardGo = $('.ask-go');
-    if (boardGo) boardGo.addEventListener('click', go);
-    askApi.onChange = function () { sync(); };
-    doc.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && open && !drawerOpen()) { setOpen(false); body.focus(); }
-    });
-    window.addEventListener('scroll', function () { if (guiding) updateGuide(); }, { passive: true });
-    drBody.addEventListener('scroll', function () { if (guiding) updateGuide(); }, { passive: true });
-    window.addEventListener('resize', function () { refreshAway(); if (guiding) updateGuide(); else settle(); });
-    /* eyes follow the pointer */
-    if (!coarse && !reduce) {
-      window.addEventListener('pointermove', function (e) {
-        if (guiding || e.pointerType === 'touch') return;
-        var r = body.getBoundingClientRect();
-        var dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
-        var d = Math.sqrt(dx * dx + dy * dy) || 1, k = Math.min(1, d / 160);
-        look.style.transform = 'translate(' + (dx / d * 3.2 * k).toFixed(2) + 'px,' + (dy / d * 2.4 * k).toFixed(2) + 'px)';
-      }, { passive: true });
-    }
-    /* a bubble the viewer has not asked for appears at most a few times, then stays quiet */
-    function autoPop() {
-      if (tricking || quiet || userTouched || guiding || open || doc.hidden || drawerOpen() || autoPops >= 4) return false;
-      autoPops++; setOpen(true, true); hop(); return true;
-    }
-
-
-    /* ---- the trick: Pip "reads your mind" (a 5-card binary guessing trick) ---- */
-    function say(text, ms) {
-      sayEl.textContent = text;
-      el.classList.add('saying');
-      clearTimeout(timers.say);
-      timers.say = setTimeout(function () { el.classList.remove('saying'); }, ms || 1500);
-    }
-    function confetti() {
-      var r = body.getBoundingClientRect(), cx = r.left + 38, cy = r.top + 42;
-      var cols = ['#5d8bff', '#ff58b4', '#2fe3b0'];
-      for (var i = 0; i < 18; i++) {
-        var d = doc.createElement('i');
-        d.className = 'pip-conf';
-        d.style.left = cx + 'px'; d.style.top = cy + 'px';
-        d.style.background = cols[i % 3];
-        doc.body.appendChild(d);
-        var a = Math.random() * Math.PI * 2, dist = 70 + Math.random() * 90;
-        (function (n, ang, dd) {
-          if (!n.animate) { n.remove(); return; }
-          n.animate([
-            { transform: 'translate(0,0) rotate(0) scale(1)', opacity: 1 },
-            { transform: 'translate(' + Math.cos(ang) * dd + 'px,' + (Math.sin(ang) * dd + 40) + 'px) rotate(260deg) scale(.4)', opacity: 0 }
-          ], { duration: 950, easing: 'cubic-bezier(.2,.8,.3,1)' }).onfinish = function () { n.remove(); };
-        })(d, a, dist);
-      }
-    }
-
-    var trick = null, tBody = null, tCard = null, tStep = 0, tSum = 0, tReturn = null, offered = false;
-    var QUIPS = ['Hmm…', 'Interesting…', 'I can feel it…', 'Almost there…'];
-
-    function buildTrick() {
-      trick = doc.createElement('div');
-      trick.className = 'trick';
-      trick.hidden = true;
-      trick.innerHTML =
-        '<div class="trick-back"></div>' +
-        '<div class="trick-card" role="dialog" aria-modal="true" aria-labelledby="trickT" tabindex="-1">' +
-          '<button type="button" class="trick-x" aria-label="Close the trick">✕</button>' +
-          '<p class="trick-k" id="trickT">Pip reads your mind</p>' +
-          '<div class="trick-body"></div>' +
-        '</div>';
-      doc.body.appendChild(trick);
-      tBody = $('.trick-body', trick);
-      tCard = $('.trick-card', trick);
-      $('.trick-x', trick).addEventListener('click', closeTrick);
-      $('.trick-back', trick).addEventListener('click', closeTrick);
-      trick.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') { e.stopPropagation(); closeTrick(); return; }
-        if (e.key !== 'Tab') return;
-        var f = $$('button', tCard).filter(function (b) { return !b.disabled && b.offsetParent; });
-        if (!f.length) return;
-        var first = f[0], last = f[f.length - 1];
-        if (e.shiftKey && (doc.activeElement === first || doc.activeElement === tCard)) { e.preventDefault(); last.focus(); }
-        else if (!e.shiftKey && doc.activeElement === last) { e.preventDefault(); first.focus(); }
-      });
-      tBody.addEventListener('click', function (e) {
-        var b = e.target.closest('[data-act]');
-        if (!b) return;
-        var act = b.getAttribute('data-act');
-        if (act === 'start') { tStep = 0; tSum = 0; renderCard(); }
-        else if (act === 'yes' || act === 'no') { if (act === 'yes') tSum += (1 << tStep); tStep++; if (tStep < 5) { say(QUIPS[tStep - 1], 1200); renderCard(); } else reveal(); }
-        else if (act === 'again') renderIntro();
-        else if (act === 'close') closeTrick();
-        else if (act === 'how') {
-          var ex = $('.trick-explain', tBody);
-          ex.hidden = !ex.hidden;
-          b.setAttribute('aria-expanded', String(!ex.hidden));
-          b.textContent = ex.hidden ? 'How did I do that?' : 'Hide the explanation';
-        } else if (act === 'see') {
-          closeTrick();
-          goToStation('st-msci', 'partition pruning');
-        }
-      });
-    }
-    function pipBeside() {
-      if (!tricking) return;
-      var r = tCard.getBoundingClientRect(), w = W(), x, y, side;
-      if (w - r.right > W0 + 24) { x = r.right + 14; y = r.top + 24; side = 'l'; look.style.transform = 'translate(-3px,0)'; }
-      else if (r.left > W0 + 24) { x = r.left - W0 - 14; y = r.top + 24; side = 'r'; look.style.transform = 'translate(3px,0)'; }
-      else { x = r.right - W0 - 6; y = Math.max(70, r.top - S + 8); side = 'r'; look.style.transform = 'translate(0,3px)'; }
-      place(x, y, side);
-    }
-    function setBody(html, focusSel) {
-      tBody.innerHTML = html;
-      var f = focusSel ? $(focusSel, tBody) : null;
-      (f || tCard).focus({ preventScroll: true });
-      setTimeout(pipBeside, 30);
-    }
-    function renderIntro() {
-      tStep = 0; tSum = 0;
-      el.classList.remove('trick-think');
-      setBody(
-        '<p class="trick-lead">Think of any number from <b>1 to 31</b>. Keep it secret.</p>' +
-        '<p class="trick-sub">I’ll show you five cards. Just tell me if your number is on each one, and I’ll read your mind.</p>' +
-        '<div class="trick-btns"><button type="button" class="trick-primary" data-act="start">I’ve got one</button></div>',
-        '.trick-primary');
-      say('Think of a number…', 2200);
-    }
-    function renderCard() {
-      var nums = [];
-      for (var n = 1; n <= 31; n++) if (n & (1 << tStep)) nums.push(n);
-      var dots = '';
-      for (var i = 0; i < 5; i++) dots += '<i class="' + (i < tStep ? 'done' : i === tStep ? 'now' : '') + '"></i>';
-      setBody(
-        '<div class="trick-prog" aria-hidden="true">' + dots + '</div>' +
-        '<p class="trick-lead">Card ' + (tStep + 1) + ' of 5. Is your number on it?</p>' +
-        '<ul class="trick-grid" aria-label="Numbers on card ' + (tStep + 1) + '">' + nums.map(function (n) { return '<li>' + n + '</li>'; }).join('') + '</ul>' +
-        '<div class="trick-btns"><button type="button" class="trick-primary" data-act="yes">Yes</button><button type="button" class="trick-alt" data-act="no">No</button></div>',
-        '.trick-primary');
-    }
-    function reveal() {
-      el.classList.add('trick-think');
-      setBody('<p class="trick-lead" aria-live="polite">Reading your mind<span class="trick-dots"><i>.</i><i>.</i><i>.</i></span></p>', null);
-      say('Hold still…', 1300);
-      setTimeout(function () {
-        if (!tricking) return;
-        el.classList.remove('trick-think');
-        if (tSum === 0) {
-          say('Hmm?', 1800);
-          setBody(
-            '<p class="trick-lead">You said no to every card, so I get zero. I asked for 1 to 31!</p>' +
-            '<div class="trick-btns"><button type="button" class="trick-primary" data-act="again">Try again</button><button type="button" class="trick-alt" data-act="close">Close</button></div>',
-            '.trick-primary');
-          return;
-        }
-        say('Got it!', 1600); confetti(); hop();
-        setBody(
-          '<p class="trick-sub">Your number is</p>' +
-          '<p class="trick-answer" aria-live="polite">' + tSum + '</p>' +
-          '<div class="trick-btns"><button type="button" class="trick-primary" data-act="how" aria-expanded="false">How did I do that?</button><button type="button" class="trick-alt" data-act="again">Again</button></div>' +
-          '<div class="trick-explain" hidden>' +
-            '<p>No mind-reading, just binary. Card 1 holds every number with the 1s place switched on, card 2 the 2s place, then 4, 8 and 16. Your five yes/no answers spelled your number in binary, so I added up the first number of each card you said yes to.</p>' +
-            '<p>It’s the same instinct as partition pruning: every question rules out half of the options, so you never have to look at the rest.</p>' +
-            '<button type="button" class="trick-link" data-act="see">See where I used it →</button>' +
-          '</div>',
-          '.trick-primary');
-      }, reduce ? 200 : 1500);
-    }
-    function openTrick() {
-      if (tricking) return;
-      if (!trick) buildTrick();
-      tricking = true;
-      tReturn = doc.activeElement;
-      setOpen(false);
-      endGuide();
-      el.classList.remove('away');
-      el.classList.add('trick-on', 'zip');
-      trick.hidden = false;
-      renderIntro();
-      setTimeout(function () { el.classList.remove('zip'); }, 500);
-      window.addEventListener('resize', pipBeside);
-    }
-    function closeTrick() {
-      if (!tricking) return;
-      tricking = false;
-      trick.hidden = true;
-      el.classList.remove('trick-on', 'trick-think', 'saying');
-      look.style.transform = '';
-      window.removeEventListener('resize', pipBeside);
-      settle();
-      if (tReturn && tReturn.focus && doc.contains(tReturn)) tReturn.focus({ preventScroll: true }); else body.focus({ preventScroll: true });
-    }
-
-    /* the offer: Pip suggests the trick once, when the page has been still for a while */
-    function offerTrick() {
-      offered = true;
-      el.setAttribute('data-offer', '1');
-      kEl.textContent = 'A little trick';
-      qEl.textContent = 'Think of a number from 1 to 31. I can read your mind.';
-      setOpen(true, false);
-      hop();
-    }
-    trickBtn.addEventListener('click', function () { touched(); openTrick(); });
-    $('.pip-try', el).addEventListener('click', function () { touched(); openTrick(); });
-    $('.pip-no', el).addEventListener('click', function () { setOpen(false); });
-    function activity() { lastAct = Date.now(); }
-    ['pointermove', 'pointerdown', 'keydown', 'wheel', 'scroll', 'touchstart'].forEach(function (t) {
-      window.addEventListener(t, activity, { passive: true });
-    });
-    if (!reduce) {
-      setInterval(function () {
-        if (offered || quiet || userTouched || tricking || guiding || open || doc.hidden || drawerOpen()) return;
-        if (Date.now() - lastAct > 14000) offerTrick();
-      }, 1000);
-    }
-
-    settle();
-    sync();
-    setTimeout(function () { el.classList.add('in'); }, 900);
-    if (!reduce) {
-      setTimeout(autoPop, 4200);
-      var tick = setInterval(function () {
-        if (open || guiding || tricking) return;
-        wander();
-        if (!quiet && !userTouched && autoPops < 4) setTimeout(autoPop, 1700);
-      }, 14000);
-    }
-  })();
 })();

@@ -46,18 +46,12 @@ Tracks are drawn in `script.js` (search for `track(`).
 
 ## Look and feel
 
-- Fonts: just two — Bricolage Grotesque (headings) and Instrument Sans (everything else). Both are open-source (SIL OFL) and are embedded inside `style.css`, so there are no font files to upload and nothing loads from Google.
+- Fonts: Overpass (headings and text) and Overpass Mono (the departures board). Both are open-source (SIL OFL) and embedded inside `style.css`, so there are no font files to upload and nothing loads from Google.
 - Colours: line colours and both themes are CSS variables at the top of `style.css` — change them there and everything follows.
 
 ## The "Ask me" departure
 
 The last row of the departure board flips through curiosity hooks (the XBRL bug, the 40% query-time cut, etc.) and each has an Open button that jumps to the matching station. Edit the list in `script.js` (search for `TEASERS`): each entry is `[text, station id]`. It auto-flips until the visitor presses Flip, and pauses on hover.
-
-## Pip, the floating guide
-
-A small robot (built in `script.js`, styled at the bottom of `style.css`) drifts between screen corners, follows the cursor with its eyes, and every so often pops a bubble with one of the same teasers. **Show me** opens the right station and highlights the exact line that answers the question, with Pip hovering beside it. A few automatic pop-ups, then it goes quiet; the ✕ silences it for the session. Teasers are `[text, station id, phrase to highlight]` in the `TEASERS` list.
-
-If nobody touches the page for ~14 seconds, Pip offers **a mind-reading trick** (once per page load; the bubble's "Mind-reading trick" button also starts it any time). The visitor thinks of a number from 1 to 31 and answers yes/no on five cards; Pip reveals the number, then explains it's binary (each card is one bit) and links to the MSCI partition-pruning line. The trick lives in the "the trick" block of `script.js`; styles are under `/* the trick */` in `style.css`.
 
 ## Themes and views
 
@@ -68,7 +62,7 @@ If nobody touches the page for ~14 seconds, Pip offers **a mind-reading trick** 
 ## Updating the site (cache-busting)
 
 GitHub Pages and browsers cache CSS/JS. When you change `style.css` or `script.js`, bump the
-version in every page (`style.css?v=28`, `script.js?v=15`), otherwise visitors may see the old look.
+version in every page (`style.css?v=29`, `script.js?v=16`), otherwise visitors may see the old look.
 
 ## Deploy on GitHub Pages
 

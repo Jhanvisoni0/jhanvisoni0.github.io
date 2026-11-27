@@ -21,33 +21,33 @@
 })();
 </script>
 
-<title>Retail Banking Customer Analytics Platform — Case Study | Jhanvi Soni</title>
-<meta name="description" content="An end-to-end Azure data engineering platform that unifies fragmented banking data across 3 source systems into one automated pipeline — cutting the reporting cycle from 4 days to 15 minutes.">
+<title>Retail Banking Customer Analytics Platform: Case Study | Jhanvi Soni</title>
+<meta name="description" content="An end-to-end Azure data engineering platform that unifies fragmented banking data across 3 source systems into one automated pipeline, cutting the reporting cycle from 4 days to 15 minutes.">
 <link rel="canonical" href="https://jhanvisoni0.github.io/project-retail-banking.html">
 
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://jhanvisoni0.github.io/project-retail-banking.html">
-<meta property="og:title" content="Retail Banking Customer Analytics Platform — Case Study">
-<meta property="og:description" content="An end-to-end Azure data engineering platform unifying fragmented banking data — cutting the reporting cycle from 4 days to 15 minutes.">
+<meta property="og:title" content="Retail Banking Customer Analytics Platform: Case Study">
+<meta property="og:description" content="An end-to-end Azure data engineering platform unifying fragmented banking data, cutting the reporting cycle from 4 days to 15 minutes.">
 <meta property="og:image" content="https://jhanvisoni0.github.io/assets/profile.jpg">
 
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Retail Banking Customer Analytics Platform — Case Study">
-<meta name="twitter:description" content="An end-to-end Azure data engineering platform unifying fragmented banking data — cutting the reporting cycle from 4 days to 15 minutes.">
+<meta name="twitter:title" content="Retail Banking Customer Analytics Platform: Case Study">
+<meta name="twitter:description" content="An end-to-end Azure data engineering platform unifying fragmented banking data, cutting the reporting cycle from 4 days to 15 minutes.">
 <meta name="twitter:image" content="https://jhanvisoni0.github.io/assets/profile.jpg">
 
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
 <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon-512.png">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
 
-<link rel="stylesheet" href="style.css?v=28">
+<link rel="stylesheet" href="style.css?v=29">
 </head>
 <body data-line="eng">
 
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="bar">
-  <a class="brand" href="index.html" aria-label="Jhanvi Soni — home">
+  <a class="brand" href="index.html" aria-label="Jhanvi Soni, home">
     <span class="roundel"><b>JS</b></span>
     <span class="brand-name">Jhanvi Soni</span>
   </a>
@@ -76,7 +76,7 @@
 
 <article class="article-body">
 
-  <p class="pull-quote">An end-to-end Azure data engineering platform that unifies fragmented banking data across 3 source systems into a single, automated analytics pipeline — enabling real-time risk monitoring and executive reporting for a retail bank.</p>
+  <p class="pull-quote">An end-to-end Azure data engineering platform that unifies fragmented banking data across 3 source systems into a single, automated analytics pipeline, enabling real-time risk monitoring and executive reporting for a retail bank.</p>
 
   <div class="chip-row" style="margin-bottom:40px;">
     <span class="chip chip-sm">Azure Data Factory</span><span class="chip chip-sm">Azure ADLS Gen2</span><span class="chip chip-sm">Azure Databricks</span><span class="chip chip-sm">PySpark</span><span class="chip chip-sm">Delta Lake</span><span class="chip chip-sm">Medallion Architecture</span><span class="chip chip-sm">MLflow</span><span class="chip chip-sm">Isolation Forest</span><span class="chip chip-sm">Databricks Workflows</span><span class="chip chip-sm">Unity Catalog</span><span class="chip chip-sm">Power BI</span><span class="chip chip-sm">DirectQuery</span><span class="chip chip-sm">Azure Key Vault</span><span class="chip chip-sm">Data Engineering</span><span class="chip chip-sm">Financial Services</span><span class="chip chip-sm">ETL/ELT</span><span class="chip chip-sm">Anomaly Detection</span><span class="chip chip-sm">Batch Processing</span>
@@ -86,9 +86,9 @@
   <p>FirsTrust Bank managed customer profiles, loan portfolios, and transaction records across 3 completely separate, disconnected systems with no unified view. The risk team spent 4 days every week manually reconciling these systems in Excel before any meaningful analysis could happen. There was no automated alerting for high-risk accounts, no single customer view across products, and no way to detect anomalous transactions without manual inspection of raw exports.</p>
 
   <h2>The Solution</h2>
-  <p>A fully automated Medallion Architecture pipeline on Azure that ingests raw data from all 3 source systems daily, transforms it through Bronze → Silver → Gold layers using PySpark, computes banking-specific KPIs and risk scores via an MLflow-tracked ML model, and serves a live 3-page Power BI executive dashboard via DirectQuery on Databricks SQL — reducing the reporting cycle from 4 days to 15 minutes.</p>
+  <p>A fully automated Medallion Architecture pipeline on Azure that ingests raw data from all 3 source systems daily, transforms it through Bronze → Silver → Gold layers using PySpark, computes banking-specific KPIs and risk scores via an MLflow-tracked ML model, and serves a live 3-page Power BI executive dashboard via DirectQuery on Databricks SQL, reducing the reporting cycle from 4 days to 15 minutes.</p>
 
-  <h2>How It Works — Pipeline Flow</h2>
+  <h2>How It Works: Pipeline Flow</h2>
   <div class="timeline">
     <div class="timeline-item">
       <div class="timeline-marker"></div>
@@ -101,7 +101,7 @@
       <div class="timeline-marker"></div>
       <div class="timeline-content">
         <div class="timeline-header"><h3>Store Raw</h3><span class="timeline-date">STEP 02</span></div>
-        <p class="timeline-org">Bronze Delta tables preserve data exactly as received — no transformations, full audit trail.</p>
+        <p class="timeline-org">Bronze Delta tables preserve data exactly as received, no transformations, full audit trail.</p>
       </div>
     </div>
     <div class="timeline-item">
@@ -165,7 +165,7 @@
     <p class="result-banner-label">// Monday morning, FirsTrust Bank risk desk</p>
     <p class="result-banner-value">1,500 transactions flagged HIGH_RISK overnight</p>
   </div>
-  <p>A risk analyst arrives Monday morning. Instead of opening 3 separate system exports and spending half the day in Excel, they open the Power BI Risk Flags page. They see 1,500 transactions flagged HIGH_RISK overnight, sorted by anomaly score. They click a flagged account — a customer whose transaction amount was 4 standard deviations above their own historical average at 2AM on a Saturday — and escalate it to the fraud team before the business day starts.</p>
+  <p>A risk analyst arrives Monday morning. Instead of opening 3 separate system exports and spending half the day in Excel, they open the Power BI Risk Flags page. They see 1,500 transactions flagged HIGH_RISK overnight, sorted by anomaly score. They click a flagged account, a customer whose transaction amount was 4 standard deviations above their own historical average at 2AM on a Saturday, and escalate it to the fraud team before the business day starts.</p>
   <p>The entire process takes 10 minutes. The pipeline that made it possible ran automatically at 6AM and processed 50,000 transactions without anyone touching a keyboard.</p>
 
   <h2>Key Design Decisions</h2>
@@ -183,7 +183,7 @@
     <div class="principle">
       <span class="principle-no">03</span>
       <h4>Batch scoring with MLflow over a live endpoint</h4>
-      <p>Risk scores computed once daily is appropriate for a daily reporting cycle and far cheaper than a live serving endpoint. MLflow tracks every run — an auditable model history required in financial services.</p>
+      <p>Risk scores computed once daily is appropriate for a daily reporting cycle and far cheaper than a live serving endpoint. MLflow tracks every run, an auditable model history required in financial services.</p>
     </div>
     <div class="principle">
       <span class="principle-no">04</span>
@@ -193,38 +193,38 @@
     <div class="principle">
       <span class="principle-no">05</span>
       <h4>ADF for ingestion, not a custom script</h4>
-      <p>Azure Data Factory provides scheduling, monitoring, retry logic, and connectivity to 90+ sources out of the box — a visual, auditable pipeline instead of a script on someone's laptop.</p>
+      <p>Azure Data Factory provides scheduling, monitoring, retry logic, and connectivity to 90+ sources out of the box, a visual, auditable pipeline instead of a script on someone's laptop.</p>
     </div>
   </div>
 
   <h2>The Foundation of the Pipeline</h2>
   <ul>
-    <li><strong>Idempotency —</strong> every notebook can be re-run safely without creating duplicates or corrupting data. Delta MERGE handles upserts; checkpoints track ingestion state. A failed run can be retried with no manual cleanup.</li>
-    <li><strong>Separation of concerns —</strong> data movement (ADF), transformation (Databricks), orchestration (Workflows), and presentation (Power BI) are fully decoupled. Each layer can be updated independently without touching the others.</li>
-    <li><strong>Observability —</strong> every layer produces a verifiable output — ADF shows rows written per run, Bronze/Silver row counts validate ingestion, data quality checks compare Bronze vs. Silver, MLflow logs every model metric, Workflow runs show per-task status, and Delta history provides a full audit trail from raw file to Gold table.</li>
+    <li><strong>Idempotency:</strong> every notebook can be re-run safely without creating duplicates or corrupting data. Delta MERGE handles upserts; checkpoints track ingestion state. A failed run can be retried with no manual cleanup.</li>
+    <li><strong>Separation of concerns:</strong> data movement (ADF), transformation (Databricks), orchestration (Workflows), and presentation (Power BI) are fully decoupled. Each layer can be updated independently without touching the others.</li>
+    <li><strong>Observability:</strong> every layer produces a verifiable output, ADF shows rows written per run, Bronze/Silver row counts validate ingestion, data quality checks compare Bronze vs. Silver, MLflow logs every model metric, Workflow runs show per-task status, and Delta history provides a full audit trail from raw file to Gold table.</li>
   </ul>
 
   <h2>Benefits</h2>
   <ul>
-    <li><strong>Reporting cycle: 4 days → 15 minutes —</strong> what previously required manual reconciliation across 3 systems in Excel now runs automatically every morning, with data ready before the working day starts.</li>
-    <li><strong>Proactive risk detection instead of reactive reporting —</strong> the Isolation Forest model flags anomalous transactions nightly — accounts are reviewed before customers call to report fraud, not after. 1,500 transactions were flagged in the first run, representing patterns invisible to rule-based systems.</li>
-    <li><strong>Full audit trail from raw file to dashboard number —</strong> every number on the Power BI dashboard can be traced back through Gold → Silver → Bronze → original source file. Delta Lake's version history means you can query the exact state of any table on any past date — critical for regulatory compliance in banking.</li>
+    <li><strong>Reporting cycle: 4 days → 15 minutes:</strong> what previously required manual reconciliation across 3 systems in Excel now runs automatically every morning, with data ready before the working day starts.</li>
+    <li><strong>Proactive risk detection instead of reactive reporting:</strong> the Isolation Forest model flags anomalous transactions nightly, so accounts are reviewed before customers call to report fraud, not after. 1,500 transactions were flagged in the first run, representing patterns invisible to rule-based systems.</li>
+    <li><strong>Full audit trail from raw file to dashboard number:</strong> every number on the Power BI dashboard can be traced back through Gold → Silver → Bronze → original source file. Delta Lake's version history means you can query the exact state of any table on any past date, critical for regulatory compliance in banking.</li>
   </ul>
 
   <h2>Big Data Scenario</h2>
   <p><em>At portfolio scale this pipeline processes 50,000 transactions. Here's how the same architecture scales to a real bank's volume.</em></p>
   <p>A mid-sized retail bank processes roughly 2 million transactions per day across 500,000 active customers.</p>
 
-  <p class="pull-quote">The architectural decisions made at portfolio scale — idempotency, partition strategy, separation of concerns — are the same ones that make the pipeline viable at 2 million transactions per day. The scale changes the implementation details, not the design principles.</p>
+  <p class="pull-quote">The architectural decisions made at portfolio scale (idempotency, partition strategy, separation of concerns) are the same ones that make the pipeline viable at 2 million transactions per day. The scale changes the implementation details, not the design principles.</p>
 
   <p>At that scale:</p>
   <ul>
-    <li><strong>Bronze ingestion</strong> switches from batch CSV reads to Auto Loader with <code>trigger(availableNow=True)</code> — incrementally processing only new files each run rather than reloading the full dataset, reducing ingestion time from hours to minutes</li>
+    <li><strong>Bronze ingestion</strong> switches from batch CSV reads to Auto Loader with <code>trigger(availableNow=True)</code>, incrementally processing only new files each run rather than reloading the full dataset, reducing ingestion time from hours to minutes</li>
     <li><strong>Silver partitioning</strong> by transaction year and date (not just year) means Spark reads only the relevant day's partition rather than scanning 730 million rows for a single day's analysis</li>
-    <li><strong>Gold window functions</strong> for rolling velocity use <code>rangeBetween</code> on a timestamp column — Spark's query planner pushes the partition filter down before computing the window, avoiding a full shuffle of 2 billion rows</li>
-    <li><strong>Isolation Forest</strong> moves from a single Pandas <code>.fit()</code> call to a distributed implementation using Spark MLlib or a pandas_udf that partitions scoring across the cluster — eliminating the Pandas memory ceiling</li>
-    <li><strong>The Workflow</strong> adds a data quality gate between Bronze and Silver — if row counts drop more than 5% from the previous day, the pipeline stops and pages the on-call engineer rather than silently propagating bad data to Gold</li>
-    <li><strong>The SQL Warehouse</strong> scales from 2X-Small to Medium during business hours (when Power BI queries are heaviest) and back to 2X-Small overnight — auto-scaling keeps costs proportional to actual query load</li>
+    <li><strong>Gold window functions</strong> for rolling velocity use <code>rangeBetween</code> on a timestamp column, Spark's query planner pushes the partition filter down before computing the window, avoiding a full shuffle of 2 billion rows</li>
+    <li><strong>Isolation Forest</strong> moves from a single Pandas <code>.fit()</code> call to a distributed implementation using Spark MLlib or a pandas_udf that partitions scoring across the cluster, eliminating the Pandas memory ceiling</li>
+    <li><strong>The Workflow</strong> adds a data quality gate between Bronze and Silver: if row counts drop more than 5% from the previous day, the pipeline stops and pages the on-call engineer rather than silently propagating bad data to Gold</li>
+    <li><strong>The SQL Warehouse</strong> scales from 2X-Small to Medium during business hours (when Power BI queries are heaviest) and back to 2X-Small overnight, auto-scaling keeps costs proportional to actual query load</li>
   </ul>
 
 </article>
@@ -233,7 +233,7 @@
 
 <div class="article-footer">
   <a href="index.html#st-banking" class="back-link">← Back to the map</a>
-  <p class="post-signoff">— Jhanvi Soni</p>
+  <p class="post-signoff">Jhanvi Soni</p>
   <p class="article-meta">
     <a href="mailto:jhanvisoni0@gmail.com">Email</a> ·
     <a href="https://linkedin.com/in/jhanvisonii/" target="_blank" rel="noopener">LinkedIn</a> ·
@@ -244,10 +244,10 @@
 <footer class="footer">
   <div class="container footer-inner">
     <span>© 2026 Jhanvi Soni</span>
-    <span class="footer-dim">Hand-drawn map · HTML / CSS / JS · GitHub Pages</span>
+    <span class="footer-dim">Built with HTML, CSS and JS</span>
   </div>
 </footer>
 
-<script src="script.js?v=15"></script>
+<script src="script.js?v=16"></script>
 </body>
 </html>
