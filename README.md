@@ -53,16 +53,16 @@ Tracks are drawn in `script.js` (search for `track(`).
 
 The last row of the departure board flips through curiosity hooks (the XBRL bug, the 40% query-time cut, etc.) and each has an Open button that jumps to the matching station. Edit the list in `script.js` (search for `TEASERS`): each entry is `[text, station id, phrase to find]`. The row changes when the visitor presses Next.
 
-## The Conductor (stamp passport, rides and tricks)
+## The Station Cat (stamp passport, rides and tricks)
 
-Dot wears a conductor's cap and sits in the bottom-right corner on screens 900px and wider (hidden on phones, where the board's "Ask me" row covers the same ground). Click it to open a ticket-style menu. There is no typing: everything is a tap.
+A small cat in a station cap sits in the bottom-right corner on screens 900px and wider (hidden on phones, where the board's "Ask me" row covers the same ground). It is asleep by default: it breathes, twitches an ear, swishes its tail, floats a few z's and now and then peeks with one eye. It wakes when you hover it or click it, and its face changes with what you hover (see `REACT` in `script.js`). Click it to open a ticket-style menu. There is no typing: everything is a tap.
 
 - **Take a guided ride:** pick who is riding (Recruiter, Hiring manager, Fellow engineer, Just reading). A bar at the bottom walks through four or five stops, scrolling to each station and outlining the matching line. The stops live in `TOURS` in `script.js` (`[station id, phrase to highlight, caption]`).
 - **Where to?:** a mini departure board that jumps to any station.
 - **Surprise me:** picks a trick or the quiz at random.
-- **Read my mind:** think of 1 to 31, answer five yes/no ticket cards, and the Conductor names the number (binary, explained afterwards).
+- **Read my mind:** think of 1 to 31, answer five yes/no ticket cards, and the cat names the number (binary, explained afterwards).
 - **Whose work is this?:** shows a real line from the site and asks which station it came from (`QUIZ` in `script.js`; lines are read from the page, so they stay in sync).
-- **Stamp passport:** every station you visit gets a stamp (in map view when you open it, in list view when it has been mid-screen for a second). Stamps are kept in the visitor's own browser (`localStorage`, key `stamps`). At 5 stamps the secret platform trick unlocks (think of one of 15 stations, answer three times); at all 16 the Conductor announces Station Master.
+- **Stamp passport:** every station you visit gets a stamp (in map view when you open it, in list view when it has been mid-screen for a second). Stamps are kept in the visitor's own browser (`localStorage`, key `stamps`). At 5 stamps the secret platform trick unlocks (think of one of 15 stations, answer three times); at all 16 the cat announces Station Master.
 - **Faces:** the colour and expression change with what you hover (see `REACT` in `script.js`).
 
 ## Micro-interactions
@@ -77,12 +77,12 @@ Dot wears a conductor's cap and sits in the bottom-right corner on screens 900px
 
 - Theme: follows the visitor's local time (light 7:00–18:59, dark otherwise) until they press the sun/moon button; the choice is saved in `localStorage`.
 - View: Map by default on screens 900px and wider, List on phones; the Map/List switch is saved too.
-- `prefers-reduced-motion` turns off the board flipping and auto-advance, track drawing, moving trains, the Conductor's animations and smooth scrolling.
+- `prefers-reduced-motion` turns off the board flipping and auto-advance, track drawing, moving trains, the cat's animations and smooth scrolling.
 
 ## Updating the site (cache-busting)
 
 GitHub Pages and browsers cache CSS/JS. When you change `style.css` or `script.js`, bump the
-version in every page (`style.css?v=36`, `script.js?v=23`), otherwise visitors may see the old look.
+version in every page (`style.css?v=39`, `script.js?v=25`), otherwise visitors may see the old look.
 
 ## Deploy on GitHub Pages
 

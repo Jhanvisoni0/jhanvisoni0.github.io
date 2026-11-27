@@ -564,33 +564,41 @@
     el.setAttribute('data-side', 'r');
     el.setAttribute('data-v', 'up');
     el.innerHTML =
-      '<div class="pip-bubble" role="dialog" aria-label="Conductor menu">' +
+      '<div class="pip-bubble" role="dialog" aria-label="Station cat menu">' +
         '<div class="cd">' +
-          '<div class="cd-head"><span class="cd-av" aria-hidden="true"></span><div class="cd-who"><b>Conductor</b><small>All aboard</small></div><button type="button" class="pip-x" aria-label="Close the menu">✕</button></div>' +
+          '<div class="cd-head"><span class="cd-av" aria-hidden="true"><svg viewBox="0 0 40 36" width="40" height="36"><path class="fur ol-s" d="M5 16 L5 2 L16 8Z"/><path class="fur ol-s" d="M35 16 L35 2 L24 8Z"/><ellipse class="fur ol-s" cx="20" cy="20" rx="15" ry="13"/><path class="se" d="M11 19 Q14.5 22.5 18 19 M22 19 Q25.5 22.5 29 19" fill="none" stroke-width="1.8" stroke-linecap="round"/><path class="tgn" d="M18 24 L22 24 L20 26.2Z"/></svg></span><div class="cd-who"><b>Station Cat</b><small>Ticket office</small></div><button type="button" class="pip-x" aria-label="Close the menu">✕</button></div>' +
           '<div class="cd-view"></div>' +
           '<button type="button" class="cd-pass" data-act="passport"></button>' +
         '</div>' +
       '</div>' +
       '<span class="pip-tag" aria-hidden="true">There it is.</span>' +
       '<span class="pip-say" aria-hidden="true"></span>' +
-      '<button type="button" class="pip-body" aria-expanded="false" aria-label="The conductor. Open the station menu: guided rides, tricks and your stamp passport.">' +
+      '<button type="button" class="pip-body" aria-expanded="false" aria-label="The station cat, asleep. Wake it to open the menu: guided rides, tricks and your stamp passport.">' +
         '<svg class="pip-svg" viewBox="0 0 76 84" width="76" height="84" aria-hidden="true" focusable="false">' +
-          '<defs><radialGradient id="dotGrad" cx="35%" cy="28%" r="85%"><stop class="g1" offset="0"/><stop class="g2" offset="1"/></radialGradient></defs>' +
-          '<ellipse cx="38" cy="79" rx="22" ry="3" fill="#000" opacity=".16"/>' +
-          '<circle cx="38" cy="40" r="33" fill="url(#dotGrad)"/>' +
-          '<circle cx="38" cy="40" r="32.2" fill="none" stroke="#000" stroke-opacity=".1" stroke-width="1.6"/>' +
-          '<ellipse cx="27" cy="19" rx="15" ry="7" fill="#fff" opacity=".34" transform="rotate(-22 27 19)"/>' +
-          '<g class="pip-look">' +
-            '<g class="pip-m m-calm"><g class="pip-blink"><ellipse class="fe" cx="27" cy="37" rx="3.8" ry="4.8"/><ellipse class="fe" cx="49" cy="37" rx="3.8" ry="4.8"/><circle class="gl" cx="28.4" cy="35.2" r="1.4"/><circle class="gl" cx="50.4" cy="35.2" r="1.4"/></g><path class="se" d="M31 53 Q38 59 45 53" fill="none" stroke-width="3.2" stroke-linecap="round"/><circle class="bl" cx="17.5" cy="49" r="5"/><circle class="bl" cx="58.5" cy="49" r="5"/></g>' +
-            '<g class="pip-m m-hello"><ellipse class="fe" cx="27" cy="37" rx="3.8" ry="4.8"/><ellipse class="fe" cx="49" cy="37" rx="3.8" ry="4.8"/><circle class="gl" cx="28.4" cy="35.2" r="1.4"/><circle class="gl" cx="50.4" cy="35.2" r="1.4"/><path class="fe" d="M29 50 Q38 67 47 50 Z"/><path class="tg" d="M33.5 59 Q38 54.5 42.5 59 Q38 64 33.5 59Z"/><circle class="bl" cx="17.5" cy="49" r="5"/><circle class="bl" cx="58.5" cy="49" r="5"/></g>' +
-            '<g class="pip-m m-happy"><path class="se" d="M20 40 Q27 31 34 40" fill="none" stroke-width="3.8" stroke-linecap="round"/><path class="se" d="M42 40 Q49 31 56 40" fill="none" stroke-width="3.8" stroke-linecap="round"/><path class="fe" d="M26 49 Q38 68 50 49 Z"/><path class="tg" d="M31.5 59.5 Q38 53.5 44.5 59.5 Q38 65.5 31.5 59.5Z"/><circle class="bl" cx="17.5" cy="49" r="5"/><circle class="bl" cx="58.5" cy="49" r="5"/></g>' +
-            '<g class="pip-m m-wow"><ellipse class="fe" cx="27" cy="37" rx="4.6" ry="6.2"/><ellipse class="fe" cx="49" cy="37" rx="4.6" ry="6.2"/><circle class="gl" cx="28.4" cy="34.6" r="1.4"/><circle class="gl" cx="50.4" cy="34.6" r="1.4"/><path class="se" d="M20 26 Q27 21 34 26" fill="none" stroke-width="3" stroke-linecap="round"/><path class="se" d="M42 26 Q49 21 56 26" fill="none" stroke-width="3" stroke-linecap="round"/><ellipse class="fe" cx="38" cy="58" rx="4.8" ry="6.6"/></g>' +
-            '<g class="pip-m m-curious"><ellipse class="fe" cx="27" cy="37" rx="3.8" ry="4.8"/><ellipse class="fe" cx="49" cy="37" rx="3.8" ry="4.8"/><circle class="gl" cx="28.4" cy="35.2" r="1.4"/><circle class="gl" cx="50.4" cy="35.2" r="1.4"/><path class="se" d="M20 27 Q27 21 34 25" fill="none" stroke-width="3" stroke-linecap="round"/><path class="se" d="M43 29 L56 28" fill="none" stroke-width="3" stroke-linecap="round"/><path class="se" d="M32 56 Q40 57 47 52" fill="none" stroke-width="3.2" stroke-linecap="round"/></g>' +
-            '<g class="pip-m m-love"><path class="hrt" d="M27 44 C20 39 19 32 24 31 C26 30.5 27 32 27 33 C27 32 28 30.5 30 31 C35 32 34 39 27 44Z"/><path class="hrt" d="M49 44 C42 39 41 32 46 31 C48 30.5 49 32 49 33 C49 32 50 30.5 52 31 C57 32 56 39 49 44Z"/><path class="fe" d="M28 50 Q38 66 48 50 Q38 55 28 50Z"/><circle class="bl" cx="17.5" cy="50" r="5.5" style="opacity:.5"/><circle class="bl" cx="58.5" cy="50" r="5.5" style="opacity:.5"/></g>' +
-            '<g class="pip-m m-wink"><path class="se" d="M21 38 Q27 44 33 38" fill="none" stroke-width="3.6" stroke-linecap="round"/><ellipse class="fe" cx="49" cy="37" rx="3.8" ry="4.8"/><circle class="gl" cx="50.4" cy="35.2" r="1.4"/><path class="se" d="M30 52 Q39 62 48 51" fill="none" stroke-width="3.4" stroke-linecap="round"/><circle class="bl" cx="17.5" cy="49" r="5"/><circle class="bl" cx="58.5" cy="49" r="5"/></g>' +
-            '<g class="pip-m m-think"><ellipse class="fe" cx="27" cy="35" rx="3.8" ry="4.8"/><ellipse class="fe" cx="49" cy="35" rx="3.8" ry="4.8"/><circle class="gl" cx="28.4" cy="33.2" r="1.4"/><circle class="gl" cx="50.4" cy="33.2" r="1.4"/><path class="se" d="M21 28 L33 30.5" fill="none" stroke-width="3" stroke-linecap="round"/><path class="se" d="M43 30.5 L55 28" fill="none" stroke-width="3" stroke-linecap="round"/><path class="se" d="M30 57 Q34 52.5 38 57 T46 57" fill="none" stroke-width="3.2" stroke-linecap="round"/></g>' +
-          '</g>' +
-          '<g class="pip-cap" transform="rotate(-6 38 14)"><path d="M20 15 L22.5 0.5 Q38 -5 53.5 0.5 L56 15 Q38 20.5 20 15Z" fill="#2a3763"/><path d="M20.2 11.2 Q38 16.8 55.8 11.2 L56 15 Q38 20.5 20 15Z" fill="#f2b632"/><path d="M27 16.5 Q38 23 49 16.5 L47.5 20.5 Q38 26.5 28.5 20.5Z" fill="#1b2445"/><circle cx="38" cy="14.6" r="3.1" fill="#ffe9a8" stroke="#c98a14" stroke-width="1"/><path d="M22.5 0.5 Q38 -5 53.5 0.5" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="1.2"/></g>' +
+        '<defs><radialGradient id="dotGrad" cx="40%" cy="30%" r="80%"><stop class="g1" offset="0"/><stop class="g2" offset="1"/></radialGradient></defs>' +
+        '<ellipse cx="38" cy="80.5" rx="25" ry="3" fill="#000" opacity=".1"/>' +
+        '<g class="ct-tail"><path class="ol-t" d="M56 72 Q75 72 71 52 Q69 44 63 46" fill="none" stroke-width="10" stroke-linecap="round"/><path class="fur-t" d="M56 72 Q75 72 71 52 Q69 44 63 46" fill="none" stroke-width="7" stroke-linecap="round"/></g>' +
+        '<g class="ct-body"><path class="fur ol-s" d="M15 75 Q12 52 26 49 Q38 46 50 49 Q64 52 61 75 Q38 82 15 75Z"/><path class="st" d="M23 60 q4 3 2 9 M53 60 q-4 3 -2 9 M38 52 v7" fill="none" stroke-width="2" stroke-linecap="round"/><ellipse class="paw ol-s" cx="29" cy="77" rx="8.5" ry="4.6"/><ellipse class="paw ol-s" cx="47" cy="77" rx="8.5" ry="4.6"/></g>' +
+        '<g class="ct-head">' +
+        '<g class="ear el"><path class="fur ol-s" d="M14 28 L14 3 L31 15Z"/><path class="ear-in" d="M17.5 21 L17.5 9 L26 15Z"/></g>' +
+        '<g class="ear er"><path class="fur ol-s" d="M62 28 L62 3 L45 15Z"/><path class="ear-in" d="M58.5 21 L58.5 9 L50 15Z"/></g>' +
+        '<ellipse class="fur ol-s" cx="38" cy="37" rx="26" ry="21.5"/>' +
+        '<path class="st" d="M33.5 19 v5 M38 18 v6.5 M42.5 19 v5" fill="none" stroke-width="2" stroke-linecap="round"/>' +
+        '<path class="wk" d="M13 43 L3 40 M13 47 L3 48.5 M63 43 L73 40 M63 47 L73 48.5" fill="none" stroke-width="1.4" stroke-linecap="round"/>' +
+        '<g class="pip-look">' +
+        '<path class="tgn" d="M35 41.5 L41 41.5 L38 45Z"/>' +
+        '<g class="pip-m m-calm"><path class="se" d="M22 35 Q27 39.5 32 35" fill="none" stroke-width="2.4" stroke-linecap="round"/><path class="se" d="M44 35 Q49 39.5 54 35" fill="none" stroke-width="2.4" stroke-linecap="round"/><path class="se" d="M38 45 Q38 48 35 48.5 M38 45 Q38 48 41 48.5" fill="none" stroke-width="1.8" stroke-linecap="round"/><g class="peek"><ellipse class="fe" cx="49" cy="34.5" rx="3.6" ry="4.2"/><circle class="gl" cx="50.3" cy="33" r="1.2"/></g></g>' +
+        '<g class="pip-m m-hello"><g class="pip-blink"><ellipse class="fe" cx="27" cy="34" rx="4" ry="5"/><ellipse class="fe" cx="49" cy="34" rx="4" ry="5"/><circle class="gl" cx="28.4" cy="32.2" r="1.4"/><circle class="gl" cx="50.4" cy="32.2" r="1.4"/></g><path class="se" d="M38 45 Q38 48.5 34.5 49 M38 45 Q38 48.5 41.5 49" fill="none" stroke-width="1.8" stroke-linecap="round"/></g>' +
+        '<g class="pip-m m-happy"><path class="se" d="M22 37 Q27 30 32 37" fill="none" stroke-width="2.8" stroke-linecap="round"/><path class="se" d="M44 37 Q49 30 54 37" fill="none" stroke-width="2.8" stroke-linecap="round"/><path class="fe" d="M33 47 Q38 55 43 47Z"/><path class="tg" d="M35.8 51.5 Q38 49.5 40.2 51.5 Q38 54 35.8 51.5Z"/></g>' +
+        '<g class="pip-m m-wow"><ellipse class="fe" cx="27" cy="34" rx="5" ry="6.5"/><ellipse class="fe" cx="49" cy="34" rx="5" ry="6.5"/><circle class="gl" cx="28.6" cy="31.8" r="1.6"/><circle class="gl" cx="50.6" cy="31.8" r="1.6"/><ellipse class="fe" cx="38" cy="50" rx="2.6" ry="3.4"/></g>' +
+        '<g class="pip-m m-curious"><ellipse class="fe" cx="27" cy="34" rx="4" ry="5"/><circle class="gl" cx="28.4" cy="32.2" r="1.4"/><ellipse class="fe" cx="49" cy="35" rx="4" ry="2.7"/><path class="se" d="M33 48.5 Q38 51 43 47.5" fill="none" stroke-width="1.8" stroke-linecap="round"/></g>' +
+        '<g class="pip-m m-love"><path class="hrt" d="M27 40 C20.5 35 19.5 28.5 24.5 28 C26.3 27.7 27 29 27 30 C27 29 27.8 27.7 29.6 28 C34.5 28.5 33.5 35 27 40Z"/><path class="hrt" d="M49 40 C42.5 35 41.5 28.5 46.5 28 C48.3 27.7 49 29 49 30 C49 29 49.8 27.7 51.6 28 C56.5 28.5 55.5 35 49 40Z"/><path class="se" d="M38 45 Q38 48.5 34.5 49 M38 45 Q38 48.5 41.5 49" fill="none" stroke-width="1.8" stroke-linecap="round"/></g>' +
+        '<g class="pip-m m-wink"><path class="se" d="M22 35 Q27 39.5 32 35" fill="none" stroke-width="2.6" stroke-linecap="round"/><ellipse class="fe" cx="49" cy="34" rx="4" ry="5"/><circle class="gl" cx="50.4" cy="32.2" r="1.4"/><path class="fe" d="M33.5 47 Q38 54 42.5 47Z"/><path class="tg" d="M36 51 Q38 49.2 40 51 Q38 53.4 36 51Z"/></g>' +
+        '<g class="pip-m m-think"><ellipse class="fe" cx="27" cy="35" rx="4" ry="2.6"/><ellipse class="fe" cx="49" cy="35" rx="4" ry="2.6"/><path class="se" d="M22 31.5 H32 M44 31.5 H54" fill="none" stroke-width="2" stroke-linecap="round"/><path class="se" d="M33 49 Q35.5 46.5 38 49 T43 49" fill="none" stroke-width="1.8" stroke-linecap="round"/></g>' +
+        '</g>' +
+        '<g class="ct-cap" transform="rotate(-7 38 14) translate(38 13) scale(.62) translate(-38 -10)"><path class="cp-a" d="M20 15 L22.5 0.5 Q38 -5 53.5 0.5 L56 15 Q38 20.5 20 15Z"/><path class="cp-b" d="M20.2 11.2 Q38 16.8 55.8 11.2 L56 15 Q38 20.5 20 15Z"/><path class="cp-c" d="M27 16.5 Q38 23 49 16.5 L47.5 20.5 Q38 26.5 28.5 20.5Z"/><circle class="cp-d" cx="38" cy="14.6" r="3.1" stroke-width="1"/></g>' +
+        '</g>' +
+        '<g class="zs"><text class="z z1" x="58" y="13">z</text><text class="z z2" x="63" y="5">z</text><text class="z z3" x="68" y="-4">z</text></g>' +
         '</svg>' +
       '</button>';
     doc.body.appendChild(el);
@@ -753,7 +761,7 @@
     }
     function confetti() {
       var r = body.getBoundingClientRect(), cx = r.left + 38, cy = r.top + 42;
-      var cols = ['#ff7a59', '#4fc2dc', '#f6a82c', '#9d86f2', '#ff7aa5'];
+      var cols = ['#d9a441', '#6f7f9e', '#b9ab8c', '#a8625c', '#6d9a80'];
       for (var i = 0; i < 18; i++) {
         var d = doc.createElement('i');
         d.className = 'pip-conf';
@@ -1213,7 +1221,18 @@
     showView('home', true);
 
     /* ---- reactions: the face follows what you hover ---- */
-    var react = '', saidHi = 0;
+    var react = '', saidHi = 0, hookI = Math.floor(Math.random() * 4);
+    function nextHook() {  /* what the conductor says when you hover it: a reason to click, never "click me" */
+      var n = stamps.count(), left = 5 - n;
+      var hs = [
+        'Mrrp. Think of a number. I’ll guess it.',
+        'Two-minute tour? Pick a ticket.',
+        n >= 5 ? 'The secret platform is open.' : (n ? n + ' of ' + stamps.total + ' stamps. ' + left + ' to a secret.' : 'Collect 5 stamps. Something unlocks.'),
+        'Think you know her work? Try the quiz.'
+      ];
+      hookI = (hookI + 1) % hs.length;
+      return hs[hookI];
+    }
     var REACT = [
       ['.pip-body', 'love'],
       ['.stn, .ask-flip, .ask-go', 'curious'],
@@ -1239,7 +1258,7 @@
         var r = reactFor(e.target);
         if (r === react) return;
         react = r; gaze(e.target); mood();
-        if (r === 'love' && !open && Date.now() - saidHi > 20000) { saidHi = Date.now(); say('Click me', 1400); }
+        if (r === 'love' && !open && !tricking && Date.now() - saidHi > 7000) { saidHi = Date.now(); say(nextHook(), 2600); }
       }, { passive: true });
       doc.addEventListener('mouseout', function (e) { if (!e.relatedTarget) { react = ''; look.style.transform = ''; mood(); } }, { passive: true });
     }
