@@ -382,7 +382,7 @@
   window.addEventListener('hashchange', fromHash);
   window.addEventListener('load', function () { updateProgress(); fromHash(); });
 
-  /* ---------------- Dash: a little guide that hovers around and points at the answer ---------------- */
+  /* ---------------- Dot: a little guide that hovers around and points at the answer ---------------- */
   (function pipInit() {
     if (!askApi) return;
     var S = 84, W0 = 76;
@@ -394,7 +394,7 @@
     el.setAttribute('data-side', 'r');
     el.setAttribute('data-v', 'up');
     el.innerHTML =
-      '<div class="pip-bubble" role="group" aria-label="A question from Dash">' +
+      '<div class="pip-bubble" role="group" aria-label="A question from Dot">' +
         '<button type="button" class="pip-x" aria-label="Stop the tips">✕</button>' +
         '<p class="pip-k">Ask Jhanvi about…</p>' +
         '<p class="pip-q"></p>' +
@@ -402,22 +402,24 @@
       '</div>' +
       '<span class="pip-tag" aria-hidden="true">There it is.</span>' +
       '<span class="pip-say" aria-hidden="true"></span>' +
-      '<button type="button" class="pip-body" aria-expanded="false" aria-label="Dash, your guide. Open a question about Jhanvi\'s work.">' +
+      '<button type="button" class="pip-body" aria-expanded="false" aria-label="Dot, your guide. Open a question about Jhanvi\'s work.">' +
         '<svg class="pip-svg" viewBox="0 0 76 84" width="76" height="84" aria-hidden="true" focusable="false">' +
-          '<defs><clipPath id="dashBody"><rect x="6" y="16" width="64" height="52" rx="13"/></clipPath></defs>' +
-          '<path d="M27 16 L38 5 L49 16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>' +
-          '<line x1="31" y1="5" x2="45" y2="5" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>' +
-          '<rect x="6" y="16" width="64" height="52" rx="13" fill="#fffdf8"/>' +
-          '<g clip-path="url(#dashBody)"><rect x="6" y="16" width="22" height="7" fill="#c8312b"/><rect x="28" y="16" width="21" height="7" fill="#6b3fa0"/><rect x="49" y="16" width="21" height="7" fill="#14804a"/></g>' +
-          '<rect x="6" y="16" width="64" height="52" rx="13" fill="none" stroke="#1d1b17" stroke-width="2.5"/>' +
-          '<rect class="pip-lamp" x="25" y="8.5" width="26" height="6.5" rx="1.5" fill="#f5b82e" stroke="#1d1b17" stroke-width="1.2"/>' +
-          '<rect x="12" y="27" width="52" height="24" rx="7" fill="#1d1b17"/>' +
-          '<g class="pip-blink"><circle cx="28" cy="39" r="7" fill="#fffdf8"/><circle cx="48" cy="39" r="7" fill="#fffdf8"/></g>' +
-          '<g class="pip-look"><g class="pip-blink"><circle cx="28" cy="39" r="3.4" fill="#1d1b17"/><circle cx="48" cy="39" r="3.4" fill="#1d1b17"/><circle cx="29.2" cy="37.8" r="1.1" fill="#fff"/><circle cx="49.2" cy="37.8" r="1.1" fill="#fff"/></g></g>' +
-          '<path d="M32 58 Q38 63 44 58" stroke="#1d1b17" stroke-width="2.2" fill="none" stroke-linecap="round"/>' +
-          '<circle cx="17" cy="59" r="3.6" fill="#f5b82e" stroke="#1d1b17" stroke-width="1.4"/><circle cx="59" cy="59" r="3.6" fill="#f5b82e" stroke="#1d1b17" stroke-width="1.4"/>' +
-          '<circle cx="23" cy="73" r="6" fill="#1d1b17"/><circle cx="53" cy="73" r="6" fill="#1d1b17"/><circle cx="23" cy="73" r="2" fill="#9a9486"/><circle cx="53" cy="73" r="2" fill="#9a9486"/>' +
-          '<rect x="2" y="79" width="72" height="3.5" rx="1.5" fill="currentColor" opacity=".55"/>' +
+          '<rect class="pip-tile" x="1" y="7" width="74" height="74" rx="6"/>' +
+          '<circle class="pip-face" cx="38" cy="44" r="30"/>' +
+          '<g class="pip-look">' +
+            /* calm: two dot eyes, a flat mouth */
+            '<g class="pip-m m-calm"><g class="pip-blink"><circle class="f1" cx="27" cy="40" r="4.4"/><circle class="f1" cx="49" cy="40" r="4.4"/></g><rect class="f1" x="31" y="57" width="14" height="3.6"/></g>' +
+            /* hello: ringed eyes, small round mouth */
+            '<g class="pip-m m-hello"><circle class="s2" cx="27" cy="38" r="7.5" fill="none" stroke-width="3.4"/><circle class="s2" cx="49" cy="38" r="7.5" fill="none" stroke-width="3.4"/><circle class="f1" cx="28.5" cy="38" r="3"/><circle class="f1" cx="50.5" cy="38" r="3"/><circle class="s1" cx="38" cy="58" r="4" fill="none" stroke-width="3.2"/></g>' +
+            /* happy: arched eyes, wide smile */
+            '<g class="pip-m m-happy"><path class="s1" d="M20 42 A7 7 0 0 1 34 42" fill="none" stroke-width="4"/><path class="s1" d="M42 42 A7 7 0 0 1 56 42" fill="none" stroke-width="4"/><path class="s1" d="M28 54 Q38 66 48 54" fill="none" stroke-width="4" stroke-linecap="round"/></g>' +
+            /* think: eyes up, zigzag mouth */
+            '<g class="pip-m m-think"><circle class="f1" cx="27" cy="36" r="4.4"/><circle class="f1" cx="49" cy="36" r="4.4"/><path class="s1" d="M25 60 L31.5 53 L38 60 L44.5 53 L51 60" fill="none" stroke-width="3.4"/></g>' +
+            /* wink: one bar eye, one arched eye, small smile */
+            '<g class="pip-m m-wink"><rect class="f1" x="20" y="38" width="14" height="4"/><path class="s2" d="M42 43 A7 7 0 0 1 56 43" fill="none" stroke-width="4"/><path class="s1" d="M31 55 Q38 61 45 55" fill="none" stroke-width="3.4" stroke-linecap="round"/></g>' +
+            /* sleepy: heavy lids over dots, tiny mouth */
+            '<g class="pip-m m-sleepy"><circle class="f2" cx="27" cy="42" r="4.6"/><circle class="f2" cx="49" cy="42" r="4.6"/><rect class="f1" x="19" y="34" width="16" height="4" transform="rotate(-8 27 36)"/><rect class="f1" x="41" y="34" width="16" height="4" transform="rotate(8 49 36)"/><rect class="f1" x="34" y="58" width="8" height="3.4"/></g>' +
+          '</g>' +
         '</svg>' +
       '</button>';
     doc.body.appendChild(el);
@@ -470,7 +472,9 @@
         if (auto) timers.close = setTimeout(function () { if (!el.matches(':hover') && !el.contains(doc.activeElement)) setOpen(false); }, 10000);
       }
     }
+    var happyUntil = 0;
     function hop() {
+      happyUntil = Date.now() + 1300;
       el.classList.remove('hop'); void el.offsetWidth; el.classList.add('hop');
     }
     function wander() {
@@ -604,7 +608,7 @@
     }
 
 
-    /* ---- the trick: Dash "reads your mind" (a 5-card binary guessing trick) ---- */
+    /* ---- the trick: Dot "reads your mind" (a 5-card binary guessing trick) ---- */
     function say(text, ms) {
       sayEl.textContent = text;
       el.classList.add('saying');
@@ -613,7 +617,7 @@
     }
     function confetti() {
       var r = body.getBoundingClientRect(), cx = r.left + 38, cy = r.top + 42;
-      var cols = ['#c8312b', '#6b3fa0', '#14804a', '#f5b82e'];
+      var cols = ['#f0464e', '#2865a9', '#fad276', '#9ad7df'];
       for (var i = 0; i < 18; i++) {
         var d = doc.createElement('i');
         d.className = 'pip-conf';
@@ -642,7 +646,7 @@
         '<div class="trick-back"></div>' +
         '<div class="trick-card" role="dialog" aria-modal="true" aria-labelledby="trickT" tabindex="-1">' +
           '<button type="button" class="trick-x" aria-label="Close the trick">✕</button>' +
-          '<p class="trick-k" id="trickT">Dash reads your mind</p>' +
+          '<p class="trick-k" id="trickT">Dot reads your mind</p>' +
           '<div class="trick-body"></div>' +
         '</div>';
       doc.body.appendChild(trick);
@@ -767,7 +771,7 @@
       if (tReturn && tReturn.focus && doc.contains(tReturn)) tReturn.focus({ preventScroll: true }); else body.focus({ preventScroll: true });
     }
 
-    /* the offer: Dash suggests the trick once, when the page has been still for a while */
+    /* the offer: Dot suggests the trick once, when the page has been still for a while */
     function offerTrick() {
       offered = true;
       el.setAttribute('data-offer', '1');
@@ -776,6 +780,19 @@
       setOpen(true, false);
       hop();
     }
+    /* mood: the face changes with what is going on */
+    var curMood = '';
+    function mood() {
+      var m = 'calm', now = Date.now();
+      if (now < happyUntil) m = 'happy';
+      else if (tricking) m = el.classList.contains('trick-think') ? 'think' : 'hello';
+      else if (guiding) m = 'wink';
+      else if (open) m = 'hello';
+      else if (!reduce && now - lastAct > 9000) m = 'sleepy';
+      if (m !== curMood) { curMood = m; el.setAttribute('data-mood', m); }
+    }
+    el.setAttribute('data-mood', 'calm');
+    setInterval(mood, 250);
     trickBtn.addEventListener('click', function () { touched(); openTrick(); });
     $('.pip-try', el).addEventListener('click', function () { touched(); openTrick(); });
     $('.pip-no', el).addEventListener('click', function () { setOpen(false); });

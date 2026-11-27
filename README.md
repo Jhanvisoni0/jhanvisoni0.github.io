@@ -53,11 +53,11 @@ Tracks are drawn in `script.js` (search for `track(`).
 
 The last row of the departure board flips through curiosity hooks (the XBRL bug, the 40% query-time cut, etc.) and each has an Open button that jumps to the matching station. Edit the list in `script.js` (search for `TEASERS`): each entry is `[text, station id]`. It auto-flips until the visitor presses Flip, and pauses on hover.
 
-## Dash, the light-rail guide
+## Dot, the emoticon guide
 
-A small light-rail car mascot (drawn as SVG inside `script.js`, styled at the bottom of `style.css`) drifts between screen corners and follows the cursor with its eyes. It pops a question bubble a few times, but never while the departures board is on screen. **Show me** opens the right station and outlines the exact line that answers the question, with Dash beside it. The ✕ silences it for the session. Teasers are `[text, station id, phrase to highlight]` in the `TEASERS` list.
+A small flat emoticon (drawn as SVG inside `script.js`, styled at the bottom of `style.css`) whose face and colors change with the moment: calm, hello while a bubble is open, wink while pointing at an answer, thinking and happy during the trick, sleepy when nothing has happened for a while. It drifts between screen corners and follows the cursor with its eyes. It pops a question bubble a few times, but never while the departures board is on screen. **Show me** opens the right station and outlines the exact line that answers the question, with Dot beside it. The ✕ silences it for the session. Teasers are `[text, station id, phrase to highlight]` in the `TEASERS` list.
 
-If nobody touches the page for about 14 seconds, Dash offers **a mind-reading trick** once per page load (the bubble's "Mind-reading trick" button starts it any time). The visitor thinks of a number from 1 to 31 and answers yes/no on five cards; Dash reveals it, explains it is binary, and links to the MSCI partition-pruning line.
+If nobody touches the page for about 14 seconds, Dot offers **a mind-reading trick** once per page load (the bubble's "Mind-reading trick" button starts it any time). The visitor thinks of a number from 1 to 31 and answers yes/no on five cards; Dot reveals it, explains it is binary, and links to the MSCI partition-pruning line.
 
 ## Themes and views
 
@@ -68,7 +68,7 @@ If nobody touches the page for about 14 seconds, Dash offers **a mind-reading tr
 ## Updating the site (cache-busting)
 
 GitHub Pages and browsers cache CSS/JS. When you change `style.css` or `script.js`, bump the
-version in every page (`style.css?v=30`, `script.js?v=17`), otherwise visitors may see the old look.
+version in every page (`style.css?v=31`, `script.js?v=18`), otherwise visitors may see the old look.
 
 ## Deploy on GitHub Pages
 
