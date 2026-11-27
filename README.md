@@ -53,6 +53,12 @@ Tracks are drawn in `script.js` (search for `track(`).
 
 The last row of the departure board flips through curiosity hooks (the XBRL bug, the 40% query-time cut, etc.) and each has an Open button that jumps to the matching station. Edit the list in `script.js` (search for `TEASERS`): each entry is `[text, station id]`. It auto-flips until the visitor presses Flip, and pauses on hover.
 
+## Dash, the light-rail guide
+
+A small light-rail car mascot (drawn as SVG inside `script.js`, styled at the bottom of `style.css`) drifts between screen corners and follows the cursor with its eyes. It pops a question bubble a few times, but never while the departures board is on screen. **Show me** opens the right station and outlines the exact line that answers the question, with Dash beside it. The ✕ silences it for the session. Teasers are `[text, station id, phrase to highlight]` in the `TEASERS` list.
+
+If nobody touches the page for about 14 seconds, Dash offers **a mind-reading trick** once per page load (the bubble's "Mind-reading trick" button starts it any time). The visitor thinks of a number from 1 to 31 and answers yes/no on five cards; Dash reveals it, explains it is binary, and links to the MSCI partition-pruning line.
+
 ## Themes and views
 
 - Theme: follows the visitor's local time (light 7:00–18:59, dark otherwise) until they press the sun/moon button; the choice is saved in `localStorage`.
@@ -62,7 +68,7 @@ The last row of the departure board flips through curiosity hooks (the XBRL bug,
 ## Updating the site (cache-busting)
 
 GitHub Pages and browsers cache CSS/JS. When you change `style.css` or `script.js`, bump the
-version in every page (`style.css?v=29`, `script.js?v=16`), otherwise visitors may see the old look.
+version in every page (`style.css?v=30`, `script.js?v=17`), otherwise visitors may see the old look.
 
 ## Deploy on GitHub Pages
 

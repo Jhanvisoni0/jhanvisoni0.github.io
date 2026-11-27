@@ -12,6 +12,7 @@
   function store(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
   var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   var coarse = !!(window.matchMedia && window.matchMedia('(hover: none)').matches);
+  var pendingMark = null, onStationOpened = null, onStationClosed = null, askApi = null;
   var LINES = { eng: 'Engineering line', ai: 'AI & Writing line', lrn: 'Learning line', all: 'Contact' };
   var BADGE = { eng: 'E', ai: 'A', lrn: 'L', all: '★' };
 
@@ -82,23 +83,26 @@
   var ask = $('.board-ask');
   if (ask) {
     var TEASERS = [
-      ['The XBRL bug: 0% keyword detection', 'st-rag'],
-      ['Z-ordering: 40% faster queries', 'st-msci'],
-      ['4 days of reporting in 15 minutes', 'st-banking'],
-      ['A RAG bot that admits "I don\'t know"', 'st-rag'],
-      ['Databricks is not just managed Spark', 'st-post-realization'],
-      ['LTAP, explained with a restaurant', 'st-post-ltap'],
-      ['REITs: +23% vs \u22128% by rate regime', 'st-assets']
+      ['The XBRL bug: 0% keyword detection', 'st-rag', 'XBRL'],
+      ['Z-ordering: 40% faster queries', 'st-msci', 'Z-ordering'],
+      ['4 days of reporting in 15 minutes', 'st-banking', '15 minutes'],
+      ['A RAG bot that admits "I don\'t know"', 'st-rag', 'unanswerable'],
+      ['Databricks is not just managed Spark', 'st-post-realization', 'managed Spark'],
+      ['LTAP, explained with a restaurant', 'st-post-ltap', 'restaurant'],
+      ['REITs: +23% vs −8% by rate regime', 'st-assets', 'REITs returning']
     ];
     var askV = $('.ask-v', ask), askGo = $('.ask-go', ask), askNext = $('.ask-flip', ask), askLive = $('.ask-live', ask);
     var askI = 0;
-    askNext.addEventListener('click', function () {
-      askI = (askI + 1) % TEASERS.length;
+    function showAsk(i, user) {
+      askI = (i + TEASERS.length) % TEASERS.length;
       var t = TEASERS[askI];
       askV.textContent = t[0];
       askGo.setAttribute('href', '#' + t[1]);
-      askLive.textContent = 'Next question: ' + t[0];
-    });
+      if (user) askLive.textContent = 'Next question: ' + t[0];
+      if (askApi && askApi.onChange) askApi.onChange();
+    }
+    askNext.addEventListener('click', function () { showAsk(askI + 1, true); });
+    askApi = { teasers: TEASERS, cur: function () { return askI; }, show: showAsk, stopAuto: function () {}, hold: function () {}, onChange: null };
   }
 
   /* ---------------- map ---------------- */
@@ -321,6 +325,7 @@
     centerOn(s.x, true);
     bringMapIntoView(s.y);
     setHash(id);
+    if (onStationOpened) onStationOpened();
     if (fromClick || doc.activeElement === doc.body) {
       setTimeout(function () { drawer.focus({ preventScroll: true }); }, 60);
     }
@@ -331,6 +336,7 @@
     Object.keys(btns).forEach(function (k) { btns[k].classList.remove('is-active'); });
     current = null;
     setHash('map');
+    if (onStationClosed) onStationClosed();
     if (restore && lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
   }
   $('#drClose').addEventListener('click', function () { closeDrawer(true); });
@@ -376,4 +382,424 @@
   window.addEventListener('hashchange', fromHash);
   window.addEventListener('load', function () { updateProgress(); fromHash(); });
 
+  /* ---------------- Dash: a little guide that hovers around and points at the answer ---------------- */
+  (function pipInit() {
+    if (!askApi) return;
+    var S = 84, W0 = 76;
+    var quiet = false;
+    try { quiet = sessionStorage.getItem('pipQuiet') === '1'; } catch (e) {}
+    var T = askApi.teasers;
+    var el = doc.createElement('div');
+    el.className = 'pip';
+    el.setAttribute('data-side', 'r');
+    el.setAttribute('data-v', 'up');
+    el.innerHTML =
+      '<div class="pip-bubble" role="group" aria-label="A question from Dash">' +
+        '<button type="button" class="pip-x" aria-label="Stop the tips">✕</button>' +
+        '<p class="pip-k">Ask Jhanvi about…</p>' +
+        '<p class="pip-q"></p>' +
+        '<div class="pip-btns"><button type="button" class="pip-flip">Another ↻</button><a class="pip-go" href="#">Show me →</a><button type="button" class="pip-trick">Mind-reading trick</button><button type="button" class="pip-try">Try it</button><button type="button" class="pip-no">Not now</button></div>' +
+      '</div>' +
+      '<span class="pip-tag" aria-hidden="true">There it is.</span>' +
+      '<span class="pip-say" aria-hidden="true"></span>' +
+      '<button type="button" class="pip-body" aria-expanded="false" aria-label="Dash, your guide. Open a question about Jhanvi\'s work.">' +
+        '<svg class="pip-svg" viewBox="0 0 76 84" width="76" height="84" aria-hidden="true" focusable="false">' +
+          '<defs><clipPath id="dashBody"><rect x="6" y="16" width="64" height="52" rx="13"/></clipPath></defs>' +
+          '<path d="M27 16 L38 5 L49 16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>' +
+          '<line x1="31" y1="5" x2="45" y2="5" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>' +
+          '<rect x="6" y="16" width="64" height="52" rx="13" fill="#fffdf8"/>' +
+          '<g clip-path="url(#dashBody)"><rect x="6" y="16" width="22" height="7" fill="#c8312b"/><rect x="28" y="16" width="21" height="7" fill="#6b3fa0"/><rect x="49" y="16" width="21" height="7" fill="#14804a"/></g>' +
+          '<rect x="6" y="16" width="64" height="52" rx="13" fill="none" stroke="#1d1b17" stroke-width="2.5"/>' +
+          '<rect class="pip-lamp" x="25" y="8.5" width="26" height="6.5" rx="1.5" fill="#f5b82e" stroke="#1d1b17" stroke-width="1.2"/>' +
+          '<rect x="12" y="27" width="52" height="24" rx="7" fill="#1d1b17"/>' +
+          '<g class="pip-blink"><circle cx="28" cy="39" r="7" fill="#fffdf8"/><circle cx="48" cy="39" r="7" fill="#fffdf8"/></g>' +
+          '<g class="pip-look"><g class="pip-blink"><circle cx="28" cy="39" r="3.4" fill="#1d1b17"/><circle cx="48" cy="39" r="3.4" fill="#1d1b17"/><circle cx="29.2" cy="37.8" r="1.1" fill="#fff"/><circle cx="49.2" cy="37.8" r="1.1" fill="#fff"/></g></g>' +
+          '<path d="M32 58 Q38 63 44 58" stroke="#1d1b17" stroke-width="2.2" fill="none" stroke-linecap="round"/>' +
+          '<circle cx="17" cy="59" r="3.6" fill="#f5b82e" stroke="#1d1b17" stroke-width="1.4"/><circle cx="59" cy="59" r="3.6" fill="#f5b82e" stroke="#1d1b17" stroke-width="1.4"/>' +
+          '<circle cx="23" cy="73" r="6" fill="#1d1b17"/><circle cx="53" cy="73" r="6" fill="#1d1b17"/><circle cx="23" cy="73" r="2" fill="#9a9486"/><circle cx="53" cy="73" r="2" fill="#9a9486"/>' +
+          '<rect x="2" y="79" width="72" height="3.5" rx="1.5" fill="currentColor" opacity=".55"/>' +
+        '</svg>' +
+      '</button>';
+    doc.body.appendChild(el);
+
+    var body = $('.pip-body', el), bubble = $('.pip-bubble', el), qEl = $('.pip-q', el);
+    var kEl = $('.pip-k', el), sayEl = $('.pip-say', el), trickBtn = $('.pip-trick', el), goEl = $('.pip-go', el), flipEl = $('.pip-flip', el), xEl = $('.pip-x', el), look = $('.pip-look', el);
+    var lastAct = Date.now(), tricking = false;
+        var open = false, guiding = false, anchorI = 0, hit = null, autoPops = 0, userTouched = false;
+    var timers = { close: null, guide: null, track: null, clear: null, peek: null, tired: null, zip: null, say: null, chase: null };
+
+    function W() { return doc.documentElement.clientWidth; }
+    function H() { return window.innerHeight; }
+    function drawerOpen() { return !!(drawer && drawer.classList.contains('open')); }
+    function place(x, y, side) {
+      el.style.transform = 'translate(' + Math.round(x) + 'px,' + Math.round(y) + 'px)';
+      el.setAttribute('data-side', side);
+      el.setAttribute('data-v', y < 230 ? 'down' : 'up');
+    }
+    function anchors() {
+      var w = W(), h = H(), narrow = w < 900;
+      var a = [[w - W0 - 14, h - S - 14, 'r'], [14, h - S - 14, 'l']];
+      if (!narrow) { a.push([w - W0 - 14, 78, 'r']); a.push([14, Math.round(h * 0.6), 'l']); }
+      if (drawerOpen() && !narrow) a = a.filter(function (p) { return p[2] === 'l'; });
+      return a;
+    }
+    function settle() {
+      var a = anchors();
+      anchorI = Math.min(anchorI, a.length - 1);
+      place(a[anchorI][0], a[anchorI][1], a[anchorI][2]);
+    }
+    function refreshAway() {
+      el.classList.toggle('away', !guiding && drawerOpen() && W() < 900);
+    }
+    function sync() {
+      if (el.hasAttribute('data-offer')) return;
+      var t = T[askApi.cur()];
+      qEl.textContent = t[0];
+      goEl.setAttribute('href', '#' + t[1]);
+    }
+    function setOpen(v, auto) {
+      if (v && (el.classList.contains('away') || guiding || tricking)) return;
+      open = v;
+      el.classList.toggle('open', v);
+      body.setAttribute('aria-expanded', String(v));
+      askApi.hold(v);
+      clearTimeout(timers.close);
+      if (!v) { kEl.textContent = 'Ask Jhanvi about\u2026'; if (el.hasAttribute('data-offer')) { el.removeAttribute('data-offer'); sync(); } }
+      if (v) {
+        sync();
+        if (auto) timers.close = setTimeout(function () { if (!el.matches(':hover') && !el.contains(doc.activeElement)) setOpen(false); }, 10000);
+      }
+    }
+    function hop() {
+      el.classList.remove('hop'); void el.offsetWidth; el.classList.add('hop');
+    }
+    function wander() {
+      if (open || guiding || tricking || el.classList.contains('away') || reduce) return;
+      var a = anchors(), n = anchorI;
+      if (a.length > 1) { do { n = Math.floor(Math.random() * a.length); } while (n === anchorI); }
+      anchorI = n;
+      place(a[n][0], a[n][1], a[n][2]);
+      el.classList.add('moving');
+      setTimeout(function () { el.classList.remove('moving'); }, 1500);
+    }
+
+    /* highlight + guide */
+    function clearMarks() {
+      $$('.hl-target').forEach(function (n) { n.classList.remove('hl-target'); });
+    }
+    function updateGuide() {
+      if (!guiding || !hit) return;
+      var r = hit.getBoundingClientRect(), w = W(), x, y, side;
+      if (r.bottom < 60 || r.top > H()) return;
+      if (w >= 900) {
+        if (drawerOpen()) { x = drawer.getBoundingClientRect().left - W0 - 12; side = 'r'; }
+        else { x = Math.max(8, r.left - W0 - 14); side = 'l'; }
+        y = r.top + r.height / 2 - S / 2;
+        look.style.transform = 'translate(3px,0)';
+      } else {
+        x = w - W0 - 10; y = r.top - S + 8; side = 'r';
+        look.style.transform = 'translate(0,3px)';
+      }
+      y = Math.min(Math.max(y, 72), H() - S - 8);
+      place(x, y, side);
+    }
+    function endGuide() {
+      if (!guiding) return;
+      guiding = false;
+      clearTimeout(timers.guide); clearTimeout(timers.track);
+      el.classList.remove('guiding', 'tracking');
+      look.style.transform = '';
+      timers.clear = setTimeout(clearMarks, 4000);
+      refreshAway();
+      settle();
+    }
+    function startGuide(node) {
+      hit = node; guiding = true;
+      setOpen(false);
+      el.classList.remove('away');
+      el.classList.add('guiding');
+      updateGuide();
+      clearTimeout(timers.track);
+      timers.track = setTimeout(function () { el.classList.add('tracking'); }, 1400);
+      clearTimeout(timers.guide);
+      timers.guide = setTimeout(endGuide, 12000);
+    }
+    function markIn(container, needle) {
+      clearTimeout(timers.clear); clearMarks();
+      var low = needle.toLowerCase();
+      var node = $$('li, .st-sum, .st-note, .st-metrics > div', container).filter(function (n) {
+        return n.textContent.toLowerCase().indexOf(low) > -1;
+      })[0];
+      if (!node) return;
+      var d = node.closest('details'); if (d) d.open = true;
+      node.classList.add('hl-target');
+      node.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+      setTimeout(function () { startGuide(node); }, reduce ? 60 : 550);
+    }
+    function goTo(i) { goToStation(T[i][1], T[i][2]); }
+    function goToStation(id, needle) {
+      var t = [null, id, needle];
+      setOpen(false);
+      endGuide();
+      if (root.getAttribute('data-view') === 'map') {
+        pendingMark = t[2];
+        openStation(t[1], false);
+      } else {
+        var a = doc.getElementById(t[1]);
+        if (!a) return;
+        a.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+        setTimeout(function () { markIn(a, t[2]); }, reduce ? 60 : 700);
+      }
+    }
+    onStationOpened = function () {
+      refreshAway();
+      if (!guiding) settle();
+      if (pendingMark) {
+        var n = pendingMark; pendingMark = null;
+        setTimeout(function () { markIn(drBody, n); }, 450);
+      }
+    };
+    onStationClosed = function () { endGuide(); clearMarks(); refreshAway(); settle(); };
+
+    /* interactions */
+    function touched() { userTouched = true; }
+    body.addEventListener('click', function () {
+      touched(); hop(); setOpen(!open, false);
+    });
+    xEl.addEventListener('click', function () {
+      touched(); quiet = true;
+      try { sessionStorage.setItem('pipQuiet', '1'); } catch (e) {}
+      setOpen(false); body.focus();
+    });
+    flipEl.addEventListener('click', function () {
+      touched(); askApi.stopAuto(); askApi.show(askApi.cur() + 1, true); hop();
+    });
+    function go(e) { e.preventDefault(); touched(); goTo(askApi.cur()); }
+    goEl.addEventListener('click', go);
+    var boardGo = $('.ask-go');
+    if (boardGo) boardGo.addEventListener('click', go);
+    askApi.onChange = function () { sync(); };
+    doc.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && open && !drawerOpen()) { setOpen(false); body.focus(); }
+    });
+    window.addEventListener('scroll', function () { if (guiding) updateGuide(); }, { passive: true });
+    drBody.addEventListener('scroll', function () { if (guiding) updateGuide(); }, { passive: true });
+    window.addEventListener('resize', function () { refreshAway(); if (guiding) updateGuide(); else settle(); });
+    /* eyes follow the pointer */
+    if (!coarse && !reduce) {
+      window.addEventListener('pointermove', function (e) {
+        if (guiding || e.pointerType === 'touch') return;
+        var r = body.getBoundingClientRect();
+        var dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+        var d = Math.sqrt(dx * dx + dy * dy) || 1, k = Math.min(1, d / 160);
+        look.style.transform = 'translate(' + (dx / d * 3.2 * k).toFixed(2) + 'px,' + (dy / d * 2.4 * k).toFixed(2) + 'px)';
+      }, { passive: true });
+    }
+    /* a bubble the viewer has not asked for appears at most a few times, then stays quiet */
+    function autoPop() {
+      if (tricking || quiet || userTouched || guiding || open || doc.hidden || drawerOpen() || autoPops >= 3) return false;
+      var ar = ask && ask.getBoundingClientRect();
+      if (ar && ar.bottom > 0 && ar.top < H()) return false; /* the board already offers the questions; do not cover it */
+      autoPops++; setOpen(true, true); hop(); return true;
+    }
+
+
+    /* ---- the trick: Dash "reads your mind" (a 5-card binary guessing trick) ---- */
+    function say(text, ms) {
+      sayEl.textContent = text;
+      el.classList.add('saying');
+      clearTimeout(timers.say);
+      timers.say = setTimeout(function () { el.classList.remove('saying'); }, ms || 1500);
+    }
+    function confetti() {
+      var r = body.getBoundingClientRect(), cx = r.left + 38, cy = r.top + 42;
+      var cols = ['#c8312b', '#6b3fa0', '#14804a', '#f5b82e'];
+      for (var i = 0; i < 18; i++) {
+        var d = doc.createElement('i');
+        d.className = 'pip-conf';
+        d.style.left = cx + 'px'; d.style.top = cy + 'px';
+        d.style.background = cols[i % 4];
+        doc.body.appendChild(d);
+        var a = Math.random() * Math.PI * 2, dist = 70 + Math.random() * 90;
+        (function (n, ang, dd) {
+          if (!n.animate) { n.remove(); return; }
+          n.animate([
+            { transform: 'translate(0,0) rotate(0) scale(1)', opacity: 1 },
+            { transform: 'translate(' + Math.cos(ang) * dd + 'px,' + (Math.sin(ang) * dd + 40) + 'px) rotate(260deg) scale(.4)', opacity: 0 }
+          ], { duration: 950, easing: 'cubic-bezier(.2,.8,.3,1)' }).onfinish = function () { n.remove(); };
+        })(d, a, dist);
+      }
+    }
+
+    var trick = null, tBody = null, tCard = null, tStep = 0, tSum = 0, tReturn = null, offered = false;
+    var QUIPS = ['Hmm…', 'Interesting…', 'I can feel it…', 'Almost there…'];
+
+    function buildTrick() {
+      trick = doc.createElement('div');
+      trick.className = 'trick';
+      trick.hidden = true;
+      trick.innerHTML =
+        '<div class="trick-back"></div>' +
+        '<div class="trick-card" role="dialog" aria-modal="true" aria-labelledby="trickT" tabindex="-1">' +
+          '<button type="button" class="trick-x" aria-label="Close the trick">✕</button>' +
+          '<p class="trick-k" id="trickT">Dash reads your mind</p>' +
+          '<div class="trick-body"></div>' +
+        '</div>';
+      doc.body.appendChild(trick);
+      tBody = $('.trick-body', trick);
+      tCard = $('.trick-card', trick);
+      $('.trick-x', trick).addEventListener('click', closeTrick);
+      $('.trick-back', trick).addEventListener('click', closeTrick);
+      trick.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') { e.stopPropagation(); closeTrick(); return; }
+        if (e.key !== 'Tab') return;
+        var f = $$('button', tCard).filter(function (b) { return !b.disabled && b.offsetParent; });
+        if (!f.length) return;
+        var first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && (doc.activeElement === first || doc.activeElement === tCard)) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && doc.activeElement === last) { e.preventDefault(); first.focus(); }
+      });
+      tBody.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-act]');
+        if (!b) return;
+        var act = b.getAttribute('data-act');
+        if (act === 'start') { tStep = 0; tSum = 0; renderCard(); }
+        else if (act === 'yes' || act === 'no') { if (act === 'yes') tSum += (1 << tStep); tStep++; if (tStep < 5) { say(QUIPS[tStep - 1], 1200); renderCard(); } else reveal(); }
+        else if (act === 'again') renderIntro();
+        else if (act === 'close') closeTrick();
+        else if (act === 'how') {
+          var ex = $('.trick-explain', tBody);
+          ex.hidden = !ex.hidden;
+          b.setAttribute('aria-expanded', String(!ex.hidden));
+          b.textContent = ex.hidden ? 'How did I do that?' : 'Hide the explanation';
+        } else if (act === 'see') {
+          closeTrick();
+          goToStation('st-msci', 'partition pruning');
+        }
+      });
+    }
+    function pipBeside() {
+      if (!tricking) return;
+      var r = tCard.getBoundingClientRect(), w = W(), x, y, side;
+      if (w - r.right > W0 + 24) { x = r.right + 14; y = r.top + 24; side = 'l'; look.style.transform = 'translate(-3px,0)'; }
+      else if (r.left > W0 + 24) { x = r.left - W0 - 14; y = r.top + 24; side = 'r'; look.style.transform = 'translate(3px,0)'; }
+      else { x = r.right - W0 - 6; y = Math.max(70, r.top - S + 8); side = 'r'; look.style.transform = 'translate(0,3px)'; }
+      place(x, y, side);
+    }
+    function setBody(html, focusSel) {
+      tBody.innerHTML = html;
+      var f = focusSel ? $(focusSel, tBody) : null;
+      (f || tCard).focus({ preventScroll: true });
+      setTimeout(pipBeside, 30);
+    }
+    function renderIntro() {
+      tStep = 0; tSum = 0;
+      el.classList.remove('trick-think');
+      setBody(
+        '<p class="trick-lead">Think of any number from <b>1 to 31</b>. Keep it secret.</p>' +
+        '<p class="trick-sub">I’ll show you five cards. Just tell me if your number is on each one, and I’ll read your mind.</p>' +
+        '<div class="trick-btns"><button type="button" class="trick-primary" data-act="start">I’ve got one</button></div>',
+        '.trick-primary');
+      say('Think of a number…', 2200);
+    }
+    function renderCard() {
+      var nums = [];
+      for (var n = 1; n <= 31; n++) if (n & (1 << tStep)) nums.push(n);
+      var dots = '';
+      for (var i = 0; i < 5; i++) dots += '<i class="' + (i < tStep ? 'done' : i === tStep ? 'now' : '') + '"></i>';
+      setBody(
+        '<div class="trick-prog" aria-hidden="true">' + dots + '</div>' +
+        '<p class="trick-lead">Card ' + (tStep + 1) + ' of 5. Is your number on it?</p>' +
+        '<ul class="trick-grid" aria-label="Numbers on card ' + (tStep + 1) + '">' + nums.map(function (n) { return '<li>' + n + '</li>'; }).join('') + '</ul>' +
+        '<div class="trick-btns"><button type="button" class="trick-primary" data-act="yes">Yes</button><button type="button" class="trick-alt" data-act="no">No</button></div>',
+        '.trick-primary');
+    }
+    function reveal() {
+      el.classList.add('trick-think');
+      setBody('<p class="trick-lead" aria-live="polite">Reading your mind<span class="trick-dots"><i>.</i><i>.</i><i>.</i></span></p>', null);
+      say('Hold still…', 1300);
+      setTimeout(function () {
+        if (!tricking) return;
+        el.classList.remove('trick-think');
+        if (tSum === 0) {
+          say('Hmm?', 1800);
+          setBody(
+            '<p class="trick-lead">You said no to every card, so I get zero. I asked for 1 to 31!</p>' +
+            '<div class="trick-btns"><button type="button" class="trick-primary" data-act="again">Try again</button><button type="button" class="trick-alt" data-act="close">Close</button></div>',
+            '.trick-primary');
+          return;
+        }
+        say('Got it!', 1600); confetti(); hop();
+        setBody(
+          '<p class="trick-sub">Your number is</p>' +
+          '<p class="trick-answer" aria-live="polite">' + tSum + '</p>' +
+          '<div class="trick-btns"><button type="button" class="trick-primary" data-act="how" aria-expanded="false">How did I do that?</button><button type="button" class="trick-alt" data-act="again">Again</button></div>' +
+          '<div class="trick-explain" hidden>' +
+            '<p>No mind-reading, just binary. Card 1 holds every number with the 1s place switched on, card 2 the 2s place, then 4, 8 and 16. Your five yes/no answers spelled your number in binary, so I added up the first number of each card you said yes to.</p>' +
+            '<p>It’s the same instinct as partition pruning: every question rules out half of the options, so you never have to look at the rest.</p>' +
+            '<button type="button" class="trick-link" data-act="see">See where I used it →</button>' +
+          '</div>',
+          '.trick-primary');
+      }, reduce ? 200 : 1500);
+    }
+    function openTrick() {
+      if (tricking) return;
+      if (!trick) buildTrick();
+      tricking = true;
+      tReturn = doc.activeElement;
+      setOpen(false);
+      endGuide();
+      el.classList.remove('away');
+      el.classList.add('trick-on', 'zip');
+      trick.hidden = false;
+      renderIntro();
+      setTimeout(function () { el.classList.remove('zip'); }, 500);
+      window.addEventListener('resize', pipBeside);
+    }
+    function closeTrick() {
+      if (!tricking) return;
+      tricking = false;
+      trick.hidden = true;
+      el.classList.remove('trick-on', 'trick-think', 'saying');
+      look.style.transform = '';
+      window.removeEventListener('resize', pipBeside);
+      settle();
+      if (tReturn && tReturn.focus && doc.contains(tReturn)) tReturn.focus({ preventScroll: true }); else body.focus({ preventScroll: true });
+    }
+
+    /* the offer: Dash suggests the trick once, when the page has been still for a while */
+    function offerTrick() {
+      offered = true;
+      el.setAttribute('data-offer', '1');
+      kEl.textContent = 'A little trick';
+      qEl.textContent = 'Think of a number from 1 to 31. I can read your mind.';
+      setOpen(true, false);
+      hop();
+    }
+    trickBtn.addEventListener('click', function () { touched(); openTrick(); });
+    $('.pip-try', el).addEventListener('click', function () { touched(); openTrick(); });
+    $('.pip-no', el).addEventListener('click', function () { setOpen(false); });
+    function activity() { lastAct = Date.now(); }
+    ['pointermove', 'pointerdown', 'keydown', 'wheel', 'scroll', 'touchstart'].forEach(function (t) {
+      window.addEventListener(t, activity, { passive: true });
+    });
+    if (!reduce) {
+      setInterval(function () {
+        if (offered || quiet || userTouched || tricking || guiding || open || doc.hidden || drawerOpen()) return;
+        if (Date.now() - lastAct > 14000) offerTrick();
+      }, 1000);
+    }
+
+    settle();
+    sync();
+    setTimeout(function () { el.classList.add('in'); }, 900);
+    if (!reduce) {
+      setTimeout(autoPop, 4200);
+      var tick = setInterval(function () {
+        if (open || guiding || tricking) return;
+        wander();
+        if (!quiet && !userTouched && autoPops < 3) setTimeout(autoPop, 1700);
+      }, 14000);
+    }
+  })();
 })();
