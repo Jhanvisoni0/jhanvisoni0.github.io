@@ -82,7 +82,7 @@ A small cat in a station cap sits in the bottom-right corner on screens 900px an
 ## Updating the site (cache-busting)
 
 GitHub Pages and browsers cache CSS/JS. When you change `style.css` or `script.js`, bump the
-version in every page (`style.css?v=39`, `script.js?v=25`), otherwise visitors may see the old look.
+version in every page (`style.css?v=41`, `script.js?v=26`), otherwise visitors may see the old look.
 
 ## Deploy on GitHub Pages
 

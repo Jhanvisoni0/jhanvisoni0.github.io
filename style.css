@@ -461,7 +461,6 @@ html[data-view="map"] .list{ display:none; }
 .pip[data-mood="happy"]{ --g1:#ffc09a; --g2:#ff7a59; }
 .pip[data-mood="wow"]{ --g1:#b6f0f7; --g2:#3fbdd9; }
 .pip[data-mood="curious"]{ --g1:#e2d6ff; --g2:#9d86f2; }
-.pip[data-mood="love"]{ --g1:#ffd0e0; --g2:#ff7aa5; }
 .pip[data-mood="wink"]{ --g1:#c4f5cf; --g2:#4cc98a; }
 .pip[data-mood="think"]{ --g1:#d3e3ff; --g2:#7da6f7; }
 .pip-svg .g1{ stop-color:var(--g1); transition:stop-color .3s; } .pip-svg .g2{ stop-color:var(--g2); transition:stop-color .3s; }
@@ -470,7 +469,7 @@ html[data-view="map"] .list{ display:none; }
 .pip-svg .tg{ fill:#ff8aa0; } .pip-svg .hrt{ fill:#ff3d71; }
 .pip-m{ display:none; }
 .pip[data-mood="calm"] .m-calm,.pip[data-mood="hello"] .m-hello,.pip[data-mood="happy"] .m-happy,.pip[data-mood="wow"] .m-wow,
-.pip[data-mood="curious"] .m-curious,.pip[data-mood="love"] .m-love,.pip[data-mood="wink"] .m-wink,.pip[data-mood="think"] .m-think{ display:inline; animation:moodin .22s ease-out; }
+.pip[data-mood="curious"] .m-curious,.pip[data-mood="wink"] .m-wink,.pip[data-mood="think"] .m-think{ display:inline; animation:moodin .22s ease-out; }
 @keyframes moodin{ from{ opacity:0; } }
 .pip-body:hover .pip-svg{ transform:scale(1.07); transition:transform .18s; }
 .pip-svg{ transition:transform .18s; }
@@ -650,3 +649,15 @@ html[data-view="map"] .list{ display:none; }
 @media (prefers-reduced-motion:reduce){ .ct-body,.ct-head,.ct-tail,.ear,.peek,.z{ animation:none !important; } .z{ opacity:.7; } .z2,.z3{ display:none; } }
 .cd-av .fur{ fill:var(--g1); } .cd-av .ol-s{ stroke:var(--ol); stroke-width:1.6; stroke-linejoin:round; }
 .cd-av .se{ stroke:var(--fe); } .cd-av .tgn{ fill:var(--tgc); }
+
+/* ---------- framed portrait: a mat, a hard shadow and the three line colours ---------- */
+.frame{ margin:0; padding:9px 9px 0; width:fit-content; background:var(--panel); border:2px solid var(--ink); border-radius:6px; box-shadow:6px 6px 0 var(--rule); }
+.frame .photo{ border-radius:2px; box-shadow:0 0 0 1px var(--rule); }
+.frame-lines{ display:flex; gap:4px; padding:9px 0 9px; }
+.frame-lines i{ flex:1; height:5px; border-radius:3px; }
+.frame-lines i:nth-child(1){ background:var(--eng); } .frame-lines i:nth-child(2){ background:var(--ai); } .frame-lines i:nth-child(3){ background:var(--lrn); }
+@media (max-width:760px){ .frame{ padding:7px 7px 0; box-shadow:4px 4px 0 var(--rule); } .frame-lines{ padding:7px 0; } }
+/* keep the hover line on screen: it grows away from the screen edge the cat sits against */
+.pip[data-side="r"] .pip-say{ left:auto; right:-4px; transform:scale(.85); transform-origin:100% 100%; }
+.pip[data-side="l"] .pip-say{ left:-4px; transform:scale(.85); transform-origin:0 100%; }
+.pip[data-side="r"].saying .pip-say,.pip[data-side="l"].saying .pip-say{ transform:none; }

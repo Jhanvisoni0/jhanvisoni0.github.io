@@ -592,7 +592,6 @@
         '<g class="pip-m m-happy"><path class="se" d="M22 37 Q27 30 32 37" fill="none" stroke-width="2.8" stroke-linecap="round"/><path class="se" d="M44 37 Q49 30 54 37" fill="none" stroke-width="2.8" stroke-linecap="round"/><path class="fe" d="M33 47 Q38 55 43 47Z"/><path class="tg" d="M35.8 51.5 Q38 49.5 40.2 51.5 Q38 54 35.8 51.5Z"/></g>' +
         '<g class="pip-m m-wow"><ellipse class="fe" cx="27" cy="34" rx="5" ry="6.5"/><ellipse class="fe" cx="49" cy="34" rx="5" ry="6.5"/><circle class="gl" cx="28.6" cy="31.8" r="1.6"/><circle class="gl" cx="50.6" cy="31.8" r="1.6"/><ellipse class="fe" cx="38" cy="50" rx="2.6" ry="3.4"/></g>' +
         '<g class="pip-m m-curious"><ellipse class="fe" cx="27" cy="34" rx="4" ry="5"/><circle class="gl" cx="28.4" cy="32.2" r="1.4"/><ellipse class="fe" cx="49" cy="35" rx="4" ry="2.7"/><path class="se" d="M33 48.5 Q38 51 43 47.5" fill="none" stroke-width="1.8" stroke-linecap="round"/></g>' +
-        '<g class="pip-m m-love"><path class="hrt" d="M27 40 C20.5 35 19.5 28.5 24.5 28 C26.3 27.7 27 29 27 30 C27 29 27.8 27.7 29.6 28 C34.5 28.5 33.5 35 27 40Z"/><path class="hrt" d="M49 40 C42.5 35 41.5 28.5 46.5 28 C48.3 27.7 49 29 49 30 C49 29 49.8 27.7 51.6 28 C56.5 28.5 55.5 35 49 40Z"/><path class="se" d="M38 45 Q38 48.5 34.5 49 M38 45 Q38 48.5 41.5 49" fill="none" stroke-width="1.8" stroke-linecap="round"/></g>' +
         '<g class="pip-m m-wink"><path class="se" d="M22 35 Q27 39.5 32 35" fill="none" stroke-width="2.6" stroke-linecap="round"/><ellipse class="fe" cx="49" cy="34" rx="4" ry="5"/><circle class="gl" cx="50.4" cy="32.2" r="1.4"/><path class="fe" d="M33.5 47 Q38 54 42.5 47Z"/><path class="tg" d="M36 51 Q38 49.2 40 51 Q38 53.4 36 51Z"/></g>' +
         '<g class="pip-m m-think"><ellipse class="fe" cx="27" cy="35" rx="4" ry="2.6"/><ellipse class="fe" cx="49" cy="35" rx="4" ry="2.6"/><path class="se" d="M22 31.5 H32 M44 31.5 H54" fill="none" stroke-width="2" stroke-linecap="round"/><path class="se" d="M33 49 Q35.5 46.5 38 49 T43 49" fill="none" stroke-width="1.8" stroke-linecap="round"/></g>' +
         '</g>' +
@@ -1234,7 +1233,7 @@
       return hs[hookI];
     }
     var REACT = [
-      ['.pip-body', 'love'],
+      ['.pip-body', 'hello'],
       ['.stn, .ask-flip, .ask-go', 'curious'],
       ['.st-metrics, .board-row, .route', 'wow'],
       ['a[href^="mailto"], .term-links a, .st-links a, .photo', 'happy'],
@@ -1247,7 +1246,7 @@
       return '';
     }
     function gaze(t) {
-      if (!t || !t.getBoundingClientRect || !react || react === 'love') { look.style.transform = ''; return; }
+      if (!t || !t.getBoundingClientRect || !react || react === 'hello') { look.style.transform = ''; return; }
       var r = t.getBoundingClientRect(), b = body.getBoundingClientRect();
       var dx = r.left + r.width / 2 - (b.left + b.width / 2), dy = r.top + r.height / 2 - (b.top + b.height / 2);
       var d = Math.sqrt(dx * dx + dy * dy) || 1;
@@ -1258,7 +1257,7 @@
         var r = reactFor(e.target);
         if (r === react) return;
         react = r; gaze(e.target); mood();
-        if (r === 'love' && !open && !tricking && Date.now() - saidHi > 7000) { saidHi = Date.now(); say(nextHook(), 2600); }
+        if (r === 'hello' && !open && !tricking && Date.now() - saidHi > 7000) { saidHi = Date.now(); say(nextHook(), 2600); }
       }, { passive: true });
       doc.addEventListener('mouseout', function (e) { if (!e.relatedTarget) { react = ''; look.style.transform = ''; mood(); } }, { passive: true });
     }
